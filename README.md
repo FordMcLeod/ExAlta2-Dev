@@ -1,2 +1,3 @@
-# ExAlta2_Dev
-The development repository of the Ex Alta 2 code base.
+# ExAlta2 Dev 
+## Dev Respository
+###A code repository for the development of the Ex Alta 2 code base.
