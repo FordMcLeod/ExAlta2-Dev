@@ -1,3 +1,4 @@
 # ExAlta2 Dev 
-## Dev Respository
-### A code repository for the development of the Ex Alta 2 code base.
+A code repository for the development of the Ex Alta 2 code base.
+#### Development and Testing Procedures
+See asset SX2-TS-014: Software Development and Testing Plan, in the supporting documents directory.
