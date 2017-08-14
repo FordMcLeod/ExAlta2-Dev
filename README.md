@@ -5,4 +5,4 @@ See asset SX2-TS-014: Software Development and Testing Plan, in the supporting d
 ### Current tasks
 - [ ] freeRTOS port
 - [ ] Relliance Edge implementation
-- [ ] 
+- [ ] foo
