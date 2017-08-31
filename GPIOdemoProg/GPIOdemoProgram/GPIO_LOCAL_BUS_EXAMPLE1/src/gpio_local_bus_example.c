@@ -124,7 +124,8 @@
 /*! \name Pin Configuration
  */
 //! @{
-#define GPIO_PIN_EXAMPLE  AVR32_PIN_PA10
+// This is where we configure the pin for output. Here you can see I changed it to PA20, as that is one of our onboard LED's on the devboard.
+#define GPIO_PIN_EXAMPLE  AVR32_PIN_PA20
 //! @}
 
 
