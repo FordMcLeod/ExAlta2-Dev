@@ -5,7 +5,7 @@
     <ProjectVersion>7.0</ProjectVersion>
     <ToolchainName>com.Atmel.AVRGCC32.C</ToolchainName>
     <ProjectGuid>{6c1b5889-9f9a-4310-8260-565b891d8dbe}</ProjectGuid>
-    <avrdevice>AT32UC3C0512C</avrdevice>
+    <avrdevice>AT32UC3C2512C</avrdevice>
     <avrdeviceseries>uc3c</avrdeviceseries>
     <OutputType>Executable</OutputType>
     <Language>C</Language>
@@ -28,65 +28,66 @@
     <eraseonlaunchrule>0</eraseonlaunchrule>
     <AsfFrameworkConfig>
       <framework-data>
-  <options>
-    <option id="avr32.drivers.gpio" value="Add" config="" content-id="Atmel.ASF" />
-    <option id="avr32.drivers.gpio.local_bus_example" value="Add" config="" content-id="Atmel.ASF" />
-    <option id="avr32.drivers.pm" value="Add" config="" content-id="Atmel.ASF" />
-    <option id="common.boards" value="Add" config="" content-id="Atmel.ASF" />
-  </options>
-  <configurations>
-    <configuration key="config.compiler.avr32gcc.programming_clock" value="int" default="int" content-id="Atmel.ASF" />
-    <configuration key="config.compiler.iarew32.optimization" value="high" default="high" content-id="Atmel.ASF" />
-    <configuration key="config.board.uc3c_ek.init" value="no" default="no" content-id="Atmel.ASF" />
-  </configurations>
-  <files>
-    <file path="src/ASF/avr32/boards/uc3c_ek/led.c" framework="" version="" source="avr32/boards/uc3c_ek/led.c" changed="False" content-id="Atmel.ASF" />
-    <file path="src/ASF/avr32/boards/uc3c_ek/led.h" framework="" version="" source="avr32/boards/uc3c_ek/led.h" changed="False" content-id="Atmel.ASF" />
-    <file path="src/ASF/avr32/boards/uc3c_ek/uc3c_ek.h" framework="" version="" source="avr32/boards/uc3c_ek/uc3c_ek.h" changed="False" content-id="Atmel.ASF" />
-    <file path="src/ASF/avr32/drivers/flashc/flashc.c" framework="" version="" source="avr32/drivers/flashc/flashc.c" changed="False" content-id="Atmel.ASF" />
-    <file path="src/ASF/avr32/drivers/flashc/flashc.h" framework="" version="" source="avr32/drivers/flashc/flashc.h" changed="False" content-id="Atmel.ASF" />
-    <file path="src/ASF/avr32/drivers/gpio/gpio.c" framework="" version="" source="avr32/drivers/gpio/gpio.c" changed="False" content-id="Atmel.ASF" />
-    <file path="src/ASF/avr32/drivers/gpio/gpio.h" framework="" version="" source="avr32/drivers/gpio/gpio.h" changed="False" content-id="Atmel.ASF" />
-    <file path="src/gpio_local_bus_example.c" framework="" version="" source="avr32/drivers/gpio/local_bus_example/gpio_local_bus_example.c" changed="False" content-id="Atmel.ASF" />
-    <file path="src/ASF/avr32/drivers/intc/exception.S" framework="" version="" source="avr32/drivers/intc/exception.S" changed="False" content-id="Atmel.ASF" />
-    <file path="src/ASF/avr32/drivers/intc/intc.c" framework="" version="" source="avr32/drivers/intc/intc.c" changed="False" content-id="Atmel.ASF" />
-    <file path="src/ASF/avr32/drivers/intc/intc.h" framework="" version="" source="avr32/drivers/intc/intc.h" changed="False" content-id="Atmel.ASF" />
-    <file path="src/ASF/avr32/drivers/pm/pm_uc3c.c" framework="" version="" source="avr32/drivers/pm/pm_uc3c.c" changed="False" content-id="Atmel.ASF" />
-    <file path="src/ASF/avr32/drivers/pm/pm_uc3c.h" framework="" version="" source="avr32/drivers/pm/pm_uc3c.h" changed="False" content-id="Atmel.ASF" />
-    <file path="src/ASF/avr32/drivers/pm/power_clocks_lib.c" framework="" version="" source="avr32/drivers/pm/power_clocks_lib.c" changed="False" content-id="Atmel.ASF" />
-    <file path="src/ASF/avr32/drivers/pm/power_clocks_lib.h" framework="" version="" source="avr32/drivers/pm/power_clocks_lib.h" changed="False" content-id="Atmel.ASF" />
-    <file path="src/ASF/avr32/drivers/pm/sleep.h" framework="" version="" source="avr32/drivers/pm/sleep.h" changed="False" content-id="Atmel.ASF" />
-    <file path="src/ASF/avr32/drivers/scif/scif_uc3c.c" framework="" version="" source="avr32/drivers/scif/scif_uc3c.c" changed="False" content-id="Atmel.ASF" />
-    <file path="src/ASF/avr32/drivers/scif/scif_uc3c.h" framework="" version="" source="avr32/drivers/scif/scif_uc3c.h" changed="False" content-id="Atmel.ASF" />
-    <file path="src/ASF/avr32/utils/compiler.h" framework="" version="" source="avr32/utils/compiler.h" changed="False" content-id="Atmel.ASF" />
-    <file path="src/ASF/avr32/utils/header_files/uc3d_defines_fix.h" framework="" version="" source="avr32/utils/header_files/uc3d_defines_fix.h" changed="False" content-id="Atmel.ASF" />
-    <file path="src/ASF/avr32/utils/header_files/uc3l3_l4_defines_fix.h" framework="" version="" source="avr32/utils/header_files/uc3l3_l4_defines_fix.h" changed="False" content-id="Atmel.ASF" />
-    <file path="src/ASF/avr32/utils/linker_scripts/at32uc3c/0512c/gcc/link_uc3c0512c.lds" framework="" version="" source="avr32/utils/linker_scripts/at32uc3c/0512c/gcc/link_uc3c0512c.lds" changed="False" content-id="Atmel.ASF" />
-    <file path="src/ASF/avr32/utils/make/Makefile.avr32.in" framework="" version="" source="avr32/utils/make/Makefile.avr32.in" changed="False" content-id="Atmel.ASF" />
-    <file path="src/ASF/avr32/utils/make/Makefile.avr32program.in" framework="" version="" source="avr32/utils/make/Makefile.avr32program.in" changed="False" content-id="Atmel.ASF" />
-    <file path="src/ASF/avr32/utils/make/Makefile.batchisp.in" framework="" version="" source="avr32/utils/make/Makefile.batchisp.in" changed="False" content-id="Atmel.ASF" />
-    <file path="src/ASF/avr32/utils/preprocessor/mrepeat.h" framework="" version="" source="avr32/utils/preprocessor/mrepeat.h" changed="False" content-id="Atmel.ASF" />
-    <file path="src/ASF/avr32/utils/preprocessor/preprocessor.h" framework="" version="" source="avr32/utils/preprocessor/preprocessor.h" changed="False" content-id="Atmel.ASF" />
-    <file path="src/ASF/avr32/utils/preprocessor/stringz.h" framework="" version="" source="avr32/utils/preprocessor/stringz.h" changed="False" content-id="Atmel.ASF" />
-    <file path="src/ASF/avr32/utils/preprocessor/tpaste.h" framework="" version="" source="avr32/utils/preprocessor/tpaste.h" changed="False" content-id="Atmel.ASF" />
-    <file path="src/ASF/avr32/utils/startup/startup_uc3.S" framework="" version="" source="avr32/utils/startup/startup_uc3.S" changed="False" content-id="Atmel.ASF" />
-    <file path="src/ASF/avr32/utils/startup/trampoline_uc3.S" framework="" version="" source="avr32/utils/startup/trampoline_uc3.S" changed="False" content-id="Atmel.ASF" />
-    <file path="src/ASF/avr32/utils/startup/trampoline_uc3.h" framework="" version="" source="avr32/utils/startup/trampoline_uc3.h" changed="False" content-id="Atmel.ASF" />
-    <file path="src/ASF/avr32/utils/status_codes.h" framework="" version="" source="avr32/utils/status_codes.h" changed="False" content-id="Atmel.ASF" />
-    <file path="src/ASF/common/boards/board.h" framework="" version="" source="common/boards/board.h" changed="False" content-id="Atmel.ASF" />
-    <file path="src/ASF/common/utils/interrupt.h" framework="" version="" source="common/utils/interrupt.h" changed="False" content-id="Atmel.ASF" />
-    <file path="src/ASF/common/utils/interrupt/interrupt_avr32.h" framework="" version="" source="common/utils/interrupt/interrupt_avr32.h" changed="False" content-id="Atmel.ASF" />
-    <file path="src/ASF/common/utils/parts.h" framework="" version="" source="common/utils/parts.h" changed="False" content-id="Atmel.ASF" />
-  </files>
-  <documentation help="http://asf.atmel.com/docs/3.34.1/avr32.drivers.gpio.local_bus_example.uc3c_ek/html/index.html" />
-  <offline-documentation help="" />
-  <dependencies>
-    <content-extension eid="atmel.asf" uuidref="Atmel.ASF" version="3.34.1" />
-  </dependencies>
-  <project id="avr32.drivers.gpio.local_bus_example.uc3c_ek" value="Add" config="" content-id="Atmel.ASF" />
-  <board id="board.uc3c_ek" value="Add" config="" content-id="Atmel.ASF" />
-</framework-data>
+        <options>
+          <option id="avr32.drivers.gpio" value="Add" config="" content-id="Atmel.ASF" />
+          <option id="avr32.drivers.gpio.local_bus_example" value="Add" config="" content-id="Atmel.ASF" />
+          <option id="avr32.drivers.pm" value="Add" config="" content-id="Atmel.ASF" />
+          <option id="common.boards" value="Add" config="" content-id="Atmel.ASF" />
+        </options>
+        <configurations>
+          <configuration key="config.compiler.avr32gcc.programming_clock" value="int" default="int" content-id="Atmel.ASF" />
+          <configuration key="config.compiler.iarew32.optimization" value="high" default="high" content-id="Atmel.ASF" />
+          <configuration key="config.board.uc3c_ek.init" value="no" default="no" content-id="Atmel.ASF" />
+        </configurations>
+        <files>
+          <file path="src/ASF/avr32/boards/uc3c_ek/led.c" framework="" version="" source="avr32/boards/uc3c_ek/led.c" changed="False" content-id="Atmel.ASF" />
+          <file path="src/ASF/avr32/boards/uc3c_ek/led.h" framework="" version="" source="avr32/boards/uc3c_ek/led.h" changed="False" content-id="Atmel.ASF" />
+          <file path="src/ASF/avr32/boards/uc3c_ek/uc3c_ek.h" framework="" version="" source="avr32/boards/uc3c_ek/uc3c_ek.h" changed="False" content-id="Atmel.ASF" />
+          <file path="src/ASF/avr32/drivers/flashc/flashc.c" framework="" version="" source="avr32/drivers/flashc/flashc.c" changed="False" content-id="Atmel.ASF" />
+          <file path="src/ASF/avr32/drivers/flashc/flashc.h" framework="" version="" source="avr32/drivers/flashc/flashc.h" changed="False" content-id="Atmel.ASF" />
+          <file path="src/ASF/avr32/drivers/gpio/gpio.c" framework="" version="" source="avr32/drivers/gpio/gpio.c" changed="False" content-id="Atmel.ASF" />
+          <file path="src/ASF/avr32/drivers/gpio/gpio.h" framework="" version="" source="avr32/drivers/gpio/gpio.h" changed="False" content-id="Atmel.ASF" />
+          <file path="src/gpio_local_bus_example.c" framework="" version="" source="avr32/drivers/gpio/local_bus_example/gpio_local_bus_example.c" changed="False" content-id="Atmel.ASF" />
+          <file path="src/ASF/avr32/drivers/intc/exception.S" framework="" version="" source="avr32/drivers/intc/exception.S" changed="False" content-id="Atmel.ASF" />
+          <file path="src/ASF/avr32/drivers/intc/intc.c" framework="" version="" source="avr32/drivers/intc/intc.c" changed="False" content-id="Atmel.ASF" />
+          <file path="src/ASF/avr32/drivers/intc/intc.h" framework="" version="" source="avr32/drivers/intc/intc.h" changed="False" content-id="Atmel.ASF" />
+          <file path="src/ASF/avr32/drivers/pm/pm_uc3c.c" framework="" version="" source="avr32/drivers/pm/pm_uc3c.c" changed="False" content-id="Atmel.ASF" />
+          <file path="src/ASF/avr32/drivers/pm/pm_uc3c.h" framework="" version="" source="avr32/drivers/pm/pm_uc3c.h" changed="False" content-id="Atmel.ASF" />
+          <file path="src/ASF/avr32/drivers/pm/power_clocks_lib.c" framework="" version="" source="avr32/drivers/pm/power_clocks_lib.c" changed="False" content-id="Atmel.ASF" />
+          <file path="src/ASF/avr32/drivers/pm/power_clocks_lib.h" framework="" version="" source="avr32/drivers/pm/power_clocks_lib.h" changed="False" content-id="Atmel.ASF" />
+          <file path="src/ASF/avr32/drivers/pm/sleep.h" framework="" version="" source="avr32/drivers/pm/sleep.h" changed="False" content-id="Atmel.ASF" />
+          <file path="src/ASF/avr32/drivers/scif/scif_uc3c.c" framework="" version="" source="avr32/drivers/scif/scif_uc3c.c" changed="False" content-id="Atmel.ASF" />
+          <file path="src/ASF/avr32/drivers/scif/scif_uc3c.h" framework="" version="" source="avr32/drivers/scif/scif_uc3c.h" changed="False" content-id="Atmel.ASF" />
+          <file path="src/ASF/avr32/utils/compiler.h" framework="" version="" source="avr32/utils/compiler.h" changed="False" content-id="Atmel.ASF" />
+          <file path="src/ASF/avr32/utils/header_files/uc3d_defines_fix.h" framework="" version="" source="avr32/utils/header_files/uc3d_defines_fix.h" changed="False" content-id="Atmel.ASF" />
+          <file path="src/ASF/avr32/utils/header_files/uc3l3_l4_defines_fix.h" framework="" version="" source="avr32/utils/header_files/uc3l3_l4_defines_fix.h" changed="False" content-id="Atmel.ASF" />
+          <file path="src/ASF/avr32/utils/linker_scripts/at32uc3c/0512c/gcc/link_uc3c0512c.lds" framework="" version="" source="avr32/utils/linker_scripts/at32uc3c/0512c/gcc/link_uc3c0512c.lds" changed="False" content-id="Atmel.ASF" />
+          <file path="src/ASF/avr32/utils/make/Makefile.avr32.in" framework="" version="" source="avr32/utils/make/Makefile.avr32.in" changed="False" content-id="Atmel.ASF" />
+          <file path="src/ASF/avr32/utils/make/Makefile.avr32program.in" framework="" version="" source="avr32/utils/make/Makefile.avr32program.in" changed="False" content-id="Atmel.ASF" />
+          <file path="src/ASF/avr32/utils/make/Makefile.batchisp.in" framework="" version="" source="avr32/utils/make/Makefile.batchisp.in" changed="False" content-id="Atmel.ASF" />
+          <file path="src/ASF/avr32/utils/preprocessor/mrepeat.h" framework="" version="" source="avr32/utils/preprocessor/mrepeat.h" changed="False" content-id="Atmel.ASF" />
+          <file path="src/ASF/avr32/utils/preprocessor/preprocessor.h" framework="" version="" source="avr32/utils/preprocessor/preprocessor.h" changed="False" content-id="Atmel.ASF" />
+          <file path="src/ASF/avr32/utils/preprocessor/stringz.h" framework="" version="" source="avr32/utils/preprocessor/stringz.h" changed="False" content-id="Atmel.ASF" />
+          <file path="src/ASF/avr32/utils/preprocessor/tpaste.h" framework="" version="" source="avr32/utils/preprocessor/tpaste.h" changed="False" content-id="Atmel.ASF" />
+          <file path="src/ASF/avr32/utils/startup/startup_uc3.S" framework="" version="" source="avr32/utils/startup/startup_uc3.S" changed="False" content-id="Atmel.ASF" />
+          <file path="src/ASF/avr32/utils/startup/trampoline_uc3.S" framework="" version="" source="avr32/utils/startup/trampoline_uc3.S" changed="False" content-id="Atmel.ASF" />
+          <file path="src/ASF/avr32/utils/startup/trampoline_uc3.h" framework="" version="" source="avr32/utils/startup/trampoline_uc3.h" changed="False" content-id="Atmel.ASF" />
+          <file path="src/ASF/avr32/utils/status_codes.h" framework="" version="" source="avr32/utils/status_codes.h" changed="False" content-id="Atmel.ASF" />
+          <file path="src/ASF/common/boards/board.h" framework="" version="" source="common/boards/board.h" changed="False" content-id="Atmel.ASF" />
+          <file path="src/ASF/common/utils/interrupt.h" framework="" version="" source="common/utils/interrupt.h" changed="False" content-id="Atmel.ASF" />
+          <file path="src/ASF/common/utils/interrupt/interrupt_avr32.h" framework="" version="" source="common/utils/interrupt/interrupt_avr32.h" changed="False" content-id="Atmel.ASF" />
+          <file path="src/ASF/common/utils/parts.h" framework="" version="" source="common/utils/parts.h" changed="False" content-id="Atmel.ASF" />
+        </files>
+        <documentation help="http://asf.atmel.com/docs/3.34.1/avr32.drivers.gpio.local_bus_example.uc3c_ek/html/index.html" />
+        <offline-documentation help="" />
+        <dependencies>
+          <content-extension eid="atmel.asf" uuidref="Atmel.ASF" version="3.34.1" />
+        </dependencies>
+        <project id="avr32.drivers.gpio.local_bus_example.uc3c_ek" value="Add" config="" content-id="Atmel.ASF" />
+        <board id="board.uc3c_ek" value="Add" config="" content-id="Atmel.ASF" />
+      </framework-data>
     </AsfFrameworkConfig>
+    <avrtool />
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)' == 'Release' ">
     <ToolchainSettings>
@@ -103,7 +104,6 @@
   </avr32gcc.compiler.symbols.DefSymbols>
   <avr32gcc.compiler.directories.IncludePaths>
     <ListValues>
-      <Value>%24(PackRepoDir)\atmel\UC3C_DFP\1.0.49\include\AT32UC3C0512C</Value>
       <Value>../src/ASF/avr32/drivers/gpio</Value>
       <Value>../src/ASF/avr32/utils/preprocessor</Value>
       <Value>../src/ASF/avr32/utils</Value>
@@ -117,6 +117,7 @@
       <Value>../src/ASF/common/boards</Value>
       <Value>../src</Value>
       <Value>../src/config</Value>
+      <Value>%24(PackRepoDir)\atmel\UC3C_DFP\1.0.49\include\AT32UC3C2512C</Value>
     </ListValues>
   </avr32gcc.compiler.directories.IncludePaths>
   <avr32gcc.compiler.optimization.level>Optimize for size (-Os)</avr32gcc.compiler.optimization.level>
@@ -138,7 +139,6 @@
   <avr32gcc.assembler.general.AssemblerFlags>-mrelax</avr32gcc.assembler.general.AssemblerFlags>
   <avr32gcc.assembler.general.IncludePaths>
     <ListValues>
-      <Value>%24(PackRepoDir)\atmel\UC3C_DFP\1.0.49\include\AT32UC3C0512C</Value>
       <Value>../src/ASF/avr32/drivers/gpio</Value>
       <Value>../src/ASF/avr32/utils/preprocessor</Value>
       <Value>../src/ASF/avr32/utils</Value>
@@ -152,12 +152,12 @@
       <Value>../src/ASF/common/boards</Value>
       <Value>../src</Value>
       <Value>../src/config</Value>
+      <Value>%24(PackRepoDir)\atmel\UC3C_DFP\1.0.49\include\AT32UC3C2512C</Value>
     </ListValues>
   </avr32gcc.assembler.general.IncludePaths>
   <avr32gcc.preprocessingassembler.general.AssemblerFlags>-mrelax -DBOARD=UC3C_EK</avr32gcc.preprocessingassembler.general.AssemblerFlags>
   <avr32gcc.preprocessingassembler.general.IncludePaths>
     <ListValues>
-      <Value>%24(PackRepoDir)\atmel\UC3C_DFP\1.0.49\include\AT32UC3C0512C</Value>
       <Value>../src/ASF/avr32/drivers/gpio</Value>
       <Value>../src/ASF/avr32/utils/preprocessor</Value>
       <Value>../src/ASF/avr32/utils</Value>
@@ -171,6 +171,7 @@
       <Value>../src/ASF/common/boards</Value>
       <Value>../src</Value>
       <Value>../src/config</Value>
+      <Value>%24(PackRepoDir)\atmel\UC3C_DFP\1.0.49\include\AT32UC3C2512C</Value>
     </ListValues>
   </avr32gcc.preprocessingassembler.general.IncludePaths>
 </Avr32Gcc>
@@ -191,7 +192,6 @@
   </avr32gcc.compiler.symbols.DefSymbols>
   <avr32gcc.compiler.directories.IncludePaths>
     <ListValues>
-      <Value>%24(PackRepoDir)\atmel\UC3C_DFP\1.0.49\include\AT32UC3C0512C</Value>
       <Value>../src/ASF/avr32/drivers/gpio</Value>
       <Value>../src/ASF/avr32/utils/preprocessor</Value>
       <Value>../src/ASF/avr32/utils</Value>
@@ -205,6 +205,7 @@
       <Value>../src/ASF/common/boards</Value>
       <Value>../src</Value>
       <Value>../src/config</Value>
+      <Value>%24(PackRepoDir)\atmel\UC3C_DFP\1.0.49\include\AT32UC3C2512C</Value>
     </ListValues>
   </avr32gcc.compiler.directories.IncludePaths>
   <avr32gcc.compiler.optimization.level>Optimize (-O1)</avr32gcc.compiler.optimization.level>
@@ -227,7 +228,6 @@
   <avr32gcc.assembler.general.AssemblerFlags>-mrelax</avr32gcc.assembler.general.AssemblerFlags>
   <avr32gcc.assembler.general.IncludePaths>
     <ListValues>
-      <Value>%24(PackRepoDir)\atmel\UC3C_DFP\1.0.49\include\AT32UC3C0512C</Value>
       <Value>../src/ASF/avr32/drivers/gpio</Value>
       <Value>../src/ASF/avr32/utils/preprocessor</Value>
       <Value>../src/ASF/avr32/utils</Value>
@@ -241,13 +241,13 @@
       <Value>../src/ASF/common/boards</Value>
       <Value>../src</Value>
       <Value>../src/config</Value>
+      <Value>%24(PackRepoDir)\atmel\UC3C_DFP\1.0.49\include\AT32UC3C2512C</Value>
     </ListValues>
   </avr32gcc.assembler.general.IncludePaths>
   <avr32gcc.assembler.debugging.DebugLevel>Default (-g)</avr32gcc.assembler.debugging.DebugLevel>
   <avr32gcc.preprocessingassembler.general.AssemblerFlags>-mrelax -DBOARD=UC3C_EK</avr32gcc.preprocessingassembler.general.AssemblerFlags>
   <avr32gcc.preprocessingassembler.general.IncludePaths>
     <ListValues>
-      <Value>%24(PackRepoDir)\atmel\UC3C_DFP\1.0.49\include\AT32UC3C0512C</Value>
       <Value>../src/ASF/avr32/drivers/gpio</Value>
       <Value>../src/ASF/avr32/utils/preprocessor</Value>
       <Value>../src/ASF/avr32/utils</Value>
@@ -261,6 +261,7 @@
       <Value>../src/ASF/common/boards</Value>
       <Value>../src</Value>
       <Value>../src/config</Value>
+      <Value>%24(PackRepoDir)\atmel\UC3C_DFP\1.0.49\include\AT32UC3C2512C</Value>
     </ListValues>
   </avr32gcc.preprocessingassembler.general.IncludePaths>
   <avr32gcc.preprocessingassembler.debugging.DebugLevel>Default (-Wa,-g)</avr32gcc.preprocessingassembler.debugging.DebugLevel>

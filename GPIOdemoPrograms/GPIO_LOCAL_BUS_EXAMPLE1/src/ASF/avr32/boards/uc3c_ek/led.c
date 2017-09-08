@@ -55,7 +55,6 @@
 #include "uc3c_ek.h"
 #include "led.h"
 
-
 //! Structure describing LED hardware connections.
 typedef const struct
 {

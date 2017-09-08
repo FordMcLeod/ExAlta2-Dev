@@ -130,15 +130,12 @@
 
 
 //! Number of LEDs.
-#define LED_COUNT   4
+#define LED_COUNT   1
 
 /*! \name GPIO Connections of LEDs
  */
 //! @{
-#  define LED0_GPIO   AVR32_PIN_PA08
-#  define LED1_GPIO   AVR32_PIN_PD23
-#  define LED2_GPIO   AVR32_PIN_PC13
-#  define LED3_GPIO   AVR32_PIN_PD22
+#  define LED0_GPIO   AVR32_PIN_PA19
 //! @}
 
 /*! \name PWM Channels of LEDs
