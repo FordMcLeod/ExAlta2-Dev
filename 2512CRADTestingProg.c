@@ -4,6 +4,7 @@
 int32_t  EEMEM NonVolatileChar;
 uint32_t EEMEM NonVolatileInt;
 uint3_t  EEMEM NonVolatileString[10];
+
 while(1){
 	
 	//INCREMENTING THE TOTAL & GENDERED COUNTERS	

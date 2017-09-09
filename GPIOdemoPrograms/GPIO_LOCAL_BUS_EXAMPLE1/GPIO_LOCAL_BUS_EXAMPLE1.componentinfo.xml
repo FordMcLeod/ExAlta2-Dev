@@ -15,24 +15,24 @@
 			<Description></Description>
 			<Files xmlns:d4p1="http://schemas.microsoft.com/2003/10/Serialization/Arrays">
 				<d4p1:anyType i:type="FileInfo">
-					<AbsolutePath>C:/Program Files (x86)\Atmel\Studio\7.0\Packs\atmel\UC3C_DFP\1.0.49\include\AT32UC3C0512C</AbsolutePath>
+					<AbsolutePath>C:/Program Files (x86)\Atmel\Studio\7.0\Packs\atmel\UC3C_DFP\1.0.49\include\AT32UC3C2512C</AbsolutePath>
 					<Attribute></Attribute>
 					<Category>include</Category>
 					<Condition>C</Condition>
 					<FileContentHash i:nil="true" />
 					<FileVersion></FileVersion>
-					<Name>include/AT32UC3C0512C</Name>
+					<Name>include/AT32UC3C2512C</Name>
 					<SelectString></SelectString>
 					<SourcePath></SourcePath>
 				</d4p1:anyType>
 				<d4p1:anyType i:type="FileInfo">
-					<AbsolutePath>C:/Program Files (x86)\Atmel\Studio\7.0\Packs\atmel\UC3C_DFP\1.0.49\include\AT32UC3C0512C\avr32\io.h</AbsolutePath>
+					<AbsolutePath>C:/Program Files (x86)\Atmel\Studio\7.0\Packs\atmel\UC3C_DFP\1.0.49\include\AT32UC3C2512C\avr32\io.h</AbsolutePath>
 					<Attribute></Attribute>
 					<Category>header</Category>
 					<Condition>C</Condition>
-					<FileContentHash>rbOMVcMPOPSq4I2Jx4L31g==</FileContentHash>
+					<FileContentHash>uxEAvdLrDA9Y7cPQLumhxQ==</FileContentHash>
 					<FileVersion></FileVersion>
-					<Name>include/AT32UC3C0512C/avr32/io.h</Name>
+					<Name>include/AT32UC3C2512C/avr32/io.h</Name>
 					<SelectString></SelectString>
 					<SourcePath></SourcePath>
 				</d4p1:anyType>
@@ -41,7 +41,7 @@
 					<Attribute>template</Attribute>
 					<Category>source</Category>
 					<Condition>C Exe</Condition>
-					<FileContentHash>cvsGevMZatazrqpiSE8tsw==</FileContentHash>
+					<FileContentHash>jFyVW9+vgAuGluR1ypyG5g==</FileContentHash>
 					<FileVersion></FileVersion>
 					<Name>templates/main.c</Name>
 					<SelectString>Main file (.c)</SelectString>
@@ -63,7 +63,7 @@
 			<PackPath>C:/Program Files (x86)/Atmel/Studio/7.0/Packs/atmel/UC3C_DFP/1.0.49/Atmel.UC3C_DFP.pdsc</PackPath>
 			<PackVersion>1.0.49</PackVersion>
 			<PresentInProject>true</PresentInProject>
-			<ReferenceConditionId>AT32UC3C0512C</ReferenceConditionId>
+			<ReferenceConditionId>AT32UC3C2512C</ReferenceConditionId>
 			<RteComponents xmlns:d4p1="http://schemas.microsoft.com/2003/10/Serialization/Arrays">
 				<d4p1:string></d4p1:string>
 			</RteComponents>
