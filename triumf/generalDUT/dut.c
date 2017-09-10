@@ -9,14 +9,22 @@
 *       int     FM_DecompressFile( FileHandle )
 *
 * todo :
-*   create datetype for architecture word size "word"
+*   - ensure word is proper length, is it 16 or 8 bits for respective boards.
+*   -swap the flashSpace array for the actual flash starting addres
+*   -with above, adjust FLASHSIZE to the proper flash  size
+*   
 * 
 * AUTHOR :    Owen McLeod   START DATE :    9/9/2017
 *
 * CHANGES :
 *   VERSION DATE    WHO     DETAIL
-*   9/9/17          O.M.    Initiliazing and converting psuedocode
+*   0       9/9/17  O.M.    Initiliazing and converting psuedocode
+*   1       9/9/17  O.M.    Set up word typedef temporarily. Is it 8 or 16?
+*
 *H*/
+
+typedef unsigned int word;
+	
 
 #define testSize 99999
 volatile word testMemArray[testSize];
@@ -33,7 +41,7 @@ void ram_init() {
 void ram_test() {
     long int read, j;
     previous_write = next_write;
-    next_write = nextwrite ^ 0xFFFFFFFF;
+    next_write = next_write ^ 0xFFFFFFFF;
     for(j = 0; j<testSize;j++) {
         read = testMemArray[j];
         if (read != previous_write) 
@@ -47,13 +55,13 @@ void ram_test() {
 
 #define FLASHSIZE 888888
 #define FLASHCHECKSUM 0x45678945678
-
-word *p = 0xFFFF0000 //What is starting address of flash??  
-
+//What is starting address of flash??  
+//word *p = 0xFFFF0000; 
+volatile word flashSpace[FLASHSIZE];
 void flash_test() {
     unsigned int j, sum = 0;
     for(j; j<FLASHSIZE;j++){
-        sum += p[j];
+        sum += flashSpace[j];
     }
     sum-= FLASHCHECKSUM;
     if(sum)
@@ -70,6 +78,7 @@ main() {
         printf("ARM iteration %d\n",iteration);
         ram_test();
         flash_test();
+	iteration++;
     }
 }
 
