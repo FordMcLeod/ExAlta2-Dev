@@ -20,6 +20,7 @@
 *   VERSION DATE    WHO     DETAIL
 *   0       9/9/17  O.M.    Initiliazing and converting psuedocode
 *   1       9/9/17  O.M.    Set up word typedef temporarily. Is it 8 or 16?
+*   2       11/9/17 O.M.    Added in flash and ram error counters and output in main() func
 *
 *H*/
 
