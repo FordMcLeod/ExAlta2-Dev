@@ -28,6 +28,7 @@ typedef unsigned int word;
 
 #define testSize 99999
 volatile word testMemArray[testSize];
+long int ram_errors;
 word previous_write, next_write;
 
 void ram_init() {
@@ -44,12 +45,16 @@ void ram_test() {
     next_write = next_write ^ 0xFFFFFFFF;
     for(j = 0; j<testSize;j++) {
         read = testMemArray[j];
-        if (read != previous_write) 
+        if (read != previous_write) {
             printf("delayed read %0x %0x %0x\n",j,read,previous_write);
+			ram_errors++;	
+	}
         testMemArray[j]= next_write;
         read = testMemArray[j];
-        if (read != next_write) 
+        if (read != next_write) {
             printf("instant read %0x %0x %0x\n",j,read,previous_write);
+			ram_errors++;
+		}
     }
 }
 
@@ -58,14 +63,18 @@ void ram_test() {
 //What is starting address of flash??  
 //word *p = 0xFFFF0000; 
 volatile word flashSpace[FLASHSIZE];
+long int flash_errors;
+
 void flash_test() {
     unsigned int j, sum = 0;
     for(j; j<FLASHSIZE;j++){
         sum += flashSpace[j];
     }
     sum-= FLASHCHECKSUM;
-    if(sum)
+    if(sum){
         printf("flash checksum delta %x\n",sum); 
+		flash_errors++;
+	}
 }
 
 
@@ -75,10 +84,10 @@ main() {
     #define EVER 1
     while(1) {
         //pet_watchdog();
-        printf("ARM iteration %d\n",iteration);
+     	printf("ARM iteration %d, %d ram errors, %d flash errors\n",iteration,ram_errors, flash_errors); 
         ram_test();
         flash_test();
-	iteration++;
+		iteration++;
     }
 }
 
