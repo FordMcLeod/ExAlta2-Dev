@@ -51,7 +51,7 @@
 #define LED_PORT    gpioPortC
 #define LED_PIN     12
 
-#define STACK_SIZE_FOR_TASK    (configMINIMAL_STACK_SIZE + 10)
+#define STACK_SIZE_FOR_TASK    (configMINIMAL_STACK_SIZE + 100)
 #define TASK_PRIORITY          (tskIDLE_PRIORITY + 1)
 
 /* Structure with parameters for LedBlink */
@@ -71,14 +71,27 @@ typedef struct
 static void LedBlink(void *pParameters)
 {
   TaskParams_t     * pData = (TaskParams_t*) pParameters;
+  char c = 'a';
 
   for (;;)
   {
 	  GPIO_PortOutSetVal(LED_PORT, 1<<LED_PIN, 1<<LED_PIN);
 	  vTaskDelay(pdMS_TO_TICKS(100));
 	  GPIO_PortOutSetVal(LED_PORT, 0<<LED_PIN, 1<<LED_PIN);
-	  vTaskDelay(pdMS_TO_TICKS(100));
+	  println("HELLO!");
+	  vTaskDelay(pdMS_TO_TICKS(1000));
   }
+}
+
+void println(char* data)
+{
+	int i = 0;
+	for(i = 0;data[i]!='\0';i++){
+		USART_Tx(UART1,data[i]);
+	}
+	USART_Tx(UART1,'\n');
+	USART_Tx(UART1,'\r');
+	USART_Tx(UART1,'\0');
 }
 
 /**************************************************************************//**
@@ -96,14 +109,12 @@ int main(void)
   SLEEP_SleepBlockBegin((SLEEP_EnergyMode_t)(configSLEEP_MODE+1));
 #endif
 
-  /* Enable clock for GPIO */
-  CMU_ClockEnable(cmuClock_GPIO, true);
 
-  /* Configure LED_PORT pin LED_PIN (User LED) as push/pull outputs */
-  GPIO_PinModeSet(LED_PORT,         /* Port */
-                  LED_PIN,          /* Pin */
-                  gpioModePushPull, /* Mode */
-                  0 );              /* Output value */
+  enter_DefaultMode_from_RESET();
+
+  println("HELLO");
+
+
 
   /*Create two task for blinking leds*/
   xTaskCreate( LedBlink, (const char *) "LedBlink1", STACK_SIZE_FOR_TASK, NULL, TASK_PRIORITY, NULL);

@@ -3,12 +3,20 @@
   <mode name="DefaultMode">
     <property object="DefaultMode" propertyId="mode.diagramLocation" value="100, 100"/>
     <property object="GPIO" propertyId="ABPeripheral.included" value="true"/>
+    <property object="PC12" propertyId="ports.settings.custompinname" value="LED"/>
+    <property object="PC12" propertyId="ports.settings.pinmode" value="Push-pull"/>
     <property object="PD4" propertyId="ports.settings.custompinname" value=""/>
     <property object="PD4" propertyId="ports.settings.dout" value="1"/>
     <property object="PD4" propertyId="ports.settings.filter" value="Enabled"/>
     <property object="PD4" propertyId="ports.settings.pinmode" value="Push-pull"/>
     <property object="PD4" propertyId="ports.settings.pulldirection" value="Pullup"/>
     <property object="PD4" propertyId="ports.settings.pullup" value="Enabled"/>
+    <property object="PE2" propertyId="ports.settings.pinmode" value="Push-pull"/>
+    <property object="PE3" propertyId="ports.settings.pinmode" value="Input"/>
+    <property object="PORTIO" propertyId="portio.uart1.enable.rx" value="Enabled"/>
+    <property object="PORTIO" propertyId="portio.uart1.enable.tx" value="Enabled"/>
+    <property object="PORTIO" propertyId="portio.uart1.location.uart1" value="3"/>
+    <property object="UART1" propertyId="ABPeripheral.included" value="true"/>
   </mode>
   <modeTransition>
     <property object="RESET &#x2192; DefaultMode" propertyId="modeTransition.source" value="RESET"/>

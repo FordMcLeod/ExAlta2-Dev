@@ -20,6 +20,7 @@
 #include "em_chip.h"
 #include "em_assert.h"
 #include "em_gpio.h"
+#include "em_usart.h"
 // [Library includes]$
 
 //==============================================================================
@@ -28,6 +29,7 @@
 extern void enter_DefaultMode_from_RESET(void) {
 	// $[Config Calls]
 	CMU_enter_DefaultMode_from_RESET();
+	UART1_enter_DefaultMode_from_RESET();
 	PORTIO_enter_DefaultMode_from_RESET();
 	// [Config Calls]$
 
@@ -86,6 +88,9 @@ extern void CMU_enter_DefaultMode_from_RESET(void) {
 	/* No LF peripherals enabled */
 	// [LF clock tree setup]$
 	// $[Peripheral Clock enables]
+	/* Enable clock for UART1 */
+	CMU_ClockEnable(cmuClock_UART1, true);
+
 	/* Enable clock for GPIO by default */
 	CMU_ClockEnable(cmuClock_GPIO, true);
 
@@ -289,9 +294,30 @@ extern void UART0_enter_DefaultMode_from_RESET(void) {
 extern void UART1_enter_DefaultMode_from_RESET(void) {
 
 	// $[UART_InitAsync]
+	USART_InitAsync_TypeDef initasync = USART_INITASYNC_DEFAULT;
+
+	initasync.baudrate = 115200;
+	initasync.databits = usartDatabits8;
+	initasync.parity = usartNoParity;
+	initasync.stopbits = usartStopbits1;
+	initasync.oversampling = usartOVS16;
+#if defined( USART_INPUT_RXPRS ) && defined( USART_CTRL_MVDIS )
+	initasync.mvdis = 0;
+	initasync.prsRxEnable = 0;
+	initasync.prsRxCh = 0;
+#endif
+
+	USART_InitAsync(UART1, &initasync);
 	// [UART_InitAsync]$
 
 	// $[USART_InitPrsTrigger]
+	USART_PrsTriggerInit_TypeDef initprs = USART_INITPRSTRIGGER_DEFAULT;
+
+	initprs.rxTriggerEnable = 0;
+	initprs.txTriggerEnable = 0;
+	initprs.prsTriggerChannel = usartPrsTriggerCh0;
+
+	USART_InitPrsTrigger(UART1, &initprs);
 	// [USART_InitPrsTrigger]$
 
 }
@@ -523,6 +549,10 @@ extern void PORTIO_enter_DefaultMode_from_RESET(void) {
 	// [Port B Configuration]$
 
 	// $[Port C Configuration]
+
+	/* Pin PC12 is configured to Push-pull */
+	GPIO->P[2].MODEH = (GPIO->P[2].MODEH & ~_GPIO_P_MODEH_MODE12_MASK)
+			| GPIO_P_MODEH_MODE12_PUSHPULL;
 	// [Port C Configuration]$
 
 	// $[Port D Configuration]
@@ -534,12 +564,27 @@ extern void PORTIO_enter_DefaultMode_from_RESET(void) {
 	// [Port D Configuration]$
 
 	// $[Port E Configuration]
+
+	/* Pin PE2 is configured to Push-pull */
+	GPIO->P[4].MODEL = (GPIO->P[4].MODEL & ~_GPIO_P_MODEL_MODE2_MASK)
+			| GPIO_P_MODEL_MODE2_PUSHPULL;
+
+	/* Pin PE3 is configured to Input enabled */
+	GPIO->P[4].MODEL = (GPIO->P[4].MODEL & ~_GPIO_P_MODEL_MODE3_MASK)
+			| GPIO_P_MODEL_MODE3_INPUT;
 	// [Port E Configuration]$
 
 	// $[Port F Configuration]
 	// [Port F Configuration]$
 
 	// $[Route Configuration]
+
+	/* Module UART1 is configured to location 3 */
+	UART1->ROUTE = (UART1->ROUTE & ~_UART_ROUTE_LOCATION_MASK)
+			| UART_ROUTE_LOCATION_LOC3;
+
+	/* Enable signals RX, TX */
+	UART1->ROUTE |= UART_ROUTE_RXPEN | UART_ROUTE_TXPEN;
 	// [Route Configuration]$
 
 }
