@@ -2,9 +2,11 @@
 # Automatically-generated file. Do not edit!
 ################################################################################
 
+A51_UPPER_SRCS := 
 S79_SRCS := 
 OBJ_SRCS := 
 S_SRCS := 
+SRC_UPPER_SRCS := 
 ASM_SRCS := 
 C_SRCS := 
 S_UPPER_SRCS := 
@@ -16,10 +18,8 @@ C_DEPS :=
 # Every subdirectory with source files must be described here
 SUBDIRS := \
 CMSIS/EFM32G \
-CMSIS/EFM32GG \
 Drivers \
 FreeRTOS/efm32g \
-FreeRTOS/efm32gg \
 emlib \
 src \
 

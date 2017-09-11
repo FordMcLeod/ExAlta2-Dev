@@ -31,50 +31,70 @@
  *
  ******************************************************************************/
 
+#include <stdio.h>
+#include <stdlib.h>
+
+#include "FreeRTOSConfig.h"
+#include "FreeRTOS.h"
+#include "task.h"
+#include "queue.h"
+#include "semphr.h"
+#include "croutine.h"
+
 #include "em_device.h"
 #include "em_cmu.h"
 #include "em_gpio.h"
 #include "em_chip.h"
 
-  #define LED_PORT    gpioPortC
-  #define LED_PIN     12
+#include "sleep.h"
 
+#define LED_PORT    gpioPortC
+#define LED_PIN     12
 
-/******************************************************************************
- * @brief Delay function
- *****************************************************************************/
-void Delay(uint16_t milliseconds)
+#define STACK_SIZE_FOR_TASK    (configMINIMAL_STACK_SIZE + 10)
+#define TASK_PRIORITY          (tskIDLE_PRIORITY + 1)
+
+/* Structure with parameters for LedBlink */
+typedef struct
 {
-  /* Enable clock for TIMER0 */
-  CMU->HFPERCLKEN0 |= CMU_HFPERCLKEN0_TIMER0;
+  /* Delay between blink of led */
+  portTickType delay;
+  /* Number of led */
+  int          ledNo;
+} TaskParams_t;
 
-  /* Set prescaler to maximum */
-  TIMER0->CTRL = (TIMER0->CTRL & ~_TIMER_CTRL_PRESC_MASK) |  TIMER_CTRL_PRESC_DIV1024;
 
-  /* Clear TIMER0 counter value */
-  TIMER0->CNT = 0;
+/**************************************************************************//**
+ * @brief Simple task which is blinking led
+ * @param *pParameters pointer to parameters passed to the function
+ *****************************************************************************/
+static void LedBlink(void *pParameters)
+{
+  TaskParams_t     * pData = (TaskParams_t*) pParameters;
 
-  /* Start TIMER0 */
-  TIMER0->CMD = TIMER_CMD_START;
-
-  /* Wait until counter value is over the threshold */
-  while(TIMER0->CNT < 13*milliseconds){
-   /* Do nothing, just wait */
+  for (;;)
+  {
+	  GPIO_PortOutSetVal(LED_PORT, 1<<LED_PIN, 1<<LED_PIN);
+	  vTaskDelay(pdMS_TO_TICKS(100));
+	  GPIO_PortOutSetVal(LED_PORT, 0<<LED_PIN, 1<<LED_PIN);
+	  vTaskDelay(pdMS_TO_TICKS(100));
   }
-
-  /* Stop TIMER0 */
-  TIMER0->CMD = TIMER_CMD_STOP;
 }
 
-/******************************************************************************
+/**************************************************************************//**
  * @brief  Main function
- * Main is called from _program_start, see assembly startup file
  *****************************************************************************/
 int main(void)
 {
-  /* Initialize chip */
+  /* Chip errata */
   CHIP_Init();
 
+  /* Initialize SLEEP driver, no calbacks are used */
+  SLEEP_Init(NULL, NULL);
+#if (configSLEEP_MODE < 3)
+  /* do not let to sleep deeper than define */
+  SLEEP_SleepBlockBegin((SLEEP_EnergyMode_t)(configSLEEP_MODE+1));
+#endif
 
   /* Enable clock for GPIO */
   CMU_ClockEnable(cmuClock_GPIO, true);
@@ -85,16 +105,13 @@ int main(void)
                   gpioModePushPull, /* Mode */
                   0 );              /* Output value */
 
+  /*Create two task for blinking leds*/
+  xTaskCreate( LedBlink, (const char *) "LedBlink1", STACK_SIZE_FOR_TASK, NULL, TASK_PRIORITY, NULL);
 
-  /* Wait in this loop until led_status reaches 15 */
-  while(1){
+  /*Start FreeRTOS Scheduler*/
+  vTaskStartScheduler();
 
-	  GPIO_PortOutSetVal(LED_PORT, 1<<LED_PIN, 1<<LED_PIN);
-	  Delay(100);
-	  GPIO_PortOutSetVal(LED_PORT, 0<<LED_PIN, 1<<LED_PIN);
-	  Delay(100);
-  }
-
+  return 0;
 }
 
 

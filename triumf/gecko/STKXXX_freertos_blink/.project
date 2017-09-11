@@ -11,11 +11,18 @@
 			<arguments>
 			</arguments>
 		</buildCommand>
+		<buildCommand>
+			<name>org.eclipse.cdt.managedbuilder.core.ScannerConfigBuilder</name>
+			<triggers>full,incremental,</triggers>
+			<arguments>
+			</arguments>
+		</buildCommand>
 	</buildSpec>
 	<natures>
 		<nature>org.eclipse.cdt.core.cnature</nature>
 		<nature>com.silabs.ss.framework.ide.project.sls.core.SLSProjectNature</nature>
 		<nature>org.eclipse.cdt.managedbuilder.core.managedBuildNature</nature>
+		<nature>org.eclipse.cdt.managedbuilder.core.ScannerConfigNature</nature>
 	</natures>
 	<linkedResources>
 		<link>
@@ -74,16 +81,6 @@
 			<locationURI>STUDIO_SDK_LOC/platform/Device/SiliconLabs/EFM32G/Source/system_efm32g.c</locationURI>
 		</link>
 		<link>
-			<name>CMSIS/EFM32GG/startup_gcc_efm32gg.s</name>
-			<type>1</type>
-			<locationURI>STUDIO_SDK_LOC/platform/Device/SiliconLabs/EFM32G/Source/GCC/startup_efm32g.S</locationURI>
-		</link>
-		<link>
-			<name>CMSIS/EFM32GG/system_efm32gg.c</name>
-			<type>1</type>
-			<locationURI>STUDIO_SDK_LOC/platform/Device/SiliconLabs/EFM32G/Source/system_efm32g.c</locationURI>
-		</link>
-		<link>
 			<name>FreeRTOS/efm32g/croutine.c</name>
 			<type>1</type>
 			<locationURI>STUDIO_SDK_LOC/util/third_party/freertos/Source/croutine.c</locationURI>
@@ -120,46 +117,6 @@
 		</link>
 		<link>
 			<name>FreeRTOS/efm32g/timers.c</name>
-			<type>1</type>
-			<locationURI>STUDIO_SDK_LOC/util/third_party/freertos/Source/timers.c</locationURI>
-		</link>
-		<link>
-			<name>FreeRTOS/efm32gg/croutine.c</name>
-			<type>1</type>
-			<locationURI>STUDIO_SDK_LOC/util/third_party/freertos/Source/croutine.c</locationURI>
-		</link>
-		<link>
-			<name>FreeRTOS/efm32gg/event_groups.c</name>
-			<type>1</type>
-			<locationURI>STUDIO_SDK_LOC/util/third_party/freertos/Source/event_groups.c</locationURI>
-		</link>
-		<link>
-			<name>FreeRTOS/efm32gg/heap_1.c</name>
-			<type>1</type>
-			<locationURI>STUDIO_SDK_LOC/util/third_party/freertos/Source/portable/MemMang/heap_1.c</locationURI>
-		</link>
-		<link>
-			<name>FreeRTOS/efm32gg/list.c</name>
-			<type>1</type>
-			<locationURI>STUDIO_SDK_LOC/util/third_party/freertos/Source/list.c</locationURI>
-		</link>
-		<link>
-			<name>FreeRTOS/efm32gg/port_gcc.c</name>
-			<type>1</type>
-			<locationURI>STUDIO_SDK_LOC/util/third_party/freertos/Source/portable/GCC/ARM_CM3/port.c</locationURI>
-		</link>
-		<link>
-			<name>FreeRTOS/efm32gg/queue.c</name>
-			<type>1</type>
-			<locationURI>STUDIO_SDK_LOC/util/third_party/freertos/Source/queue.c</locationURI>
-		</link>
-		<link>
-			<name>FreeRTOS/efm32gg/tasks.c</name>
-			<type>1</type>
-			<locationURI>STUDIO_SDK_LOC/util/third_party/freertos/Source/tasks.c</locationURI>
-		</link>
-		<link>
-			<name>FreeRTOS/efm32gg/timers.c</name>
 			<type>1</type>
 			<locationURI>STUDIO_SDK_LOC/util/third_party/freertos/Source/timers.c</locationURI>
 		</link>
