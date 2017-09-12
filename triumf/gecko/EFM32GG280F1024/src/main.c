@@ -115,6 +115,11 @@ int main(void)
 
   GPIO_PortOutSetVal(ENARM_PORT, 1<<ENARM_PIN, 1<<ENARM_PIN);
 
+  unsigned int sdcd = GPIO_PinOutGet(ENARM_PORT,ENARM_PIN);
+
+  if (sdcd) println("SD Card Detected");
+  else println("No SD Card Detected");
+
 
   /*Create two task for blinking leds*/
   xTaskCreate( LedBlink, (const char *) "LedBlink1", STACK_SIZE_FOR_TASK, NULL, TASK_PRIORITY, NULL);

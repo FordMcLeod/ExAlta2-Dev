@@ -61,6 +61,9 @@ extern void PORTIO_enter_DefaultMode_from_RESET(void);
 #define LED_PIN             (12)
 #define LED_PORT            (gpioPortC)
 
+#define SDCD_PIN            (5)
+#define SDCD_PORT           (gpioPortA)
+
 #define UART1_RX_PIN        (3)
 #define UART1_RX_PORT       (gpioPortE)
 

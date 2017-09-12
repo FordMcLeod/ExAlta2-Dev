@@ -3,6 +3,8 @@
   <mode name="DefaultMode">
     <property object="DefaultMode" propertyId="mode.diagramLocation" value="100, 100"/>
     <property object="GPIO" propertyId="ABPeripheral.included" value="true"/>
+    <property object="PA5" propertyId="ports.settings.custompinname" value="SDCD"/>
+    <property object="PA5" propertyId="ports.settings.pinmode" value="Input"/>
     <property object="PA7" propertyId="ports.settings.custompinname" value="ENARM"/>
     <property object="PA7" propertyId="ports.settings.pinmode" value="Push-pull"/>
     <property object="PC12" propertyId="ports.settings.custompinname" value="LED"/>

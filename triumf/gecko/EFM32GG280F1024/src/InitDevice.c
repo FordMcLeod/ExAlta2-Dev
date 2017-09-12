@@ -544,6 +544,10 @@ extern void PORTIO_enter_DefaultMode_from_RESET(void) {
 
 	// $[Port A Configuration]
 
+	/* Pin PA5 is configured to Input enabled */
+	GPIO->P[0].MODEL = (GPIO->P[0].MODEL & ~_GPIO_P_MODEL_MODE5_MASK)
+			| GPIO_P_MODEL_MODE5_INPUT;
+
 	/* Pin PA7 is configured to Push-pull */
 	GPIO->P[0].MODEL = (GPIO->P[0].MODEL & ~_GPIO_P_MODEL_MODE7_MASK)
 			| GPIO_P_MODEL_MODE7_PUSHPULL;
