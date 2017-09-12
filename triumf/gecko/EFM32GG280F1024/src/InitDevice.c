@@ -543,6 +543,10 @@ extern void EBI_enter_DefaultMode_from_RESET(void) {
 extern void PORTIO_enter_DefaultMode_from_RESET(void) {
 
 	// $[Port A Configuration]
+
+	/* Pin PA7 is configured to Push-pull */
+	GPIO->P[0].MODEL = (GPIO->P[0].MODEL & ~_GPIO_P_MODEL_MODE7_MASK)
+			| GPIO_P_MODEL_MODE7_PUSHPULL;
 	// [Port A Configuration]$
 
 	// $[Port B Configuration]

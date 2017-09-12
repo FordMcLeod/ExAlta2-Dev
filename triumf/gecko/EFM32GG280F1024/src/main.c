@@ -34,6 +34,8 @@
 #include <stdio.h>
 #include <stdlib.h>
 
+#include "InitDevice.h"
+
 #include "FreeRTOSConfig.h"
 #include "FreeRTOS.h"
 #include "task.h"
@@ -47,9 +49,6 @@
 #include "em_chip.h"
 
 #include "sleep.h"
-
-#define LED_PORT    gpioPortC
-#define LED_PIN     12
 
 #define STACK_SIZE_FOR_TASK    (configMINIMAL_STACK_SIZE + 100)
 #define TASK_PRIORITY          (tskIDLE_PRIORITY + 1)
@@ -114,6 +113,7 @@ int main(void)
 
   println("HELLO");
 
+  GPIO_PortOutSetVal(ENARM_PORT, 1<<ENARM_PIN, 1<<ENARM_PIN);
 
 
   /*Create two task for blinking leds*/
