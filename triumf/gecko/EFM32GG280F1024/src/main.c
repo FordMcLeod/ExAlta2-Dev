@@ -47,12 +47,12 @@
 #include "em_cmu.h"
 #include "em_gpio.h"
 #include "em_chip.h"
-#include "em_usart.h"
 #include "em_emu.h"
 #include "em_rmu.h"
 #include "em_burtc.h"
 
 #include "sleep.h"
+#include "print.h"
 #include "clock.h"
 #include "clock_config.h"
 #include "clockApp_stk.h"
@@ -84,8 +84,6 @@ static time_t    currentTime;
 /* Function prototypes */
 void budSetup( void );
 void burtcSetup( void );
-void print(USART_TypeDef* uart, char* data);
-void println(USART_TypeDef* uart, char* data);
 
 /**************************************************************************//**
  * @brief Simple task which is blinking led
@@ -226,35 +224,6 @@ int main(void)
 
   return 0;
 }
-
-
-/***************************************************************************//**
- * @brief
- ******************************************************************************/
-void println(USART_TypeDef* uart, char* data)
-{
-  int i = 0;
-  for(i = 0;data[i]!='\0';i++){
-    USART_Tx(uart,data[i]);
-  }
-  USART_Tx(uart,'\n');
-  USART_Tx(uart,'\r');
-  USART_Tx(uart,'\0');
-}
-
-
-/***************************************************************************//**
- * @brief
- ******************************************************************************/
-void print(USART_TypeDef* uart, char* data)
-{
-  int i = 0;
-  for(i = 0;data[i]!='\0';i++){
-    USART_Tx(uart,data[i]);
-  }
-  USART_Tx(uart,'\0');
-}
-
 
 /***************************************************************************//**
  * @brief Set up backup domain.
