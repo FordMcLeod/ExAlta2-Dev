@@ -77,7 +77,7 @@ static uint32_t resetcause = 0;
 /* Calendar struct */
 static struct tm calendar;
 /* Declare variables for LCD output*/
-static char displayStringBuf[8];
+static char displayStringBuf[9];
 static char* displayString = displayStringBuf;
 static time_t    currentTime;
 
@@ -109,6 +109,7 @@ static void LedBlink(void *pParameters)
     displayStringBuf[5] = ':';
     displayStringBuf[6] = 0x30 + (calendar.tm_sec / 10);
     displayStringBuf[7] = 0x30 + (calendar.tm_sec % 10);
+    displayStringBuf[8] = '\0';
 
     print(UART1,(char*)"Time: ");
     println(UART1,(displayString));
