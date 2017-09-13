@@ -5,8 +5,6 @@
     <property object="GPIO" propertyId="ABPeripheral.included" value="true"/>
     <property object="PA5" propertyId="ports.settings.custompinname" value="SDCD"/>
     <property object="PA5" propertyId="ports.settings.pinmode" value="Input"/>
-    <property object="PA7" propertyId="ports.settings.custompinname" value="ENARM"/>
-    <property object="PA7" propertyId="ports.settings.pinmode" value="Push-pull"/>
     <property object="PC12" propertyId="ports.settings.custompinname" value="LED"/>
     <property object="PC12" propertyId="ports.settings.pinmode" value="Push-pull"/>
     <property object="PD4" propertyId="ports.settings.custompinname" value=""/>
@@ -21,6 +19,7 @@
     <property object="PORTIO" propertyId="portio.uart1.enable.tx" value="Enabled"/>
     <property object="PORTIO" propertyId="portio.uart1.location.uart1" value="3"/>
     <property object="UART1" propertyId="ABPeripheral.included" value="true"/>
+    <property object="UART1" propertyId="uart.asynchronoussettings.baudrate" value="9600"/>
   </mode>
   <modeTransition>
     <property object="RESET &#x2192; DefaultMode" propertyId="modeTransition.source" value="RESET"/>

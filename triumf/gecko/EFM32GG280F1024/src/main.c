@@ -77,7 +77,7 @@ static uint32_t resetcause = 0;
 /* Calendar struct */
 static struct tm calendar;
 /* Declare variables for LCD output*/
-static char displayStringBuf[6];
+static char displayStringBuf[8];
 static char* displayString = displayStringBuf;
 static time_t    currentTime;
 
@@ -100,12 +100,17 @@ static void LedBlink(void *pParameters)
     vTaskDelay(pdMS_TO_TICKS(100));
     GPIO_PortOutSetVal(LED_PORT, 0<<LED_PIN, 1<<LED_PIN);
     /* Make string from calendar */
+	currentTime = time( NULL );
+	calendar = * localtime( &currentTime );
+
     displayStringBuf[0] = 0x30 + (calendar.tm_hour / 10);
-    displayStringBuf[1] = 0x30 + (calendar.tm_hour % 10);;
-    displayStringBuf[2] = 0x30 + (calendar.tm_min / 10);
-    displayStringBuf[3] = 0x30 + (calendar.tm_min % 10);
-    displayStringBuf[4] = 0x30 + (calendar.tm_sec / 10);
-    displayStringBuf[5] = 0x30 + (calendar.tm_sec % 10);
+    displayStringBuf[1] = 0x30 + (calendar.tm_hour % 10);
+    displayStringBuf[2] = ':';
+    displayStringBuf[3] = 0x30 + (calendar.tm_min / 10);
+    displayStringBuf[4] = 0x30 + (calendar.tm_min % 10);
+    displayStringBuf[5] = ':';
+    displayStringBuf[6] = 0x30 + (calendar.tm_sec / 10);
+    displayStringBuf[7] = 0x30 + (calendar.tm_sec % 10);
 
     print(UART1,(char*)"Time: ");
     println(UART1,(displayString));
@@ -210,27 +215,7 @@ int main(void)
   NVIC_ClearPendingIRQ( BURTC_IRQn );
   NVIC_EnableIRQ( BURTC_IRQn );
 
-  /* ---------- Eternal while loop ---------- */
-  while (1)
-  {
 
-	currentTime = time( NULL );
-	calendar = * localtime( &currentTime );
-
-    /* Make string from calendar */
-    displayStringBuf[0] = 0x30 + (calendar.tm_hour / 10);
-    displayStringBuf[1] = 0x30 + (calendar.tm_hour % 10);;
-    displayStringBuf[2] = 0x30 + (calendar.tm_min / 10);
-    displayStringBuf[3] = 0x30 + (calendar.tm_min % 10);
-    displayStringBuf[4] = 0x30 + (calendar.tm_sec / 10);
-    displayStringBuf[5] = 0x30 + (calendar.tm_sec % 10);
-
-    //print(UART1,(char*)"Time: ");
-    println(UART1,(displayString));
-
-    /* Sleep while waiting for interrupt */
-    EMU_EnterEM2(true);
-  }
 
 
   /*Create two task for blinking leds*/

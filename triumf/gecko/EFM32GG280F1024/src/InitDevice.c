@@ -296,7 +296,7 @@ extern void UART1_enter_DefaultMode_from_RESET(void) {
 	// $[UART_InitAsync]
 	USART_InitAsync_TypeDef initasync = USART_INITASYNC_DEFAULT;
 
-	initasync.baudrate = 115200;
+	initasync.baudrate = 9600;
 	initasync.databits = usartDatabits8;
 	initasync.parity = usartNoParity;
 	initasync.stopbits = usartStopbits1;
@@ -547,10 +547,6 @@ extern void PORTIO_enter_DefaultMode_from_RESET(void) {
 	/* Pin PA5 is configured to Input enabled */
 	GPIO->P[0].MODEL = (GPIO->P[0].MODEL & ~_GPIO_P_MODEL_MODE5_MASK)
 			| GPIO_P_MODEL_MODE5_INPUT;
-
-	/* Pin PA7 is configured to Push-pull */
-	GPIO->P[0].MODEL = (GPIO->P[0].MODEL & ~_GPIO_P_MODEL_MODE7_MASK)
-			| GPIO_P_MODEL_MODE7_PUSHPULL;
 	// [Port A Configuration]$
 
 	// $[Port B Configuration]
