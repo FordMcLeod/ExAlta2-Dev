@@ -83,7 +83,6 @@ static time_t    currentTime;
 
 /* Function prototypes */
 void budSetup( void );
-void burtcSetup( void );
 
 /**************************************************************************//**
  * @brief Simple task which is blinking led
@@ -145,12 +144,6 @@ int main(void)
   if (sdcd) println(UART1,"SD Card Detected");
   else println(UART1,"No SD Card Detected");
 
-
-  /* Enable clock to low energy modules */
-  CMU_ClockEnable(cmuClock_CORELE, true);
-  /* Start LFXO and wait until it is stable */
-  CMU_OscillatorEnable(cmuOsc_LFXO, true, true);
-
   /* Configure Backup Domain */
   budSetup();
 
@@ -193,12 +186,6 @@ int main(void)
   /* If normal startup, initialize application and start BURTC */
   else
   {
-    /* Start LFXO and wait until it is stable */
-    CMU_OscillatorEnable(cmuOsc_LFXO, true, true);
-
-    /* Setup BURTC */
-    burtcSetup();
-
 
     /* Initialize display application */
     clockAppInit();
@@ -210,13 +197,7 @@ int main(void)
     clockAppBackup();
   }
 
-  /* Enable BURTC interrupts */
-  NVIC_ClearPendingIRQ( BURTC_IRQn );
-  NVIC_EnableIRQ( BURTC_IRQn );
-
-
-
-
+ 
   /*Create two task for blinking leds*/
   xTaskCreate( LedBlink, (const char *) "LedBlink1", STACK_SIZE_FOR_TASK, NULL, TASK_PRIORITY, NULL);
 
@@ -265,34 +246,6 @@ void budSetup(void)
 
   /* Lock configuration */
   EMU_EM4Lock( true );
-}
-
-
-/******************************************************************************
- * @brief   Configure backup RTC
- *****************************************************************************/
-void burtcSetup(void)
-{
-  /* Create burtcInit struct and fill with default values */
-  BURTC_Init_TypeDef burtcInit = BURTC_INIT_DEFAULT;
-
-  /* Set burtcInit to proper values for this application */
-  /* To make this example easier to read, all fields are listed,
-     even those which are equal to their default value */
-  burtcInit.enable = false;
-  burtcInit.mode = burtcModeEM4;
-  burtcInit.debugRun = false;
-  burtcInit.clkSel = burtcClkSelLFXO;
-  burtcInit.clkDiv = burtcClkDiv_128;
-  burtcInit.timeStamp = true;
-  burtcInit.compare0Top = false;
-  burtcInit.lowPowerMode = burtcLPDisable;
-
-  /* Initialize BURTC with burtcInit struct */
-  BURTC_Init( &burtcInit );
-
-    /* Enable BURTC interrupt on compare match and counter overflow */
-  BURTC_IntEnable( BURTC_IF_COMP0 | BURTC_IF_OF );
 }
 
 

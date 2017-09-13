@@ -19,6 +19,8 @@
 #include "em_device.h"
 #include "em_chip.h"
 #include "em_assert.h"
+#include "em_burtc.h"
+#include "em_rmu.h"
 #include "em_gpio.h"
 #include "em_usart.h"
 // [Library includes]$
@@ -29,6 +31,7 @@
 extern void enter_DefaultMode_from_RESET(void) {
 	// $[Config Calls]
 	CMU_enter_DefaultMode_from_RESET();
+	BURTC_enter_DefaultMode_from_RESET();
 	UART1_enter_DefaultMode_from_RESET();
 	PORTIO_enter_DefaultMode_from_RESET();
 	// [Config Calls]$
@@ -162,18 +165,38 @@ extern void DAC0_enter_DefaultMode_from_RESET(void) {
 extern void BURTC_enter_DefaultMode_from_RESET(void) {
 
 	// $[CMU_ClockEnable]
+	/* Enable LE clock for CPU access to BURTC registers */
+	CMU_ClockEnable(cmuClock_CORELE, true);
 	// [CMU_ClockEnable]$
 
 	// $[CMU_OscillatorEnable]
+	CMU_OscillatorEnable(cmuOsc_LFXO, true, true);
 	// [CMU_OscillatorEnable]$
 
 	// $[RMU_ResetControl]
+	/* Release reset line to backup domain. This is needed before the CPU can access
+	 * BURTC registers */
+	RMU_ResetControl(rmuResetBU, false);
 	// [RMU_ResetControl]$
 
 	// $[BURTC_Init]
+	BURTC_Init_TypeDef init = BURTC_INIT_DEFAULT;
+
+	init.enable = false;
+	init.mode = burtcModeEM4;
+	init.debugRun = false;
+	init.clkSel = burtcClkSelLFXO;
+	init.clkDiv = burtcClkDiv_128;
+	init.timeStamp = false;
+	init.compare0Top = false;
+	init.lowPowerMode = burtcLPDisable;
+	init.lowPowerComp = 0;
+	BURTC_Init(&init);
 	// [BURTC_Init]$
 
 	// $[BURTC_CompareSet]
+	/* Set compare value */
+	BURTC_CompareSet(0, 0);
 	// [BURTC_CompareSet]$
 
 }
