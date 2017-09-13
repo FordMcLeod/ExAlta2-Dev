@@ -47,8 +47,15 @@
 #include "em_cmu.h"
 #include "em_gpio.h"
 #include "em_chip.h"
+#include "em_usart.h"
+#include "em_emu.h"
+#include "em_rmu.h"
+#include "em_burtc.h"
 
 #include "sleep.h"
+#include "clock.h"
+#include "clock_config.h"
+#include "clockApp_stk.h"
 
 #define STACK_SIZE_FOR_TASK    (configMINIMAL_STACK_SIZE + 100)
 #define TASK_PRIORITY          (tskIDLE_PRIORITY + 1)
@@ -62,6 +69,23 @@ typedef struct
   int          ledNo;
 } TaskParams_t;
 
+/* Calendar struct for initial date setting */
+static struct tm initialCalendar;
+
+/* Declare variables */
+static uint32_t resetcause = 0;
+/* Calendar struct */
+static struct tm calendar;
+/* Declare variables for LCD output*/
+static char displayStringBuf[6];
+static char* displayString = displayStringBuf;
+static time_t    currentTime;
+
+/* Function prototypes */
+void budSetup( void );
+void burtcSetup( void );
+void print(USART_TypeDef* uart, char* data);
+void println(USART_TypeDef* uart, char* data);
 
 /**************************************************************************//**
  * @brief Simple task which is blinking led
@@ -69,29 +93,26 @@ typedef struct
  *****************************************************************************/
 static void LedBlink(void *pParameters)
 {
-  TaskParams_t     * pData = (TaskParams_t*) pParameters;
-  char c = 'a';
 
   for (;;)
   {
-	  GPIO_PortOutSetVal(LED_PORT, 1<<LED_PIN, 1<<LED_PIN);
-	  vTaskDelay(pdMS_TO_TICKS(100));
-	  GPIO_PortOutSetVal(LED_PORT, 0<<LED_PIN, 1<<LED_PIN);
-	  println("HELLO!");
-	  vTaskDelay(pdMS_TO_TICKS(1000));
+    GPIO_PortOutSetVal(LED_PORT, 1<<LED_PIN, 1<<LED_PIN);
+    vTaskDelay(pdMS_TO_TICKS(100));
+    GPIO_PortOutSetVal(LED_PORT, 0<<LED_PIN, 1<<LED_PIN);
+    /* Make string from calendar */
+    displayStringBuf[0] = 0x30 + (calendar.tm_hour / 10);
+    displayStringBuf[1] = 0x30 + (calendar.tm_hour % 10);;
+    displayStringBuf[2] = 0x30 + (calendar.tm_min / 10);
+    displayStringBuf[3] = 0x30 + (calendar.tm_min % 10);
+    displayStringBuf[4] = 0x30 + (calendar.tm_sec / 10);
+    displayStringBuf[5] = 0x30 + (calendar.tm_sec % 10);
+
+    print(UART1,(char*)"Time: ");
+    println(UART1,(displayString));
+    vTaskDelay(pdMS_TO_TICKS(100));
   }
 }
 
-void println(char* data)
-{
-	int i = 0;
-	for(i = 0;data[i]!='\0';i++){
-		USART_Tx(UART1,data[i]);
-	}
-	USART_Tx(UART1,'\n');
-	USART_Tx(UART1,'\r');
-	USART_Tx(UART1,'\0');
-}
 
 /**************************************************************************//**
  * @brief  Main function
@@ -101,6 +122,10 @@ int main(void)
   /* Chip errata */
   CHIP_Init();
 
+  /* Read and clear RMU->RSTCAUSE as early as possible */
+  resetcause = RMU->RSTCAUSE;
+  RMU_ResetCauseClear();
+
   /* Initialize SLEEP driver, no calbacks are used */
   SLEEP_Init(NULL, NULL);
 #if (configSLEEP_MODE < 3)
@@ -108,17 +133,104 @@ int main(void)
   SLEEP_SleepBlockBegin((SLEEP_EnergyMode_t)(configSLEEP_MODE+1));
 #endif
 
-
   enter_DefaultMode_from_RESET();
 
-  println("HELLO");
+  unsigned int sdcd = GPIO_PinInGet(SDCD_PORT,SDCD_PIN);
 
-  GPIO_PortOutSetVal(ENARM_PORT, 1<<ENARM_PIN, 1<<ENARM_PIN);
+  println(UART1,(char*)"HELLO");
+  if (sdcd) println(UART1,"SD Card Detected");
+  else println(UART1,"No SD Card Detected");
 
-  unsigned int sdcd = GPIO_PinOutGet(ENARM_PORT,ENARM_PIN);
 
-  if (sdcd) println("SD Card Detected");
-  else println("No SD Card Detected");
+  /* Enable clock to low energy modules */
+  CMU_ClockEnable(cmuClock_CORELE, true);
+  /* Start LFXO and wait until it is stable */
+  CMU_OscillatorEnable(cmuOsc_LFXO, true, true);
+
+  /* Configure Backup Domain */
+  budSetup();
+
+  /* Setting up a structure to initialize the calendar
+     for 1 January 2012 12:00:00
+     The struct tm is declared in time.h
+     More information for time.h library in http://en.wikipedia.org/wiki/Time.h */
+  initialCalendar.tm_sec    =  0;    /* 0 seconds (0-60, 60 = leap second)*/
+  initialCalendar.tm_min    =  0;    /* 0 minutes (0-59) */
+  initialCalendar.tm_hour   =  12;   /* 12 hours (0-23) */
+  initialCalendar.tm_mday   =  1;    /* 1st day of the month (1 - 31) */
+  initialCalendar.tm_mon    =  0;    /* January (0 - 11, 0 = January) */
+  initialCalendar.tm_year   =  112;  /* Year 2012 (year since 1900) */
+  initialCalendar.tm_wday   =  0;    /* Sunday (0 - 6, 0 = Sunday) */
+  initialCalendar.tm_yday   =  0;    /* 1st day of the year (0-365) */
+  initialCalendar.tm_isdst  =  -1;   /* Daylight saving time; enabled (>0), disabled (=0) or unknown (<0) */
+
+  /* Set the calendar */
+  clockInit(&initialCalendar);
+
+  /* If waking from backup mode, restore time from retention registers */
+  if (    (resetcause & RMU_RSTCAUSE_BUMODERST)
+  && !(resetcause & RMU_RSTCAUSE_BUBODREG)
+  && !(resetcause & RMU_RSTCAUSE_BUBODUNREG)
+  && !(resetcause & RMU_RSTCAUSE_BUBODBUVIN)
+  &&  (resetcause & RMU_RSTCAUSE_BUBODVDDDREG)
+  && !(resetcause & RMU_RSTCAUSE_EXTRST)
+  && !(resetcause & RMU_RSTCAUSE_PORST) )
+  {
+
+  /* Initialize display application */
+  clockAppInit();
+
+  /* Restore time from backup RTC + retention memory and print backup info*/
+  clockAppRestore();
+
+  /* Clear BURTC timestamp */
+  BURTC_StatusClear();
+  }
+  /* If normal startup, initialize application and start BURTC */
+  else
+  {
+    /* Start LFXO and wait until it is stable */
+    CMU_OscillatorEnable(cmuOsc_LFXO, true, true);
+
+    /* Setup BURTC */
+    burtcSetup();
+
+
+    /* Initialize display application */
+    clockAppInit();
+
+    /* Start BURTC */
+    BURTC_Enable( true );
+
+    /* Backup initial calendar (initialize retention registers) */
+    clockAppBackup();
+  }
+
+  /* Enable BURTC interrupts */
+  NVIC_ClearPendingIRQ( BURTC_IRQn );
+  NVIC_EnableIRQ( BURTC_IRQn );
+
+  /* ---------- Eternal while loop ---------- */
+  while (1)
+  {
+
+	currentTime = time( NULL );
+	calendar = * localtime( &currentTime );
+
+    /* Make string from calendar */
+    displayStringBuf[0] = 0x30 + (calendar.tm_hour / 10);
+    displayStringBuf[1] = 0x30 + (calendar.tm_hour % 10);;
+    displayStringBuf[2] = 0x30 + (calendar.tm_min / 10);
+    displayStringBuf[3] = 0x30 + (calendar.tm_min % 10);
+    displayStringBuf[4] = 0x30 + (calendar.tm_sec / 10);
+    displayStringBuf[5] = 0x30 + (calendar.tm_sec % 10);
+
+    //print(UART1,(char*)"Time: ");
+    println(UART1,(displayString));
+
+    /* Sleep while waiting for interrupt */
+    EMU_EnterEM2(true);
+  }
 
 
   /*Create two task for blinking leds*/
@@ -128,6 +240,104 @@ int main(void)
   vTaskStartScheduler();
 
   return 0;
+}
+
+
+/***************************************************************************//**
+ * @brief
+ ******************************************************************************/
+void println(USART_TypeDef* uart, char* data)
+{
+  int i = 0;
+  for(i = 0;data[i]!='\0';i++){
+    USART_Tx(uart,data[i]);
+  }
+  USART_Tx(uart,'\n');
+  USART_Tx(uart,'\r');
+  USART_Tx(uart,'\0');
+}
+
+
+/***************************************************************************//**
+ * @brief
+ ******************************************************************************/
+void print(USART_TypeDef* uart, char* data)
+{
+  int i = 0;
+  for(i = 0;data[i]!='\0';i++){
+    USART_Tx(uart,data[i]);
+  }
+  USART_Tx(uart,'\0');
+}
+
+
+/***************************************************************************//**
+ * @brief Set up backup domain.
+ ******************************************************************************/
+void budSetup(void)
+{
+  /* Assign default TypeDefs */
+  EMU_EM4Init_TypeDef em4Init = EMU_EM4INIT_DEFAULT;
+  EMU_BUPDInit_TypeDef bupdInit = EMU_BUPDINIT_DEFAULT;
+
+  /*Setup EM4 configuration structure */
+  em4Init.lockConfig = true;
+  em4Init.osc = emuEM4Osc_LFXO;
+  em4Init.buRtcWakeup = false;
+  em4Init.vreg = true;
+
+  /* Setup Backup Power Domain configuration structure */
+  bupdInit.probe = emuProbe_Disable;
+  bupdInit.bodCal = false;
+  bupdInit.statusPinEnable = false;
+  bupdInit.resistor = emuRes_Res0;
+  bupdInit.voutStrong = false;
+  bupdInit.voutMed = false;
+  bupdInit.voutWeak = false;
+  bupdInit.inactivePower = emuPower_MainBU;
+  bupdInit.activePower = emuPower_MainBU;
+  bupdInit.enable = true;
+
+  /* Unlock configuration */
+  EMU_EM4Lock( false );
+
+  /* Initialize EM4 and Backup Power Domain with init structs */
+  EMU_BUPDInit( &bupdInit );
+  EMU_EM4Init( &em4Init );
+
+  /* Release reset for backup domain */
+  RMU_ResetControl( rmuResetBU, false );
+
+  /* Lock configuration */
+  EMU_EM4Lock( true );
+}
+
+
+/******************************************************************************
+ * @brief   Configure backup RTC
+ *****************************************************************************/
+void burtcSetup(void)
+{
+  /* Create burtcInit struct and fill with default values */
+  BURTC_Init_TypeDef burtcInit = BURTC_INIT_DEFAULT;
+
+  /* Set burtcInit to proper values for this application */
+  /* To make this example easier to read, all fields are listed,
+     even those which are equal to their default value */
+  burtcInit.enable = false;
+  burtcInit.mode = burtcModeEM4;
+  burtcInit.debugRun = false;
+  burtcInit.clkSel = burtcClkSelLFXO;
+  burtcInit.clkDiv = burtcClkDiv_128;
+  burtcInit.timeStamp = true;
+  burtcInit.compare0Top = false;
+  burtcInit.lowPowerMode = burtcLPDisable;
+
+  /* Initialize BURTC with burtcInit struct */
+  BURTC_Init( &burtcInit );
+
+    /* Enable BURTC interrupt on compare match and counter overflow */
+  BURTC_IntEnable( BURTC_IF_COMP0 | BURTC_IF_OF );
 }
 
 
