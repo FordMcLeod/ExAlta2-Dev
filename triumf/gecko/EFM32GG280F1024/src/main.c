@@ -74,6 +74,8 @@ static struct tm initialCalendar;
 
 /* Declare variables */
 static uint32_t resetcause = 0;
+/* Declare BURTC variables */
+static uint32_t burtcCountAtWakeup = 0;
 /* Calendar struct */
 static struct tm calendar;
 /* Declare variables for LCD output*/
@@ -129,12 +131,15 @@ int main(void)
   resetcause = RMU->RSTCAUSE;
   RMU_ResetCauseClear();
 
-  /* Initialize SLEEP driver, no calbacks are used */
+  /* Initialize SLEEP driver, no callbacks are used */
   SLEEP_Init(NULL, NULL);
 #if (configSLEEP_MODE < 3)
   /* do not let to sleep deeper than define */
   SLEEP_SleepBlockBegin((SLEEP_EnergyMode_t)(configSLEEP_MODE+1));
 #endif
+
+  /* Read Backup Real Time Counter value */
+  burtcCountAtWakeup = BURTC_CounterGet();
 
   /* Configure Backup Domain */
   budSetup();
@@ -156,14 +161,6 @@ int main(void)
   /* Set the calendar */
   clockInit(&initialCalendar);
 
-  enter_DefaultMode_from_RESET();
-
-  unsigned int sdcd = GPIO_PinInGet(SDCD_PORT,SDCD_PIN);
-
-  printStringln(UART1,(char*)"HELLO");
-  if (sdcd) printStringln(UART1,"SD Card Detected");
-  else printStringln(UART1,"No SD Card Detected");
-
   /* If waking from backup mode, restore time from retention registers */
   if (    (resetcause & RMU_RSTCAUSE_BUMODERST)
   && !(resetcause & RMU_RSTCAUSE_BUBODREG)
@@ -174,14 +171,14 @@ int main(void)
   && !(resetcause & RMU_RSTCAUSE_PORST) )
   {
 
-  /* Initialize display application */
-  clockAppInit();
+	/* Initialize display application */
+	clockAppInit();
 
-  /* Restore time from backup RTC + retention memory and print backup info*/
-  clockAppRestore();
+	/* Restore time from backup RTC + retention memory and print backup info*/
+	clockAppRestore( burtcCountAtWakeup );
 
-  /* Clear BURTC timestamp */
-  BURTC_StatusClear();
+	/* Clear BURTC timestamp */
+	BURTC_StatusClear();
   }
   /* If normal startup, initialize application and start BURTC */
   else
@@ -190,13 +187,20 @@ int main(void)
     /* Initialize display application */
     clockAppInit();
 
-    /* Start BURTC */
-    BURTC_Enable( true );
-
     /* Backup initial calendar (initialize retention registers) */
     clockAppBackup();
   }
 
+  enter_DefaultMode_from_RESET();
+
+  /* Start BURTC */
+  BURTC_Enable( true );
+
+  unsigned int sdcd = GPIO_PinInGet(SDCD_PORT,SDCD_PIN);
+
+  printStringln(UART1,(char*)"HELLO");
+  if (sdcd) printStringln(UART1,"SD Card Detected");
+  else printStringln(UART1,"No SD Card Detected");
  
   /*Create two task for blinking leds*/
   xTaskCreate( LedBlink, (const char *) "LedBlink1", STACK_SIZE_FOR_TASK, NULL, TASK_PRIORITY, NULL);
