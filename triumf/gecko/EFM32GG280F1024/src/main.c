@@ -111,8 +111,8 @@ static void LedBlink(void *pParameters)
     displayStringBuf[7] = 0x30 + (calendar.tm_sec % 10);
     displayStringBuf[8] = '\0';
 
-    print(UART1,(char*)"Time: ");
-    println(UART1,(displayString));
+    printString(UART1,(char*)"Time: ");
+    printStringln(UART1,(displayString));
     vTaskDelay(pdMS_TO_TICKS(100));
   }
 }
