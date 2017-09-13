@@ -42,7 +42,6 @@ void printString(USART_TypeDef* uart, char* data)
  ******************************************************************************/
 void printChar(USART_TypeDef* uart, char data)
 {
-  int i = 0;
   USART_Tx(uart,data);
   USART_Tx(uart,'\0');
 }
@@ -51,7 +50,7 @@ void printChar(USART_TypeDef* uart, char data)
 /***************************************************************************//**
  * @brief
  ******************************************************************************/
-void println(USART_TypeDef* uart, uint8_t len)
+void println(USART_TypeDef* uart, char* data,  uint8_t len)
 {
   int i = 0;
   for(i = 0;i < len;i++){

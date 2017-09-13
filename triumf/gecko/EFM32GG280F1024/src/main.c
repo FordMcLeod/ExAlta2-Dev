@@ -136,14 +136,6 @@ int main(void)
   SLEEP_SleepBlockBegin((SLEEP_EnergyMode_t)(configSLEEP_MODE+1));
 #endif
 
-  enter_DefaultMode_from_RESET();
-
-  unsigned int sdcd = GPIO_PinInGet(SDCD_PORT,SDCD_PIN);
-
-  println(UART1,(char*)"HELLO");
-  if (sdcd) println(UART1,"SD Card Detected");
-  else println(UART1,"No SD Card Detected");
-
   /* Configure Backup Domain */
   budSetup();
 
@@ -163,6 +155,14 @@ int main(void)
 
   /* Set the calendar */
   clockInit(&initialCalendar);
+
+  enter_DefaultMode_from_RESET();
+
+  unsigned int sdcd = GPIO_PinInGet(SDCD_PORT,SDCD_PIN);
+
+  printStringln(UART1,(char*)"HELLO");
+  if (sdcd) printStringln(UART1,"SD Card Detected");
+  else printStringln(UART1,"No SD Card Detected");
 
   /* If waking from backup mode, restore time from retention registers */
   if (    (resetcause & RMU_RSTCAUSE_BUMODERST)

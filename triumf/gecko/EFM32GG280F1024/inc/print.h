@@ -15,7 +15,7 @@
 void printStringln(USART_TypeDef* uart, char* data);
 void printString(USART_TypeDef* uart, char* data);
 void printChar(USART_TypeDef* uart, char data);
-void println(USART_TypeDef* uart, uint8_t len);
+void println(USART_TypeDef* uart, char* data,  uint8_t len);
 void print(USART_TypeDef* uart, char* data, uint8_t len);
 
 #endif
