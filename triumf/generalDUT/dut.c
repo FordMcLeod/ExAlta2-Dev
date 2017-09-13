@@ -83,6 +83,9 @@ void flash_test() {
 main() {
     int iteration = 0;
     #define EVER 1
+    printf("ARM alive");
+    ram_init();
+
     while(1) {
         //pet_watchdog();
      	printf("ARM iteration %d, %d ram errors, %d flash errors\n",iteration,ram_errors, flash_errors); 
