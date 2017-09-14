@@ -1,2 +1,8 @@
-*Debug/*
-*Release/*
+*.launch
+.settings/
+.metadata
+.closet
+*Debug*
+*Release*
+wiki
+outgoing
