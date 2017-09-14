@@ -58,6 +58,7 @@
 #include "clockApp_stk.h"
 #include "fatfs.h"
 #include "microsd.h"
+#include "ff.h"
 
 #define STACK_SIZE_FOR_TASK    (configMINIMAL_STACK_SIZE + 100)
 #define TASK_PRIORITY          (tskIDLE_PRIORITY + 1)
@@ -203,10 +204,15 @@ int main(void)
   if (sdcd) printStringln(UART1,"SD Card detected!");
   else printStringln(UART1,"No SD Card detected!");
   
+  FIL fsrc; /* File object */
   MICROSD_Init();
   FATFS_Init();
-
-  FATFS_Write("Hello world!","newfile1.txt");
+  /* Open or create a log file and ready to append */
+  FATFS_append(&fsrc, "logfile.txt");
+  /* Append a line */
+  f_printf(&fsrc, "Hello world!\n");
+  /* Close the file */
+  f_close(&fsrc);
  
   /*Create two task for blinking leds*/
   xTaskCreate( LedBlink, (const char *) "LedBlink1", STACK_SIZE_FOR_TASK, NULL, TASK_PRIORITY, NULL);

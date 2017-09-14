@@ -30,7 +30,8 @@ char    ramBufferWrite[FSBUFFERSIZE];  /* Temporary buffer for write file */
 char    ramBufferRead[FSBUFFERSIZE];   /* Temporary buffer for read file */
 
 
-BYTE FATFS_Init(void) {
+BYTE FATFS_Init(void)
+{
 
 	DSTATUS resCard;              /* SDcard status */
 	FRESULT res;                  /* FatFs function common result code */
@@ -77,6 +78,34 @@ BYTE FATFS_Init(void) {
 
 	return STA_OK;
 
+}
+
+/* [OUT] File object to create */
+/* [IN]  File name to be opened */
+BYTE FATFS_append (FIL* fp, const char* path)
+{
+
+  BYTE res;
+
+  /* Opens an existing file. If not exist, creates a new file. */
+  res = f_open(fp, path, FA_WRITE | FA_OPEN_ALWAYS);
+  if (res == FR_OK) {
+    /* Seek to end of the file to append data */
+    res = f_lseek(fp, f_size(fp));
+    if (res != FR_OK)
+    {
+      #ifdef __PRINT_H
+        printStringln(UART1,"SD Card failed to seek end of file!");
+      #endif
+      f_close(fp);
+    }
+  }
+  else {
+    #ifdef __PRINT_H
+      printStringln(UART1,"SD Card failed to open file to append!");
+    #endif
+  }
+  return res;
 }
 
 BYTE FATFS_Write(char* stringBuffer, char* fileName)
@@ -139,7 +168,8 @@ BYTE FATFS_Write(char* stringBuffer, char* fileName)
   return FR_OK;
 }
 
-BYTE FATFS_Read(char* fileName, uint16_t size){
+BYTE FATFS_Read(char* fileName, uint16_t size)
+{
 
   FRESULT res;                  /* FatFs function common result code */
 
