@@ -138,9 +138,6 @@ int main(void)
   SLEEP_SleepBlockBegin((SLEEP_EnergyMode_t)(configSLEEP_MODE+1));
 #endif
 
-  /* Read Backup Real Time Counter value */
-  burtcCountAtWakeup = BURTC_CounterGet();
-
   /* Configure Backup Domain */
   budSetup();
 
@@ -175,7 +172,7 @@ int main(void)
 	clockAppInit();
 
 	/* Restore time from backup RTC + retention memory and print backup info*/
-	clockAppRestore(  );
+	clockAppRestore();
 
 	/* Clear BURTC timestamp */
 	BURTC_StatusClear();
@@ -195,6 +192,10 @@ int main(void)
 
   /* Start BURTC */
   BURTC_Enable( true );
+
+  /* Enable BURTC interrupts */
+  NVIC_ClearPendingIRQ( BURTC_IRQn );
+  NVIC_EnableIRQ( BURTC_IRQn );
 
   unsigned int sdcd = GPIO_PinInGet(SDCD_PORT,SDCD_PIN);
 
