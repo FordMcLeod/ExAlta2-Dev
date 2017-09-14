@@ -203,7 +203,7 @@ int main(void)
   if (sdcd) printStringln(UART1,"SD Card detected!");
   else printStringln(UART1,"No SD Card detected!");
   
-  MICROSD_Init(); 
+  MICROSD_Init();
   FATFS_Init();
 
   FATFS_Write("Hello world!","newfile1.txt");
