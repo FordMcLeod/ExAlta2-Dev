@@ -26,9 +26,9 @@
 
 #define  FSBUFFERSIZE      (100)
 
-// FIL      fsrc;             /* File objects */
-// FATFS    Fatfs;            /* File system specific */
-// uint16_t br, bw;           /* File read/write count */
+FIL      fsrc;             /* File objects */
+FATFS    Fatfs;            /* File system specific */
+uint16_t br, bw;           /* File read/write count */
 
 BYTE     FATFS_Init(void);
 BYTE 	 FATFS_append (FIL* fp, const char* path);
