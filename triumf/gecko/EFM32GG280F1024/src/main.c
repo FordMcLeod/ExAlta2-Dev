@@ -77,12 +77,9 @@ static struct tm initialCalendar;
 
 /* Declare variables */
 static uint32_t resetcause = 0;
-/* Calendar struct */
-static struct tm calendar;
-/* Declare variables for LCD output*/
-static char displayStringBuf[9];
-static char* displayString = displayStringBuf;
-static time_t    currentTime;
+
+
+
 
 /* Function prototypes */
 void budSetup( void );
@@ -99,23 +96,9 @@ static void LedBlink(void *pParameters)
     GPIO_PortOutSetVal(LED_PORT, 1<<LED_PIN, 1<<LED_PIN);
     vTaskDelay(pdMS_TO_TICKS(100));
     GPIO_PortOutSetVal(LED_PORT, 0<<LED_PIN, 1<<LED_PIN);
-    /* Make string from calendar */
-	currentTime = time( NULL );
-	calendar = * localtime( &currentTime );
-
-    displayStringBuf[0] = 0x30 + (calendar.tm_hour / 10);
-    displayStringBuf[1] = 0x30 + (calendar.tm_hour % 10);
-    displayStringBuf[2] = ':';
-    displayStringBuf[3] = 0x30 + (calendar.tm_min / 10);
-    displayStringBuf[4] = 0x30 + (calendar.tm_min % 10);
-    displayStringBuf[5] = ':';
-    displayStringBuf[6] = 0x30 + (calendar.tm_sec / 10);
-    displayStringBuf[7] = 0x30 + (calendar.tm_sec % 10);
-    displayStringBuf[8] = '\0';
-
-    printString(UART1,(char*)"Time: ");
-    printStringln(UART1,(displayString));
-    vTaskDelay(pdMS_TO_TICKS(100));
+    vTaskDelay(pdMS_TO_TICKS(5000));
+    PRINT_time(UART1,time( NULL ));
+    PRINT_Stringln(UART1,"Hello world!");
   }
 }
 
@@ -198,21 +181,21 @@ int main(void)
   NVIC_ClearPendingIRQ( BURTC_IRQn );
   NVIC_EnableIRQ( BURTC_IRQn );
 
-  unsigned int sdcd = GPIO_PinInGet(SDCD_PORT,SDCD_PIN);
-
-  printStringln(UART1,(char*)"HELLO");
-  if (sdcd) printStringln(UART1,"SD Card detected!");
-  else printStringln(UART1,"No SD Card detected!");
-  
-  FIL fsrc; /* File object */
   MICROSD_Init();
   FATFS_Init();
-  /* Open or create a log file and ready to append */
-  FATFS_append(&fsrc, "logfile.txt");
-  /* Append a line */
-  f_printf(&fsrc, "Hello world!\n");
-  /* Close the file */
-  f_close(&fsrc);
+
+  unsigned int sdcd = GPIO_PinInGet(SDCD_PORT,SDCD_PIN);
+
+  PRINT_time(UART1,time( NULL ));
+  printStringln(UART1,(char*)"HELLO");
+  if (sdcd) {
+    PRINT_time(UART1,time( NULL ));
+    printStringln(UART1,"SD Card detected!");
+  }
+  else {
+    PRINT_time(UART1,time( NULL ));
+    printStringln(UART1,"No SD Card detected!");
+  }
  
   /*Create two task for blinking leds*/
   xTaskCreate( LedBlink, (const char *) "LedBlink1", STACK_SIZE_FOR_TASK, NULL, TASK_PRIORITY, NULL);

@@ -42,17 +42,17 @@ BYTE FATFS_Init(void)
 	{
     case STA_NOINIT:                    /* Drive not initialized */
       #ifdef __PRINT_H
-        printStringln(UART1,"SD Card not initialized!");
+        PRINT_Stringln(UART1,"SD Card not initialized!");
       #endif
       break;
     case STA_NODISK:                    /* No medium in the drive */
       #ifdef __PRINT_H
-        printStringln(UART1,"No SD Card detected!");
+        PRINT_Stringln(UART1,"No SD Card detected!");
       #endif
       break;
     case STA_PROTECT:                   /* Write protected */
       #ifdef __PRINT_H
-        printStringln(UART1,"SD Card write protected!");
+        PRINT_Stringln(UART1,"SD Card write protected!");
       #endif
       break;
     default:
@@ -67,13 +67,13 @@ BYTE FATFS_Init(void)
 	{
 	  /* Error.No micro-SD with FAT32 is present */
     #ifdef __PRINT_H
-      printStringln(UART1,"SD Card must use FAT32!");
+      PRINT_Stringln(UART1,"SD Card must use FAT32!");
     #endif
 		return STA_NOFAT32;
 	}
 
   #ifdef __PRINT_H
-    printStringln(UART1,"SD Card initialized!");
+    PRINT_Stringln(UART1,"SD Card initialized!");
   #endif
 
 	return STA_OK;
@@ -95,14 +95,14 @@ BYTE FATFS_append (FIL* fp, const char* path)
     if (res != FR_OK)
     {
       #ifdef __PRINT_H
-        printStringln(UART1,"SD Card failed to seek end of file!");
+        PRINT_Stringln(UART1,"SD Card failed to seek end of file!");
       #endif
       f_close(fp);
     }
   }
   else {
     #ifdef __PRINT_H
-      printStringln(UART1,"SD Card failed to open file to append!");
+      PRINT_Stringln(UART1,"SD Card failed to open file to append!");
     #endif
   }
   return res;
@@ -119,7 +119,7 @@ BYTE FATFS_Write(char* stringBuffer, char* fileName)
   if ( filecounter > FSBUFFERSIZE )
   {
 #ifdef __PRINT_H
-  printStringln(UART1,"SD Card invalid file name!");
+  PRINT_Stringln(UART1,"SD Card invalid file name!");
 #endif
 	  /* Error. String over-ran the buffer */
 	  return FR_INVALID_NAME;
@@ -134,7 +134,7 @@ BYTE FATFS_Write(char* stringBuffer, char* fileName)
 	if (res != FR_OK)
 	{
 #ifdef __PRINT_H
-  printStringln(UART1,"SD Card initialized!");
+  PRINT_Stringln(UART1,"SD Card initialized!");
 #endif
 	  /* Error. Cannot create the file */
 	  return res;
