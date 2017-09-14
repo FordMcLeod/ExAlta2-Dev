@@ -1,3 +1,5 @@
+#include "projdefs.h"
+#include "FreeRTOSConfig.h"
 /******************************************************************************
  * @file 2_leds_solution.c
  * @brief Blinking LEDs with STK solution
@@ -187,14 +189,14 @@ int main(void)
   unsigned int sdcd = GPIO_PinInGet(SDCD_PORT,SDCD_PIN);
 
   PRINT_time(UART1,time( NULL ));
-  printStringln(UART1,(char*)"HELLO");
+  PRINT_Stringln(UART1,(char*)"HELLO");
   if (sdcd) {
     PRINT_time(UART1,time( NULL ));
-    printStringln(UART1,"SD Card detected!");
+    PRINT_Stringln(UART1,"SD Card detected!");
   }
   else {
     PRINT_time(UART1,time( NULL ));
-    printStringln(UART1,"No SD Card detected!");
+    PRINT_Stringln(UART1,"No SD Card detected!");
   }
  
   /*Create two task for blinking leds*/
