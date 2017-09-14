@@ -10,6 +10,9 @@
 #include "clock.h"
 #include "clock_config.h"
 #include "clockApp_stk.h"
+#include "fatfs.h"
+#include "microsd.h"
+#include "ff.h"
 
 FIL fsrc; /* File object */
 uint8_t busy = 0;
@@ -154,7 +157,7 @@ void PRINT_array(USART_TypeDef* uart, char* data, uint8_t len)
   busy = 0;
 }
 
-void PRINT_time(USART_TypeDef* uart, static time_t currentTime)
+void PRINT_time(USART_TypeDef* uart, time_t currentTime)
 {
   /* Make string from calendar */
   calendar = * localtime( &currentTime );
@@ -169,5 +172,5 @@ void PRINT_time(USART_TypeDef* uart, static time_t currentTime)
   displayStringBuf[7] = 0x30 + (calendar.tm_sec % 10);
   displayStringBuf[8] = '\0';
 
-  printString(uart,displayString);
+  PRINT_String(uart,displayString);
 }
