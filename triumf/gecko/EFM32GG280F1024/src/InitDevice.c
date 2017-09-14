@@ -319,7 +319,7 @@ extern void UART1_enter_DefaultMode_from_RESET(void) {
 	// $[UART_InitAsync]
 	USART_InitAsync_TypeDef initasync = USART_INITASYNC_DEFAULT;
 
-	initasync.baudrate = 9600;
+	initasync.baudrate = 115200;
 	initasync.databits = usartDatabits8;
 	initasync.parity = usartNoParity;
 	initasync.stopbits = usartStopbits1;

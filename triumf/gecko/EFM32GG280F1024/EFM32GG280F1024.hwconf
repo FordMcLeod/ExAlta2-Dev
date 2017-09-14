@@ -24,7 +24,6 @@
     <property object="PORTIO" propertyId="portio.uart1.enable.tx" value="Enabled"/>
     <property object="PORTIO" propertyId="portio.uart1.location.uart1" value="3"/>
     <property object="UART1" propertyId="ABPeripheral.included" value="true"/>
-    <property object="UART1" propertyId="uart.asynchronoussettings.baudrate" value="9600"/>
   </mode>
   <modeTransition>
     <property object="RESET &#x2192; DefaultMode" propertyId="modeTransition.source" value="RESET"/>

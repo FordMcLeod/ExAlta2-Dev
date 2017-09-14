@@ -17,6 +17,7 @@ C_DEPS :=
 SUBDIRS := \
 CMSIS/EFM32GG \
 Drivers \
+FatFS/src \
 FreeRTOS/efm32g \
 emlib \
 src \

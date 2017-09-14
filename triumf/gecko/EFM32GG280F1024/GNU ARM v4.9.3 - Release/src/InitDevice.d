@@ -55,6 +55,8 @@ src/InitDevice.o: ../src/InitDevice.c \
  c:\siliconlabs\simplicitystudio\v4\developer\sdks\exx32\v5.0.0.0\platform\emlib\inc\em_system.h \
  c:\siliconlabs\simplicitystudio\v4\developer\sdks\exx32\v5.0.0.0\platform\emlib\inc\em_gpio.h \
  c:\siliconlabs\simplicitystudio\v4\developer\sdks\exx32\v5.0.0.0\platform\emlib\inc\em_assert.h \
+ c:\siliconlabs\simplicitystudio\v4\developer\sdks\exx32\v5.0.0.0\platform\emlib\inc\em_burtc.h \
+ c:\siliconlabs\simplicitystudio\v4\developer\sdks\exx32\v5.0.0.0\platform\emlib\inc\em_rmu.h \
  c:\siliconlabs\simplicitystudio\v4\developer\sdks\exx32\v5.0.0.0\platform\emlib\inc\em_gpio.h \
  c:\siliconlabs\simplicitystudio\v4\developer\sdks\exx32\v5.0.0.0\platform\emlib\inc\em_usart.h
 
@@ -169,6 +171,10 @@ c:\siliconlabs\simplicitystudio\v4\developer\sdks\exx32\v5.0.0.0\platform\emlib\
 c:\siliconlabs\simplicitystudio\v4\developer\sdks\exx32\v5.0.0.0\platform\emlib\inc\em_gpio.h:
 
 c:\siliconlabs\simplicitystudio\v4\developer\sdks\exx32\v5.0.0.0\platform\emlib\inc\em_assert.h:
+
+c:\siliconlabs\simplicitystudio\v4\developer\sdks\exx32\v5.0.0.0\platform\emlib\inc\em_burtc.h:
+
+c:\siliconlabs\simplicitystudio\v4\developer\sdks\exx32\v5.0.0.0\platform\emlib\inc\em_rmu.h:
 
 c:\siliconlabs\simplicitystudio\v4\developer\sdks\exx32\v5.0.0.0\platform\emlib\inc\em_gpio.h:
 

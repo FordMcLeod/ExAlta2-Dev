@@ -11,6 +11,7 @@ RM := rm -rf
 -include src/subdir.mk
 -include emlib/subdir.mk
 -include FreeRTOS/efm32g/subdir.mk
+-include FatFS/src/subdir.mk
 -include Drivers/subdir.mk
 -include CMSIS/EFM32GG/subdir.mk
 -include subdir.mk
@@ -33,7 +34,7 @@ all: EFM32GG280F1024.axf
 EFM32GG280F1024.axf: $(OBJS) $(USER_OBJS)
 	@echo 'Building target: $@'
 	@echo 'Invoking: GNU ARM C Linker'
-	arm-none-eabi-gcc -g -gdwarf-2 -mcpu=cortex-m3 -mthumb -T "EFM32GG280F1024.ld" -Xlinker --gc-sections -Xlinker -Map="EFM32GG280F1024.map" --specs=nano.specs -o EFM32GG280F1024.axf "./CMSIS/EFM32GG/startup_gcc_efm32gg.o" "./CMSIS/EFM32GG/system_efm32gg.o" "./Drivers/sleep.o" "./FreeRTOS/efm32g/croutine.o" "./FreeRTOS/efm32g/event_groups.o" "./FreeRTOS/efm32g/heap_1.o" "./FreeRTOS/efm32g/list.o" "./FreeRTOS/efm32g/port.o" "./FreeRTOS/efm32g/queue.o" "./FreeRTOS/efm32g/tasks.o" "./FreeRTOS/efm32g/timers.o" "./emlib/em_assert.o" "./emlib/em_burtc.o" "./emlib/em_cmu.o" "./emlib/em_core.o" "./emlib/em_emu.o" "./emlib/em_gpio.o" "./emlib/em_rmu.o" "./emlib/em_rtc.o" "./emlib/em_system.o" "./emlib/em_usart.o" "./src/InitDevice.o" "./src/clock.o" "./src/clockApp_stk.o" "./src/low_power_tick_management.o" "./src/main.o" -Wl,--start-group -lgcc -lc -lnosys -Wl,--end-group
+	arm-none-eabi-gcc -g -gdwarf-2 -mcpu=cortex-m3 -mthumb -T "EFM32GG280F1024.ld" -Xlinker --gc-sections -Xlinker -Map="EFM32GG280F1024.map" --specs=nano.specs -o EFM32GG280F1024.axf "./CMSIS/EFM32GG/startup_gcc_efm32gg.o" "./CMSIS/EFM32GG/system_efm32gg.o" "./Drivers/sleep.o" "./FatFS/src/diskio.o" "./FatFS/src/ff.o" "./FreeRTOS/efm32g/croutine.o" "./FreeRTOS/efm32g/event_groups.o" "./FreeRTOS/efm32g/heap_1.o" "./FreeRTOS/efm32g/list.o" "./FreeRTOS/efm32g/port.o" "./FreeRTOS/efm32g/queue.o" "./FreeRTOS/efm32g/tasks.o" "./FreeRTOS/efm32g/timers.o" "./emlib/em_assert.o" "./emlib/em_burtc.o" "./emlib/em_cmu.o" "./emlib/em_core.o" "./emlib/em_emu.o" "./emlib/em_gpio.o" "./emlib/em_rmu.o" "./emlib/em_rtc.o" "./emlib/em_system.o" "./emlib/em_usart.o" "./src/InitDevice.o" "./src/clock.o" "./src/clockApp_stk.o" "./src/fatfs.o" "./src/low_power_tick_management.o" "./src/main.o" "./src/microsd.o" "./src/print.o" -Wl,--start-group -lgcc -lc -lnosys -Wl,--end-group
 	@echo 'Finished building target: $@'
 	@echo ' '
 

@@ -175,7 +175,7 @@ int main(void)
 	clockAppInit();
 
 	/* Restore time from backup RTC + retention memory and print backup info*/
-	clockAppRestore( burtcCountAtWakeup );
+	clockAppRestore(  );
 
 	/* Clear BURTC timestamp */
 	BURTC_StatusClear();
