@@ -89,6 +89,9 @@ BYTE FATFS_Write(char* stringBuffer, char* fileName)
   filecounter = snprintf(ramBufferWrite,FSBUFFERSIZE,"%s",stringBuffer);
   if ( filecounter > FSBUFFERSIZE )
   {
+#ifdef __PRINT_H
+  printStringln(UART1,"SD Card invalid file name!");
+#endif
 	  /* Error. String over-ran the buffer */
 	  return FR_INVALID_NAME;
   }
@@ -101,6 +104,9 @@ BYTE FATFS_Write(char* stringBuffer, char* fileName)
 	res = f_open(&fsrc, fileName, FA_CREATE_ALWAYS | FA_WRITE );
 	if (res != FR_OK)
 	{
+#ifdef __PRINT_H
+  printStringln(UART1,"SD Card initialized!");
+#endif
 	  /* Error. Cannot create the file */
 	  return res;
 	}
