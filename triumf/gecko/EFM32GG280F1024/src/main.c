@@ -56,6 +56,8 @@
 #include "clock.h"
 #include "clock_config.h"
 #include "clockApp_stk.h"
+#include "fatfs.h"
+#include "microsd.h"
 
 #define STACK_SIZE_FOR_TASK    (configMINIMAL_STACK_SIZE + 100)
 #define TASK_PRIORITY          (tskIDLE_PRIORITY + 1)
@@ -74,8 +76,6 @@ static struct tm initialCalendar;
 
 /* Declare variables */
 static uint32_t resetcause = 0;
-/* Declare BURTC variables */
-static uint32_t burtcCountAtWakeup = 0;
 /* Calendar struct */
 static struct tm calendar;
 /* Declare variables for LCD output*/
@@ -200,8 +200,13 @@ int main(void)
   unsigned int sdcd = GPIO_PinInGet(SDCD_PORT,SDCD_PIN);
 
   printStringln(UART1,(char*)"HELLO");
-  if (sdcd) printStringln(UART1,"SD Card Detected");
-  else printStringln(UART1,"No SD Card Detected");
+  if (sdcd) printStringln(UART1,"SD Card detected!");
+  else printStringln(UART1,"No SD Card detected!");
+  
+  MICROSD_Init(); 
+  FATFS_Init();
+
+  FATFS_Write("Hello world!","newfile1.txt");
  
   /*Create two task for blinking leds*/
   xTaskCreate( LedBlink, (const char *) "LedBlink1", STACK_SIZE_FOR_TASK, NULL, TASK_PRIORITY, NULL);
@@ -210,6 +215,21 @@ int main(void)
   vTaskStartScheduler();
 
   return 0;
+}
+
+/***************************************************************************//**
+ * @brief
+ *   This function is required by the FAT file system in order to provide
+ *   timestamps for created files. Since this example does not include a 
+ *   reliable clock we hardcode a value here.
+ *
+ *   Refer to drivers/fatfs/doc/en/fattime.html for the format of this DWORD.
+ * @return
+ *    A DWORD containing the current time and date as a packed datastructure.
+ ******************************************************************************/
+DWORD get_fattime(void)
+{
+  return (28 << 25) | (2 << 21) | (1 << 16);
 }
 
 /***************************************************************************//**

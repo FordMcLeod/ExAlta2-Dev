@@ -24,6 +24,7 @@
 #include "microsd.h"
 #include "stdio.h"
 #include "ff.h"
+#include "print.h"
 
 char    ramBufferWrite[FSBUFFERSIZE];  /* Temporary buffer for write file */
 char    ramBufferRead[FSBUFFERSIZE];   /* Temporary buffer for read file */
@@ -38,23 +39,41 @@ BYTE FATFS_Init(void) {
 
 	switch(resCard)
 	{
-	case STA_NOINIT:  /* Drive not initialized */
-	  return resCard;
-	case STA_NODISK:  /* No medium in the drive */
-	  return resCard;
-	case STA_PROTECT: /* Write protected */
-	  return resCard;
-	default:
-	  break;
+    case STA_NOINIT:                    /* Drive not initialized */
+      #ifdef __PRINT_H
+        printStringln(UART1,"SD Card not initialized!");
+      #endif
+      break;
+    case STA_NODISK:                    /* No medium in the drive */
+      #ifdef __PRINT_H
+        printStringln(UART1,"No SD Card detected!");
+      #endif
+      break;
+    case STA_PROTECT:                   /* Write protected */
+      #ifdef __PRINT_H
+        printStringln(UART1,"SD Card write protected!");
+      #endif
+      break;
+    default:
+      break;
 	}
+
+
 
 	/* Initialize filesystem */
 	res = f_mount(0, &Fatfs);
 	if (res != FR_OK)
 	{
 	  /* Error.No micro-SD with FAT32 is present */
+    #ifdef __PRINT_H
+      printStringln(UART1,"SD Card must use FAT32!");
+    #endif
 		return STA_NOFAT32;
 	}
+
+  #ifdef __PRINT_H
+    printStringln(UART1,"SD Card initialized!");
+  #endif
 
 	return STA_OK;
 
