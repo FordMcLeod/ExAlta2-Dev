@@ -47,14 +47,10 @@
 #include "em_cmu.h"
 #include "em_gpio.h"
 #include "em_chip.h"
-#include "em_emu.h"
 #include "em_rmu.h"
-#include "em_burtc.h"
 
 #include "sleep.h"
 #include "print.h"
-#include "clock.h"
-#include "clock_config.h"
 #include "clockApp_stk.h"
 #include "fatfs.h"
 #include "microsd.h"
@@ -63,26 +59,10 @@
 #define STACK_SIZE_FOR_TASK    (configMINIMAL_STACK_SIZE + 100)
 #define TASK_PRIORITY          (tskIDLE_PRIORITY + 1)
 
-/* Structure with parameters for LedBlink */
-typedef struct
-{
-  /* Delay between blink of led */
-  portTickType delay;
-  /* Number of led */
-  int          ledNo;
-} TaskParams_t;
-
-/* Calendar struct for initial date setting */
-static struct tm initialCalendar;
 
 /* Declare variables */
 static uint32_t resetcause = 0;
 
-
-
-
-/* Function prototypes */
-void budSetup( void );
 
 /**************************************************************************//**
  * @brief Simple task which is blinking led
@@ -122,65 +102,24 @@ int main(void)
   SLEEP_SleepBlockBegin((SLEEP_EnergyMode_t)(configSLEEP_MODE+1));
 #endif
 
-  /* Configure Backup Domain */
-  budSetup();
-
-  /* Setting up a structure to initialize the calendar
-     for 1 January 2012 12:00:00
-     The struct tm is declared in time.h
-     More information for time.h library in http://en.wikipedia.org/wiki/Time.h */
-  initialCalendar.tm_sec    =  0;    /* 0 seconds (0-60, 60 = leap second)*/
-  initialCalendar.tm_min    =  0;    /* 0 minutes (0-59) */
-  initialCalendar.tm_hour   =  12;   /* 12 hours (0-23) */
-  initialCalendar.tm_mday   =  1;    /* 1st day of the month (1 - 31) */
-  initialCalendar.tm_mon    =  0;    /* January (0 - 11, 0 = January) */
-  initialCalendar.tm_year   =  112;  /* Year 2012 (year since 1900) */
-  initialCalendar.tm_wday   =  0;    /* Sunday (0 - 6, 0 = Sunday) */
-  initialCalendar.tm_yday   =  0;    /* 1st day of the year (0-365) */
-  initialCalendar.tm_isdst  =  -1;   /* Daylight saving time; enabled (>0), disabled (=0) or unknown (<0) */
-
-  /* Set the calendar */
-  clockInit(&initialCalendar);
-
-  /* If waking from backup mode, restore time from retention registers */
-  if (    (resetcause & RMU_RSTCAUSE_BUMODERST)
-  && !(resetcause & RMU_RSTCAUSE_BUBODREG)
-  && !(resetcause & RMU_RSTCAUSE_BUBODUNREG)
-  && !(resetcause & RMU_RSTCAUSE_BUBODBUVIN)
-  &&  (resetcause & RMU_RSTCAUSE_BUBODVDDDREG)
-  && !(resetcause & RMU_RSTCAUSE_EXTRST)
-  && !(resetcause & RMU_RSTCAUSE_PORST) )
-  {
-
-	/* Initialize display application */
-	clockAppInit();
-
-	/* Restore time from backup RTC + retention memory and print backup info*/
-	clockAppRestore();
-
-	/* Clear BURTC timestamp */
-	BURTC_StatusClear();
-  }
-  /* If normal startup, initialize application and start BURTC */
-  else
-  {
-
-    /* Initialize display application */
-    clockAppInit();
-
-    /* Backup initial calendar (initialize retention registers) */
-    clockAppBackup();
-  }
-
   enter_DefaultMode_from_RESET();
 
-  /* Start BURTC */
-  BURTC_Enable( true );
+//  TIMER_IntEnable(TIMER1, TIMER_IF_OF);
+//
+//  // Enable TIMER0 interrupt vector in NVIC
+//  NVIC_EnableIRQ(TIMER1_IRQn);
+//
+//  // Wait for the timer to get going
+//  while (TIMER1->CNT == 0);
+//
+
+  clockSetup(resetcause);
 
   /* Enable BURTC interrupts */
   NVIC_ClearPendingIRQ( BURTC_IRQn );
   NVIC_EnableIRQ( BURTC_IRQn );
 
+  /* Initialize SD card and FATFS */
   MICROSD_Init();
   FATFS_Init();
 
@@ -206,61 +145,8 @@ int main(void)
   return 0;
 }
 
-/***************************************************************************//**
- * @brief
- *   This function is required by the FAT file system in order to provide
- *   timestamps for created files. Since this example does not include a 
- *   reliable clock we hardcode a value here.
- *
- *   Refer to drivers/fatfs/doc/en/fattime.html for the format of this DWORD.
- * @return
- *    A DWORD containing the current time and date as a packed datastructure.
- ******************************************************************************/
-DWORD get_fattime(void)
-{
-  return (28 << 25) | (2 << 21) | (1 << 16);
-}
 
-/***************************************************************************//**
- * @brief Set up backup domain.
- ******************************************************************************/
-void budSetup(void)
-{
-  /* Assign default TypeDefs */
-  EMU_EM4Init_TypeDef em4Init = EMU_EM4INIT_DEFAULT;
-  EMU_BUPDInit_TypeDef bupdInit = EMU_BUPDINIT_DEFAULT;
 
-  /*Setup EM4 configuration structure */
-  em4Init.lockConfig = true;
-  em4Init.osc = emuEM4Osc_LFXO;
-  em4Init.buRtcWakeup = false;
-  em4Init.vreg = true;
-
-  /* Setup Backup Power Domain configuration structure */
-  bupdInit.probe = emuProbe_Disable;
-  bupdInit.bodCal = false;
-  bupdInit.statusPinEnable = false;
-  bupdInit.resistor = emuRes_Res0;
-  bupdInit.voutStrong = false;
-  bupdInit.voutMed = false;
-  bupdInit.voutWeak = false;
-  bupdInit.inactivePower = emuPower_MainBU;
-  bupdInit.activePower = emuPower_MainBU;
-  bupdInit.enable = true;
-
-  /* Unlock configuration */
-  EMU_EM4Lock( false );
-
-  /* Initialize EM4 and Backup Power Domain with init structs */
-  EMU_BUPDInit( &bupdInit );
-  EMU_EM4Init( &em4Init );
-
-  /* Release reset for backup domain */
-  RMU_ResetControl( rmuResetBU, false );
-
-  /* Lock configuration */
-  EMU_EM4Lock( true );
-}
 
 
 

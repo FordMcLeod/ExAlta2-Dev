@@ -41,6 +41,8 @@
 #include "em_cmu.h"
 #include "em_device.h"
 #include "em_gpio.h"
+#include "em_emu.h"
+#include "em_rmu.h"
 
 /* Include other */
 #include "clock.h"
@@ -52,6 +54,9 @@
 static uint32_t  burtcOverflowCounter = 0;
 static uint32_t  burtcOverflowIntervalRem;
 static uint32_t  burtcTimestamp;
+
+/* Calendar struct for initial date setting */
+static struct tm initialCalendar;
 
 /***************************************************************************//**
  * @brief RTC Interrupt Handler, invoke callback if defined.
@@ -82,6 +87,107 @@ void BURTC_IRQHandler(void)
 
 }
 
+/***************************************************************************//**
+ * @brief Set up backup domain.
+ ******************************************************************************/
+void budSetup(void)
+{
+  /* Assign default TypeDefs */
+  EMU_EM4Init_TypeDef em4Init = EMU_EM4INIT_DEFAULT;
+  EMU_BUPDInit_TypeDef bupdInit = EMU_BUPDINIT_DEFAULT;
+
+  /*Setup EM4 configuration structure */
+  em4Init.lockConfig = true;
+  em4Init.osc = emuEM4Osc_LFXO;
+  em4Init.buRtcWakeup = false;
+  em4Init.vreg = true;
+
+  /* Setup Backup Power Domain configuration structure */
+  bupdInit.probe = emuProbe_Disable;
+  bupdInit.bodCal = false;
+  bupdInit.statusPinEnable = false;
+  bupdInit.resistor = emuRes_Res0;
+  bupdInit.voutStrong = false;
+  bupdInit.voutMed = false;
+  bupdInit.voutWeak = false;
+  bupdInit.inactivePower = emuPower_MainBU;
+  bupdInit.activePower = emuPower_MainBU;
+  bupdInit.enable = true;
+
+  /* Unlock configuration */
+  EMU_EM4Lock( false );
+
+  /* Initialize EM4 and Backup Power Domain with init structs */
+  EMU_BUPDInit( &bupdInit );
+  EMU_EM4Init( &em4Init );
+
+  /* Release reset for backup domain */
+  RMU_ResetControl( rmuResetBU, false );
+
+  /* Lock configuration */
+  EMU_EM4Lock( true );
+}
+
+
+void clockSetup(uint32_t resetcause)
+{
+  /* Configure Backup Domain */
+  budSetup();
+
+
+
+  /* Setting up a structure to initialize the calendar
+	 for 1 January 2012 12:00:00
+	 The struct tm is declared in time.h
+	 More information for time.h library in http://en.wikipedia.org/wiki/Time.h */
+  initialCalendar.tm_sec    =  INITIAL_SEC;    	/* 0 seconds (0-60, 60 = leap second)*/
+  initialCalendar.tm_min    =  INITIAL_MIN;    	/* 0 minutes (0-59) */
+  initialCalendar.tm_hour   =  INITIAL_HOUR0;   /* 12 hours (0-23) */
+  initialCalendar.tm_mday   =  INITIAL_MDAY;    /* 1st day of the month (1 - 31) */
+  initialCalendar.tm_mon    =  INITIAL_MON;    	/* January (0 - 11, 0 = January) */
+  initialCalendar.tm_year   =  INITIAL_YEAR;  	/* Year 2012 (year since 1900) */
+  initialCalendar.tm_wday   =  INITIAL_WDAY;    /* Sunday (0 - 6, 0 = Sunday) */
+  initialCalendar.tm_yday   =  INITIAL_YDAT;    /* 1st day of the year (0-365) */
+  initialCalendar.tm_isdst  =  INITIAL_ISDST;   /* Daylight saving time; enabled (>0), disabled (=0) or unknown (<0) */
+
+  /* Set the calendar */
+  clockInit(&initialCalendar);
+
+  /* If waking from backup mode, restore time from retention registers */
+  if (    (resetcause & RMU_RSTCAUSE_BUMODERST)
+  && !(resetcause & RMU_RSTCAUSE_BUBODREG)
+  && !(resetcause & RMU_RSTCAUSE_BUBODUNREG)
+  && !(resetcause & RMU_RSTCAUSE_BUBODBUVIN)
+  &&  (resetcause & RMU_RSTCAUSE_BUBODVDDDREG)
+  && !(resetcause & RMU_RSTCAUSE_EXTRST)
+  && !(resetcause & RMU_RSTCAUSE_PORST) )
+  {
+
+	/* Initialize display application */
+	clockAppInit();
+
+	/* Restore time from backup RTC + retention memory and print backup info*/
+	clockAppRestore();
+
+	/* Clear BURTC timestamp */
+	BURTC_StatusClear();
+  }
+  /* If normal startup, initialize application and start BURTC */
+  else
+  {
+
+	/* Initialize display application */
+	clockAppInit();
+
+	/* Start BURTC */
+	BURTC_Enable( true );
+
+	/* Backup initial calendar (initialize retention registers) */
+	clockAppBackup();
+  }
+
+
+}
 
 
 /***************************************************************************//**

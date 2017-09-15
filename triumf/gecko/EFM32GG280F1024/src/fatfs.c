@@ -30,6 +30,21 @@ char    ramBufferWrite[FSBUFFERSIZE];  /* Temporary buffer for write file */
 char    ramBufferRead[FSBUFFERSIZE];   /* Temporary buffer for read file */
 
 
+/***************************************************************************//**
+ * @brief
+ *   This function is required by the FAT file system in order to provide
+ *   timestamps for created files. Since this example does not include a
+ *   reliable clock we hardcode a value here.
+ *
+ *   Refer to drivers/fatfs/doc/en/fattime.html for the format of this DWORD.
+ * @return
+ *    A DWORD containing the current time and date as a packed datastructure.
+ ******************************************************************************/
+DWORD get_fattime(void)
+{
+  return (28 << 25) | (2 << 21) | (1 << 16);
+}
+
 BYTE FATFS_Init(void)
 {
 

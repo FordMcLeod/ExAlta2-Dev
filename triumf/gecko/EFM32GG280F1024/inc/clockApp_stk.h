@@ -36,7 +36,18 @@
 /* Include standard libraries */
 #include <stdint.h>
 
+#define INITIAL_SEC 	(0) 	/* 0 seconds (0-60, 60 = leap second)*/
+#define INITIAL_MIN 	(0) 	/* 0 minutes (0-59) */
+#define INITIAL_HOUR0	(12) 	/* 12 hours (0-23) */
+#define INITIAL_MDAY 	(1) 	/* 1st day of the month (1 - 31) */
+#define INITIAL_MON 	(0) 	/* January (0 - 11, 0 = January) */
+#define INITIAL_YEAR 	(112) 	/* Year 2012 (year since 1900) */
+#define INITIAL_WDAY 	(0) 	/* Sunday (0 - 6, 0 = Sunday) */
+#define INITIAL_YDAT 	(0) 	/* 1st day of the year (0-365) */
+#define INITIAL_ISDST 	(-1) 	/* Daylight saving time; enabled (>0), disabled (=0) or unknown (<0) */
+
 /* Function prototypes */
+void clockSetup(uint32_t);
 void clockAppInit(void);
 void clockAppBackup(void);
 void clockAppRestore(void);
