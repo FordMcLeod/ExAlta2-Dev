@@ -44,21 +44,23 @@
 #include "croutine.h"
 
 #include "em_device.h"
-#include "em_cmu.h"
 #include "em_gpio.h"
 #include "em_chip.h"
 #include "em_rmu.h"
+#include "em_timer.h"
 
 #include "sleep.h"
 #include "print.h"
 #include "clockApp_stk.h"
 #include "fatfs.h"
 #include "microsd.h"
-#include "ff.h"
 
 #define STACK_SIZE_FOR_TASK    (configMINIMAL_STACK_SIZE + 100)
 #define TASK_PRIORITY          (tskIDLE_PRIORITY + 1)
 
+#define ONE_MILLISECOND_BASE_VALUE_COUNT             1000
+#define ONE_SECOND_TIMER_COUNT                        13672
+#define MILLISECOND_DIVISOR                           13.672
 
 /* Declare variables */
 static uint32_t resetcause = 0;
@@ -73,9 +75,9 @@ static void LedBlink(void *pParameters)
 
   for (;;)
   {
-    GPIO_PortOutSetVal(LED_PORT, 1<<LED_PIN, 1<<LED_PIN);
-    vTaskDelay(pdMS_TO_TICKS(100));
-    GPIO_PortOutSetVal(LED_PORT, 0<<LED_PIN, 1<<LED_PIN);
+    //GPIO_PortOutSetVal(LED_PORT, 1<<LED_PIN, 1<<LED_PIN);
+    //vTaskDelay(pdMS_TO_TICKS(100));
+    //GPIO_PortOutSetVal(LED_PORT, 0<<LED_PIN, 1<<LED_PIN);
     vTaskDelay(pdMS_TO_TICKS(5000));
     PRINT_time(UART1,time( NULL ));
     PRINT_Stringln(UART1,"Hello world!");
@@ -102,16 +104,15 @@ int main(void)
   SLEEP_SleepBlockBegin((SLEEP_EnergyMode_t)(configSLEEP_MODE+1));
 #endif
 
+  TIMER_IntEnable(TIMER1, TIMER_IF_OF);
+  // Enable TIMER0 interrupt vector in NVIC
+  NVIC_EnableIRQ(TIMER1_IRQn);
+  TIMER_TopSet(TIMER1, 6000);	//Timer value
+
   enter_DefaultMode_from_RESET();
 
-//  TIMER_IntEnable(TIMER1, TIMER_IF_OF);
-//
-//  // Enable TIMER0 interrupt vector in NVIC
-//  NVIC_EnableIRQ(TIMER1_IRQn);
-//
-//  // Wait for the timer to get going
-//  while (TIMER1->CNT == 0);
-//
+  // Wait for the timer to get going
+  while (TIMER1->CNT == 0);
 
   clockSetup(resetcause);
 
@@ -143,6 +144,16 @@ int main(void)
   vTaskStartScheduler();
 
   return 0;
+}
+
+void TIMER1_IRQHandler(void)
+{
+  TIMER_IntClear(TIMER1, TIMER_IF_OF);
+
+  static uint8_t LED_state = 0;
+
+  GPIO_PortOutSetVal(LED_PORT, LED_state<<LED_PIN, 1<<LED_PIN);
+  LED_state = !LED_state;
 }
 
 
