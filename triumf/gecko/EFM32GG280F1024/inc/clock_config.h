@@ -35,7 +35,7 @@
 
 /* Define oscillator parameters */
 #define LFXO_FREQUENCY 32768
-#define BURTC_PRESCALING 128
+#define BURTC_PRESCALING 16
 #define COUNTS_PER_SEC (LFXO_FREQUENCY/BURTC_PRESCALING)
 
 #define UPDATE_INTERVAL 1  /* in seconds */

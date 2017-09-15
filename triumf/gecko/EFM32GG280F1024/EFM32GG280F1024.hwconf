@@ -4,7 +4,7 @@
     <property object="BURTC" propertyId="ABPeripheral.included" value="true"/>
     <property object="BURTC" propertyId="burtc.settings.availablein" value="EM0-EM4"/>
     <property object="BURTC" propertyId="burtc.settings.clock" value="LFXO"/>
-    <property object="BURTC" propertyId="burtc.settings.prescaler" value="128"/>
+    <property object="BURTC" propertyId="burtc.settings.prescaler" value="16"/>
     <property object="BURTC" propertyId="burtc.settings.usecompareregister0asmaxvalue" value="False"/>
     <property object="DefaultMode" propertyId="mode.diagramLocation" value="100, 100"/>
     <property object="GPIO" propertyId="ABPeripheral.included" value="true"/>
@@ -32,8 +32,6 @@
     <property object="PORTIO" propertyId="portio.usart0.enable.cs" value="Enabled"/>
     <property object="PORTIO" propertyId="portio.usart0.enable.rx" value="Enabled"/>
     <property object="PORTIO" propertyId="portio.usart0.enable.tx" value="Enabled"/>
-    <property object="TIMER1" propertyId="ABPeripheral.included" value="true"/>
-    <property object="TIMER1" propertyId="timer.clocksettings.hfperprescaler" value="Divide by 1024"/>
     <property object="UART1" propertyId="ABPeripheral.included" value="true"/>
     <property object="USART0" propertyId="ABPeripheral.included" value="true"/>
     <property object="USART0" propertyId="usart.mode.usartmode" value="Synchronous Mode (SPI / I2S)"/>

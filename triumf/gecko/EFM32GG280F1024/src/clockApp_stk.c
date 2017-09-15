@@ -49,6 +49,8 @@
 #include "clock_config.h"
 #include "clockApp_stk.h"
 
+#include "InitDevice.h"
+
 /* Declare variables for time keeping */
 //static uint32_t  burtcCount = 0;
 static uint32_t  burtcOverflowCounter = 0;
@@ -69,9 +71,15 @@ void BURTC_IRQHandler(void)
   /*   Interrupt source: compare match */
   /*   Increment compare value and
    *   update TFT display            */
+
+  static uint8_t LED_state = 0;
+
+
   if ( BURTC_IntGet() & BURTC_IF_COMP0 )
   {
     BURTC_CompareSet( 0, BURTC_CompareGet(0) + COUNTS_BETWEEN_UPDATE );
+    GPIO_PortOutSetVal(LED_PORT, LED_state<<LED_PIN, 1<<LED_PIN);
+    LED_state = !LED_state;
     BURTC_IntClear( BURTC_IF_COMP0 );
   }
 

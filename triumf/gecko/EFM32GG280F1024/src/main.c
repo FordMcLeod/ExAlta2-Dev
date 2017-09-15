@@ -58,9 +58,6 @@
 #define STACK_SIZE_FOR_TASK    (configMINIMAL_STACK_SIZE + 100)
 #define TASK_PRIORITY          (tskIDLE_PRIORITY + 1)
 
-#define ONE_MILLISECOND_BASE_VALUE_COUNT             1000
-#define ONE_SECOND_TIMER_COUNT                        13672
-#define MILLISECOND_DIVISOR                           13.672
 
 /* Declare variables */
 static uint32_t resetcause = 0;
@@ -104,15 +101,8 @@ int main(void)
   SLEEP_SleepBlockBegin((SLEEP_EnergyMode_t)(configSLEEP_MODE+1));
 #endif
 
-  TIMER_IntEnable(TIMER1, TIMER_IF_OF);
-  // Enable TIMER0 interrupt vector in NVIC
-  NVIC_EnableIRQ(TIMER1_IRQn);
-  TIMER_TopSet(TIMER1, 6000);	//Timer value
 
   enter_DefaultMode_from_RESET();
-
-  // Wait for the timer to get going
-  while (TIMER1->CNT == 0);
 
   clockSetup(resetcause);
 
@@ -144,16 +134,6 @@ int main(void)
   vTaskStartScheduler();
 
   return 0;
-}
-
-void TIMER1_IRQHandler(void)
-{
-  TIMER_IntClear(TIMER1, TIMER_IF_OF);
-
-  static uint8_t LED_state = 0;
-
-  GPIO_PortOutSetVal(LED_PORT, LED_state<<LED_PIN, 1<<LED_PIN);
-  LED_state = !LED_state;
 }
 
 

@@ -22,7 +22,6 @@
 #include "em_burtc.h"
 #include "em_rmu.h"
 #include "em_gpio.h"
-#include "em_timer.h"
 #include "em_usart.h"
 // [Library includes]$
 
@@ -35,7 +34,6 @@ extern void enter_DefaultMode_from_RESET(void) {
 	BURTC_enter_DefaultMode_from_RESET();
 	USART0_enter_DefaultMode_from_RESET();
 	UART1_enter_DefaultMode_from_RESET();
-	TIMER1_enter_DefaultMode_from_RESET();
 	PORTIO_enter_DefaultMode_from_RESET();
 	// [Config Calls]$
 
@@ -94,9 +92,6 @@ extern void CMU_enter_DefaultMode_from_RESET(void) {
 	/* No LF peripherals enabled */
 	// [LF clock tree setup]$
 	// $[Peripheral Clock enables]
-	/* Enable clock for TIMER1 */
-	CMU_ClockEnable(cmuClock_TIMER1, true);
-
 	/* Enable clock for UART1 */
 	CMU_ClockEnable(cmuClock_UART1, true);
 
@@ -195,7 +190,7 @@ extern void BURTC_enter_DefaultMode_from_RESET(void) {
 	init.mode = burtcModeEM4;
 	init.debugRun = false;
 	init.clkSel = burtcClkSelLFXO;
-	init.clkDiv = burtcClkDiv_128;
+	init.clkDiv = burtcClkDiv_16;
 	init.timeStamp = false;
 	init.compare0Top = false;
 	init.lowPowerMode = burtcLPDisable;
@@ -469,73 +464,15 @@ extern void TIMER0_enter_DefaultMode_from_RESET(void) {
 extern void TIMER1_enter_DefaultMode_from_RESET(void) {
 
 	// $[TIMER1 initialization]
-	TIMER_Init_TypeDef init = TIMER_INIT_DEFAULT;
-
-	init.enable = 1;
-	init.debugRun = 0;
-	init.dmaClrAct = 0;
-	init.sync = 0;
-	init.clkSel = timerClkSelHFPerClk;
-	init.prescale = timerPrescale1024;
-	init.fallAction = timerInputActionNone;
-	init.riseAction = timerInputActionNone;
-	init.mode = timerModeUp;
-	init.quadModeX4 = 0;
-	init.oneShot = 0;
-	init.count2x = 0;
-	init.ati = 0;
-	TIMER_Init(TIMER1, &init);
 	// [TIMER1 initialization]$
 
 	// $[TIMER1 CC0 init]
-	TIMER_InitCC_TypeDef initCC0 = TIMER_INITCC_DEFAULT;
-
-	initCC0.prsInput = false;
-	initCC0.prsSel = timerPRSSELCh0;
-	initCC0.edge = timerEdgeRising;
-	initCC0.mode = timerCCModeOff;
-	initCC0.eventCtrl = timerEventEveryEdge;
-	initCC0.filter = 0;
-	initCC0.cofoa = timerOutputActionNone;
-	initCC0.cufoa = timerOutputActionNone;
-	initCC0.cmoa = timerOutputActionNone;
-	initCC0.coist = 0;
-	initCC0.outInvert = 0;
-	TIMER_InitCC(TIMER1, 0, &initCC0);
 	// [TIMER1 CC0 init]$
 
 	// $[TIMER1 CC1 init]
-	TIMER_InitCC_TypeDef initCC1 = TIMER_INITCC_DEFAULT;
-
-	initCC1.prsInput = false;
-	initCC1.prsSel = timerPRSSELCh0;
-	initCC1.edge = timerEdgeRising;
-	initCC1.mode = timerCCModeOff;
-	initCC1.eventCtrl = timerEventEveryEdge;
-	initCC1.filter = 0;
-	initCC1.cofoa = timerOutputActionNone;
-	initCC1.cufoa = timerOutputActionNone;
-	initCC1.cmoa = timerOutputActionNone;
-	initCC1.coist = 0;
-	initCC1.outInvert = 0;
-	TIMER_InitCC(TIMER1, 1, &initCC1);
 	// [TIMER1 CC1 init]$
 
 	// $[TIMER1 CC2 init]
-	TIMER_InitCC_TypeDef initCC2 = TIMER_INITCC_DEFAULT;
-
-	initCC2.prsInput = false;
-	initCC2.prsSel = timerPRSSELCh0;
-	initCC2.edge = timerEdgeRising;
-	initCC2.mode = timerCCModeOff;
-	initCC2.eventCtrl = timerEventEveryEdge;
-	initCC2.filter = 0;
-	initCC2.cofoa = timerOutputActionNone;
-	initCC2.cufoa = timerOutputActionNone;
-	initCC2.cmoa = timerOutputActionNone;
-	initCC2.coist = 0;
-	initCC2.outInvert = 0;
-	TIMER_InitCC(TIMER1, 2, &initCC2);
 	// [TIMER1 CC2 init]$
 
 }
