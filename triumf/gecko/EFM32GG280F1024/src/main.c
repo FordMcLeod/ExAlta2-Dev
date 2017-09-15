@@ -106,6 +106,9 @@ int main(void)
 
   clockSetup(resetcause);
 
+  /* Enable BURTC interrupt on compare match and counter overflow */
+  BURTC_IntEnable( BURTC_IF_COMP0 | BURTC_IF_OF );
+
   /* Enable BURTC interrupts */
   NVIC_ClearPendingIRQ( BURTC_IRQn );
   NVIC_EnableIRQ( BURTC_IRQn );
