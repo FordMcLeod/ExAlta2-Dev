@@ -1,5 +1,3 @@
-#include "projdefs.h"
-#include "FreeRTOSConfig.h"
 /******************************************************************************
  * @file 2_leds_solution.c
  * @brief Blinking LEDs with STK solution
