@@ -48,6 +48,7 @@
 #include "em_chip.h"
 #include "em_rmu.h"
 #include "em_timer.h"
+#include "em_burtc.h"
 
 #include "sleep.h"
 #include "print.h"
@@ -75,9 +76,9 @@ static void LedBlink(void *pParameters)
     //GPIO_PortOutSetVal(LED_PORT, 1<<LED_PIN, 1<<LED_PIN);
     //vTaskDelay(pdMS_TO_TICKS(100));
     //GPIO_PortOutSetVal(LED_PORT, 0<<LED_PIN, 1<<LED_PIN);
-    vTaskDelay(pdMS_TO_TICKS(5000));
+    vTaskDelay(pdMS_TO_TICKS(50));
     PRINT_time(UART1,time( NULL ));
-    PRINT_Stringln(UART1,"Hello world!");
+    PRINT_Stringln(UART1,"\tHello world!");
   }
 }
 

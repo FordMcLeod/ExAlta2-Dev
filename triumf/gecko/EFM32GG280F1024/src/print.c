@@ -158,7 +158,7 @@ void PRINT_array(USART_TypeDef* uart, char* data, uint8_t len)
 
 void PRINT_time(USART_TypeDef* uart, time_t currentTime)
 {
-  uint32_t msecs = (BURTC->COMP0 - BURTC->CNT)*1000/COUNTS_PER_SEC;
+  uint32_t msecs = 1000 - (BURTC->COMP0 - BURTC->CNT)*1000/COUNTS_PER_SEC;
 
   /* Make string from calendar */
   calendar = * localtime( &currentTime );
@@ -173,7 +173,7 @@ void PRINT_time(USART_TypeDef* uart, time_t currentTime)
   displayStringBuf[7] = 0x30 + (calendar.tm_sec % 10);
   displayStringBuf[8] = '.';
   displayStringBuf[9] = 0x30 + (msecs / 100);
-  displayStringBuf[10] = 0x30 + (msecs / 10);
+  displayStringBuf[10] = 0x30 + ((msecs / 10) % 10);
   displayStringBuf[11] = 0x30 + (msecs % 10);
   displayStringBuf[12] = '\0';
 
