@@ -31,113 +31,71 @@
  *
  ******************************************************************************/
 
-#include <stdio.h>
-#include <stdlib.h>
-
-#include "InitDevice.h"
-
-#include "FreeRTOSConfig.h"
-#include "FreeRTOS.h"
-#include "task.h"
-#include "queue.h"
-#include "semphr.h"
-#include "croutine.h"
-
 #include "em_device.h"
+#include "em_cmu.h"
 #include "em_gpio.h"
 #include "em_chip.h"
-#include "em_rmu.h"
-#include "em_timer.h"
-#include "em_burtc.h"
 
-#include "sleep.h"
-#include "print.h"
-#include "clockApp_stk.h"
-#include "fatfs.h"
-#include "microsd.h"
-
-#define STACK_SIZE_FOR_TASK    (configMINIMAL_STACK_SIZE + 100)
-#define TASK_PRIORITY          (tskIDLE_PRIORITY + 1)
+  #define LED_PORT    gpioPortC
+  #define LED_PIN     12
 
 
-/* Declare variables */
-static uint32_t resetcause = 0;
-
-
-/**************************************************************************//**
- * @brief Simple task which is blinking led
- * @param *pParameters pointer to parameters passed to the function
+/******************************************************************************
+ * @brief Delay function
  *****************************************************************************/
-static void LedBlink(void *pParameters)
+void Delay(uint16_t milliseconds)
 {
+  /* Enable clock for TIMER0 */
+  CMU->HFPERCLKEN0 |= CMU_HFPERCLKEN0_TIMER0;
 
-  for (;;)
-  {
-    //GPIO_PortOutSetVal(LED_PORT, 1<<LED_PIN, 1<<LED_PIN);
-    //vTaskDelay(pdMS_TO_TICKS(100));
-    //GPIO_PortOutSetVal(LED_PORT, 0<<LED_PIN, 1<<LED_PIN);
-    vTaskDelay(pdMS_TO_TICKS(50));
-    PRINT_time(UART1,time( NULL ));
-    PRINT_Stringln(UART1,"\tHello world!");
+  /* Set prescaler to maximum */
+  TIMER0->CTRL = (TIMER0->CTRL & ~_TIMER_CTRL_PRESC_MASK) |  TIMER_CTRL_PRESC_DIV1024;
+
+  /* Clear TIMER0 counter value */
+  TIMER0->CNT = 0;
+
+  /* Start TIMER0 */
+  TIMER0->CMD = TIMER_CMD_START;
+
+  /* Wait until counter value is over the threshold */
+  while(TIMER0->CNT < 13*milliseconds){
+   /* Do nothing, just wait */
   }
+
+  /* Stop TIMER0 */
+  TIMER0->CMD = TIMER_CMD_STOP;
 }
 
-
-/**************************************************************************//**
+/******************************************************************************
  * @brief  Main function
+ * Main is called from _program_start, see assembly startup file
  *****************************************************************************/
 int main(void)
 {
-  /* Chip errata */
+  /* Initialize chip */
   CHIP_Init();
 
-  /* Read and clear RMU->RSTCAUSE as early as possible */
-  resetcause = RMU->RSTCAUSE;
-  RMU_ResetCauseClear();
 
-  /* Initialize SLEEP driver, no callbacks are used */
-  SLEEP_Init(NULL, NULL);
-#if (configSLEEP_MODE < 3)
-  /* do not let to sleep deeper than define */
-  SLEEP_SleepBlockBegin((SLEEP_EnergyMode_t)(configSLEEP_MODE+1));
-#endif
+  /* Enable clock for GPIO */
+  CMU_ClockEnable(cmuClock_GPIO, true);
+
+  /* Configure LED_PORT pin LED_PIN (User LED) as push/pull outputs */
+  GPIO_PinModeSet(LED_PORT,         /* Port */
+                  LED_PIN,          /* Pin */
+                  gpioModePushPull, /* Mode */
+                  0 );              /* Output value */
 
 
-  enter_DefaultMode_from_RESET();
+  /* Wait in this loop until led_status reaches 15 */
+  while(1){
 
-  clockSetup(resetcause);
-
-  /* Enable BURTC interrupt on compare match and counter overflow */
-  BURTC_IntEnable( BURTC_IF_COMP0 | BURTC_IF_OF );
-
-  /* Enable BURTC interrupts */
-  NVIC_ClearPendingIRQ( BURTC_IRQn );
-  NVIC_EnableIRQ( BURTC_IRQn );
-
-  /* Initialize SD card and FATFS */
-  MICROSD_Init();
-  FATFS_Init();
-
-  unsigned int sdcd = GPIO_PinInGet(SDCD_PORT,SDCD_PIN);
-
-  PRINT_time(UART1,time( NULL ));
-  PRINT_Stringln(UART1,(char*)"HELLO");
-  if (sdcd) {
-    PRINT_time(UART1,time( NULL ));
-    PRINT_Stringln(UART1,"SD Card detected!");
+	  GPIO_PortOutSetVal(LED_PORT, 1<<LED_PIN, 1<<LED_PIN);
+	  Delay(100);
+	  GPIO_PortOutSetVal(LED_PORT, 0<<LED_PIN, 1<<LED_PIN);
+	  Delay(100);
   }
-  else {
-    PRINT_time(UART1,time( NULL ));
-    PRINT_Stringln(UART1,"No SD Card detected!");
-  }
- 
-  /*Create two task for blinking leds*/
-  xTaskCreate( LedBlink, (const char *) "LedBlink1", STACK_SIZE_FOR_TASK, NULL, TASK_PRIORITY, NULL);
 
-  /*Start FreeRTOS Scheduler*/
-  vTaskStartScheduler();
-
-  return 0;
 }
+
 
 
