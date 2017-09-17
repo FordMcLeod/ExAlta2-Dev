@@ -105,6 +105,8 @@ int main(void)
 
   enter_DefaultMode_from_RESET();
 
+  GPIO_PortOutSetVal(LED_PORT, 1<<LED_PIN, 1<<LED_PIN);
+
   clockSetup(resetcause);
 
   /* Enable BURTC interrupt on compare match and counter overflow */
@@ -113,6 +115,9 @@ int main(void)
   /* Enable BURTC interrupts */
   NVIC_ClearPendingIRQ( BURTC_IRQn );
   NVIC_EnableIRQ( BURTC_IRQn );
+
+  //http://community.silabs.com/t5/32-bit-MCU/two-independent-uart-setting/td-p/139961
+  NVIC_EnableIRQ( UART0_RX_IRQn );
 
   /* Initialize SD card and FATFS */
   MICROSD_Init();
@@ -130,7 +135,11 @@ int main(void)
     PRINT_time(UART1,time( NULL ));
     PRINT_Stringln(UART1,"No SD Card detected!");
   }
- 
+
+  GPIO_PortOutSetVal(ENARM_PORT, 1<<ENARM_PIN, 1<<ENARM_PIN);
+  GPIO_PortOutSetVal(ENAVR_PORT, 1<<ENAVR_PIN, 1<<ENAVR_PIN);
+  GPIO_PortOutSetVal(ENRAM_PORT, 1<<ENRAM_PIN, 1<<ENRAM_PIN);
+
   /*Create two task for blinking leds*/
   xTaskCreate( LedBlink, (const char *) "LedBlink1", STACK_SIZE_FOR_TASK, NULL, TASK_PRIORITY, NULL);
 

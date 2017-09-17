@@ -10,8 +10,26 @@
     <property object="GPIO" propertyId="ABPeripheral.included" value="true"/>
     <property object="PA5" propertyId="ports.settings.custompinname" value="SDCD"/>
     <property object="PA5" propertyId="ports.settings.pinmode" value="Input"/>
+    <property object="PA7" propertyId="ports.settings.custompinname" value="ENARM"/>
+    <property object="PA7" propertyId="ports.settings.dout" value="1"/>
+    <property object="PA7" propertyId="ports.settings.filter" value="Enabled"/>
+    <property object="PA7" propertyId="ports.settings.pinmode" value="Push-pull"/>
+    <property object="PA7" propertyId="ports.settings.pulldirection" value="Pullup"/>
+    <property object="PA7" propertyId="ports.settings.pullup" value="Enabled"/>
     <property object="PC12" propertyId="ports.settings.custompinname" value="LED"/>
     <property object="PC12" propertyId="ports.settings.pinmode" value="Push-pull"/>
+    <property object="PC3" propertyId="ports.settings.custompinname" value="ENAVR"/>
+    <property object="PC3" propertyId="ports.settings.dout" value="1"/>
+    <property object="PC3" propertyId="ports.settings.filter" value="Enabled"/>
+    <property object="PC3" propertyId="ports.settings.pinmode" value="Push-pull"/>
+    <property object="PC3" propertyId="ports.settings.pulldirection" value="Pullup"/>
+    <property object="PC3" propertyId="ports.settings.pullup" value="Enabled"/>
+    <property object="PC5" propertyId="ports.settings.custompinname" value="ENRAM"/>
+    <property object="PC5" propertyId="ports.settings.dout" value="1"/>
+    <property object="PC5" propertyId="ports.settings.filter" value="Enabled"/>
+    <property object="PC5" propertyId="ports.settings.pinmode" value="Push-pull"/>
+    <property object="PC5" propertyId="ports.settings.pulldirection" value="Pullup"/>
+    <property object="PC5" propertyId="ports.settings.pullup" value="Enabled"/>
     <property object="PD4" propertyId="ports.settings.custompinname" value=""/>
     <property object="PD4" propertyId="ports.settings.dout" value="1"/>
     <property object="PD4" propertyId="ports.settings.filter" value="Enabled"/>
@@ -25,6 +43,10 @@
     <property object="PE13" propertyId="ports.settings.pinmode" value="Push-pull"/>
     <property object="PE2" propertyId="ports.settings.pinmode" value="Push-pull"/>
     <property object="PE3" propertyId="ports.settings.pinmode" value="Input"/>
+    <property object="PF6" propertyId="ports.settings.pinmode" value="Push-pull"/>
+    <property object="PF7" propertyId="ports.settings.pinmode" value="Input"/>
+    <property object="PORTIO" propertyId="portio.uart0.enable.rx" value="Enabled"/>
+    <property object="PORTIO" propertyId="portio.uart0.enable.tx" value="Enabled"/>
     <property object="PORTIO" propertyId="portio.uart1.enable.rx" value="Enabled"/>
     <property object="PORTIO" propertyId="portio.uart1.enable.tx" value="Enabled"/>
     <property object="PORTIO" propertyId="portio.uart1.location.uart1" value="3"/>
@@ -32,6 +54,7 @@
     <property object="PORTIO" propertyId="portio.usart0.enable.cs" value="Enabled"/>
     <property object="PORTIO" propertyId="portio.usart0.enable.rx" value="Enabled"/>
     <property object="PORTIO" propertyId="portio.usart0.enable.tx" value="Enabled"/>
+    <property object="UART0" propertyId="ABPeripheral.included" value="true"/>
     <property object="UART1" propertyId="ABPeripheral.included" value="true"/>
     <property object="USART0" propertyId="ABPeripheral.included" value="true"/>
     <property object="USART0" propertyId="usart.mode.usartmode" value="Synchronous Mode (SPI / I2S)"/>
