@@ -185,7 +185,7 @@ void PRINT_timeFast(USART_TypeDef* uart, time_t currentTime)
   displayStringBuf[11] = 0x30 + (msecs % 10);
 
   f_printf(&fsrc,"%s", displayStringBuf);
-  for(i = 0;displayStringBuf[i]<12;i++){
+  for(i = 0;i<12;i++){
     USART_Tx(uart,displayStringBuf[i]);
   }
 }

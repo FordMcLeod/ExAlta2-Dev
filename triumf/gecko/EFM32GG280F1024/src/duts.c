@@ -6,7 +6,7 @@
  ******************************************************************************/
 
 #define BUF_DEFAULT {{0},0,0,0,0}
-#define BUFFERSIZE 255
+#define BUFFERSIZE 1024
 
 #include "em_usart.h"
 #include "FreeRTOS.h"

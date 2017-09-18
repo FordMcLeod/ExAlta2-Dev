@@ -23,9 +23,9 @@ int main(void)
   	GPIO_PortOutSetVal(LED_PORT, toggle<<LED_PIN, 1<<LED_PIN);
     toggle = !toggle;
 
-    Delay(2000);
+    Delay(1000);
 
-    PRINT_Stringln(USART0,"\t Hello from the other side!");
+    PRINT_Stringln(USART0,"\t Hello!");
   	
   }
 }
