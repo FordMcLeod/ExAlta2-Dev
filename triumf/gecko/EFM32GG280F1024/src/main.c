@@ -109,7 +109,7 @@ static void TASK_DutRx(void *pParameters)
       PRINT_open();
       open = 1;
     }
-    if (!open) /* do nothing */ ;
+    if (!open) {/* do nothing */}
     else if (data == '\t')
       PRINT_time(UART1,time( NULL ));
     else
