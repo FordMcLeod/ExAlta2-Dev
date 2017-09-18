@@ -269,7 +269,7 @@ extern void USART0_enter_DefaultMode_from_RESET(void) {
 	// $[USART_InitSync]
 	USART_InitSync_TypeDef initsync = USART_INITSYNC_DEFAULT;
 
-	initsync.baudrate = 400000;
+	initsync.baudrate = 4000000;
 	initsync.databits = usartDatabits8;
 	initsync.master = 1;
 	initsync.msbf = 1;
@@ -670,21 +670,21 @@ extern void PORTIO_enter_DefaultMode_from_RESET(void) {
 	GPIO->P[4].MODEL = (GPIO->P[4].MODEL & ~_GPIO_P_MODEL_MODE3_MASK)
 			| GPIO_P_MODEL_MODE3_INPUT;
 
-	/* Pin PE10 is configured to Push-pull */
+	/* Pin PE10 is configured to Push-pull with alt. drive strength */
 	GPIO->P[4].MODEH = (GPIO->P[4].MODEH & ~_GPIO_P_MODEH_MODE10_MASK)
-			| GPIO_P_MODEH_MODE10_PUSHPULL;
+			| GPIO_P_MODEH_MODE10_PUSHPULLDRIVE;
 
 	/* Pin PE11 is configured to Input enabled */
 	GPIO->P[4].MODEH = (GPIO->P[4].MODEH & ~_GPIO_P_MODEH_MODE11_MASK)
 			| GPIO_P_MODEH_MODE11_INPUT;
 
-	/* Pin PE12 is configured to Push-pull */
+	/* Pin PE12 is configured to Push-pull with alt. drive strength */
 	GPIO->P[4].MODEH = (GPIO->P[4].MODEH & ~_GPIO_P_MODEH_MODE12_MASK)
-			| GPIO_P_MODEH_MODE12_PUSHPULL;
+			| GPIO_P_MODEH_MODE12_PUSHPULLDRIVE;
 
-	/* Pin PE13 is configured to Push-pull */
+	/* Pin PE13 is configured to Push-pull with alt. drive strength */
 	GPIO->P[4].MODEH = (GPIO->P[4].MODEH & ~_GPIO_P_MODEH_MODE13_MASK)
-			| GPIO_P_MODEH_MODE13_PUSHPULL;
+			| GPIO_P_MODEH_MODE13_PUSHPULLDRIVE;
 	// [Port E Configuration]$
 
 	// $[Port F Configuration]

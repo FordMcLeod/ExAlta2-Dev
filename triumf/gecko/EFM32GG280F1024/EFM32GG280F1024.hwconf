@@ -26,11 +26,11 @@
     <property object="PD4" propertyId="ports.settings.pullup" value="Enabled"/>
     <property object="PE0" propertyId="ports.settings.pinmode" value="Push-pull"/>
     <property object="PE1" propertyId="ports.settings.pinmode" value="Input"/>
-    <property object="PE10" propertyId="ports.settings.pinmode" value="Push-pull"/>
+    <property object="PE10" propertyId="ports.settings.pinmode" value="Push-pull drive"/>
     <property object="PE11" propertyId="ports.settings.pinmode" value="Input"/>
-    <property object="PE12" propertyId="ports.settings.pinmode" value="Push-pull"/>
+    <property object="PE12" propertyId="ports.settings.pinmode" value="Push-pull drive"/>
     <property object="PE13" propertyId="ports.settings.custompinname" value="SDCS"/>
-    <property object="PE13" propertyId="ports.settings.pinmode" value="Push-pull"/>
+    <property object="PE13" propertyId="ports.settings.pinmode" value="Push-pull drive"/>
     <property object="PE2" propertyId="ports.settings.pinmode" value="Push-pull"/>
     <property object="PE3" propertyId="ports.settings.pinmode" value="Input"/>
     <property object="PORTIO" propertyId="portio.uart0.enable.rx" value="Enabled"/>
@@ -47,7 +47,7 @@
     <property object="UART1" propertyId="ABPeripheral.included" value="true"/>
     <property object="USART0" propertyId="ABPeripheral.included" value="true"/>
     <property object="USART0" propertyId="usart.mode.usartmode" value="Synchronous Mode (SPI / I2S)"/>
-    <property object="USART0" propertyId="usart.synchronoussettings.baudrate" value="400000"/>
+    <property object="USART0" propertyId="usart.synchronoussettings.baudrate" value="4000000"/>
   </mode>
   <modeTransition>
     <property object="RESET &#x2192; DefaultMode" propertyId="modeTransition.source" value="RESET"/>

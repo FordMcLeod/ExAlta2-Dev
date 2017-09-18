@@ -18,7 +18,7 @@
 
 /* Don't increase MICROSD_HI_SPI_FREQ beyond 8MHz. Next step will be 16MHz  */
 /* which is out of spec.                                                    */
-#define MICROSD_HI_SPI_FREQ     115200
+#define MICROSD_HI_SPI_FREQ     230400
 
 #define MICROSD_LO_SPI_FREQ     100000
 #define MICROSD_USART           USART0
