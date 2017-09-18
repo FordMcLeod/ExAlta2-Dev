@@ -65,6 +65,8 @@
 /* Declare variables */
 static uint32_t resetcause = 0;
 
+
+
 /* Structure with parameters for DutRx */
 typedef struct
 {
@@ -88,7 +90,7 @@ static void TASK_LedBlink(void *pParameters)
     //vTaskDelay(pdMS_TO_TICKS(1000));
     PRINT_getBusy();
     PRINT_time(UART1,time( NULL ));
-    PRINT_Stringln(UART1,"\tHello world!");
+    PRINT_Stringln(UART1,"\tHello world!\n");
     PRINT_releaseBusy();
   }
 }
@@ -101,24 +103,24 @@ static void TASK_DutRx(void *pParameters)
 {
   TaskParams_t* pData = (TaskParams_t*) pParameters;
   uint8_t data = 0;
-  static uint8_t busy = 0;
+  static uint8_t midLine = 0;
 
   for (;;)
   {
   	data = DUTS_getChar(pData->uart);
-  	//data = USART_Rx(UART0);
+
     if (data == '\r') {
+      midLine = 1;
       PRINT_getBusy();
-      busy = 1;
+      PRINT_time(UART1,time( NULL ));
     }
-    if (!busy) {/* do nothing */}
-    else if (data == '\t')
-      PRINT_timeFast(UART1,time( NULL ));
-    else
-      PRINT_Char(UART1,data);
+    else if (midLine) {
+	  PRINT_Char(UART1,data);
+    }
     if (data == '\n') {
+      midLine = 0;
       PRINT_releaseBusy();
-      busy = 0;
+      vTaskDelay(pdMS_TO_TICKS(1));
     }
   }
 }
@@ -157,7 +159,7 @@ int main(void)
 
   unsigned int sdcd = GPIO_PinInGet(SDCD_PORT,SDCD_PIN);
 
-  PRINT_open(void);
+  PRINT_open();
 
   PRINT_time(UART1,time( NULL ));
   PRINT_Stringln(UART1,(char*)"\tHELLO");
@@ -181,7 +183,7 @@ int main(void)
   static TaskParams_t parametersToEFM32rx = { UART0 };
 
   
-  xTaskCreate( TASK_DutRx, (const char *) "EFM32rx", STACK_SIZE_FOR_TASK, &parametersToEFM32rx, TASK_PRIORITY+1, NULL);
+  xTaskCreate( TASK_DutRx, (const char *) "EFM32rx", STACK_SIZE_FOR_TASK, &parametersToEFM32rx, TASK_PRIORITY, NULL);
 
   xTaskCreate( TASK_LedBlink, (const char *) "LedBlink1", STACK_SIZE_FOR_TASK, NULL, TASK_PRIORITY, NULL);
 

@@ -25,7 +25,7 @@ int main(void)
 
     Delay(1000);
 
-    PRINT_Stringln(USART0,"\t Hello!");
+    PRINT_Stringln(USART0,"\tHello!");
   	
   }
 }
@@ -35,12 +35,11 @@ void PRINT_Stringln(USART_TypeDef* uart, char* data)
   // avoid taking over other print calls
   int i = 0;
 
+  USART_Tx(uart,'\r');
   for(i = 0;data[i]!='\0';i++){
     USART_Tx(uart,data[i]);
   }
   USART_Tx(uart,'\n');
-  USART_Tx(uart,'\r');
-  USART_Tx(uart,'\0');
 }
 
 /******************************************************************************

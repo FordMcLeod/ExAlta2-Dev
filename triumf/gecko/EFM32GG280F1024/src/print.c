@@ -22,7 +22,7 @@ uint8_t open = 0;
 /* Calendar struct */
 static struct tm calendar;
 /* Declare variables for LCD output*/
-static char  displayStringBuf[13];
+static char  displayStringBuf[14];
 
 
 /***************************************************************************//**
@@ -31,13 +31,11 @@ static char  displayStringBuf[13];
 void PRINT_Stringln(USART_TypeDef* uart, char* data)
 {
   int i = 0;
-
-  if(open) f_printf(&fsrc,"%s%c%c", data,'\n','\r');
   for(i = 0;data[i]!='\0';i++){
     USART_Tx(uart,data[i]);
   }
-  USART_Tx(uart,'\n');
-  USART_Tx(uart,'\r');
+
+  if(open) f_printf(&fsrc,"%s", data);
 }
 
 
@@ -59,21 +57,23 @@ void PRINT_time(USART_TypeDef* uart, time_t currentTime)
   /* Make string from calendar */
   calendar = * localtime( &currentTime );
 
-  displayStringBuf[0] = 0x30 + (calendar.tm_hour / 10);
-  displayStringBuf[1] = 0x30 + (calendar.tm_hour % 10);
-  displayStringBuf[2] = ':';
-  displayStringBuf[3] = 0x30 + (calendar.tm_min / 10);
-  displayStringBuf[4] = 0x30 + (calendar.tm_min % 10);
-  displayStringBuf[5] = ':';
-  displayStringBuf[6] = 0x30 + (calendar.tm_sec / 10);
-  displayStringBuf[7] = 0x30 + (calendar.tm_sec % 10);
-  displayStringBuf[8] = '.';
-  displayStringBuf[9] = 0x30 + (msecs / 100);
-  displayStringBuf[10] = 0x30 + ((msecs / 10) % 10);
-  displayStringBuf[11] = 0x30 + (msecs % 10);
+  displayStringBuf[0] = '\r';
+  displayStringBuf[1] = 0x30 + (calendar.tm_hour / 10);
+  displayStringBuf[2] = 0x30 + (calendar.tm_hour % 10);
+  displayStringBuf[3] = ':';
+  displayStringBuf[4] = 0x30 + (calendar.tm_min / 10);
+  displayStringBuf[5] = 0x30 + (calendar.tm_min % 10);
+  displayStringBuf[6] = ':';
+  displayStringBuf[7] = 0x30 + (calendar.tm_sec / 10);
+  displayStringBuf[8] = 0x30 + (calendar.tm_sec % 10);
+  displayStringBuf[9] = '.';
+  displayStringBuf[10] = 0x30 + (msecs / 100);
+  displayStringBuf[11] = 0x30 + ((msecs / 10) % 10);
+  displayStringBuf[12] = 0x30 + (msecs % 10);
+  displayStringBuf[13] = '\0';
 
   if(open) f_printf(&fsrc,"%s", displayStringBuf);
-  for(i = 0;i<12;i++){
+  for(i = 0;i<13;i++){
     USART_Tx(uart,displayStringBuf[i]);
   }
 }
