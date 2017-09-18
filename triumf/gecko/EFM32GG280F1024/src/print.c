@@ -106,7 +106,6 @@ void PRINT_arrayln(USART_TypeDef* uart, char* data,  uint8_t len)
   }
   USART_Tx(uart,'\n');
   USART_Tx(uart,'\r');
-  USART_Tx(uart,'\0');
   f_printf(&fsrc,"%c%c",'\n','\r');
   
   /* Close the file */
@@ -133,7 +132,6 @@ void PRINT_array(USART_TypeDef* uart, char* data, uint8_t len)
     USART_Tx(uart,data[i]);
     f_printf(&fsrc,"%c", data[i]);
   }
-  USART_Tx(uart,'\0');
   
   /* Close the file */
   f_close(&fsrc);
