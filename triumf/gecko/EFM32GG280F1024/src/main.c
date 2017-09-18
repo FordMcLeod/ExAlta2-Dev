@@ -86,8 +86,10 @@ static void TASK_LedBlink(void *pParameters)
     vTaskDelay(pdMS_TO_TICKS(500));
     //GPIO_PortOutSetVal(ENAVR_PORT, 0<<ENAVR_PIN, 1<<ENAVR_PIN);
     //vTaskDelay(pdMS_TO_TICKS(1000));
+    PRINT_getBusy();
     PRINT_time(UART1,time( NULL ));
     PRINT_Stringln(UART1,"\tHello world!");
+    PRINT_releaseBusy();
   }
 }
 
@@ -99,24 +101,24 @@ static void TASK_DutRx(void *pParameters)
 {
   TaskParams_t* pData = (TaskParams_t*) pParameters;
   uint8_t data = 0;
-  static uint8_t open = 0;
+  static uint8_t busy = 0;
 
   for (;;)
   {
   	data = DUTS_getChar(pData->uart);
   	//data = USART_Rx(UART0);
     if (data == '\r') {
-      PRINT_open();
-      open = 1;
+      PRINT_getBusy();
+      busy = 1;
     }
-    if (!open) {/* do nothing */}
+    if (!busy) {/* do nothing */}
     else if (data == '\t')
       PRINT_timeFast(UART1,time( NULL ));
     else
       PRINT_Char(UART1,data);
     if (data == '\n') {
-      PRINT_close();
-      open = 0;
+      PRINT_releaseBusy();
+      busy = 0;
     }
   }
 }
@@ -154,6 +156,8 @@ int main(void)
   FATFS_Init();
 
   unsigned int sdcd = GPIO_PinInGet(SDCD_PORT,SDCD_PIN);
+
+  PRINT_open(void);
 
   PRINT_time(UART1,time( NULL ));
   PRINT_Stringln(UART1,(char*)"\tHELLO");

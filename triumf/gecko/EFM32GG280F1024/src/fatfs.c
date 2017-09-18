@@ -56,40 +56,25 @@ BYTE FATFS_Init(void)
 	switch(resCard)
 	{
     case STA_NOINIT:                    /* Drive not initialized */
-      #ifdef __PRINT_H
-    	PRINT_Debug(UART1,"SD Card not initialized!");
-      #endif
+      return STA_NOINIT;
       break;
     case STA_NODISK:                    /* No medium in the drive */
-      #ifdef __PRINT_H
-    	PRINT_Debug(UART1,"No SD Card detected!");
-      #endif
+      return STA_NODISK;
       break;
     case STA_PROTECT:                   /* Write protected */
-      #ifdef __PRINT_H
-    	PRINT_Debug(UART1,"SD Card write protected!");
-      #endif
+      return STA_PROTECT;
       break;
     default:
       break;
 	}
-
-
 
 	/* Initialize filesystem */
 	res = f_mount(0, &Fatfs);
 	if (res != FR_OK)
 	{
 	  /* Error.No micro-SD with FAT32 is present */
-    #ifdef __PRINT_H
-		PRINT_Debug(UART1,"SD Card must use FAT32!");
-    #endif
 		return STA_NOFAT32;
 	}
-
-  #ifdef __PRINT_H
-	PRINT_Debug(UART1,"SD Card initialized!");
-  #endif
 
 	return STA_OK;
 
@@ -109,16 +94,8 @@ BYTE FATFS_append (FIL* fp, const char* path)
     res = f_lseek(fp, f_size(fp));
     if (res != FR_OK)
     {
-      #ifdef __PRINT_H
-        PRINT_Debug(UART1,"SD Card failed to seek end of file!");
-      #endif
       f_close(fp);
     }
-  }
-  else {
-    #ifdef __PRINT_H
-	  PRINT_Debug(UART1,"SD Card failed to open file to append!");
-    #endif
   }
   return res;
 }
@@ -133,9 +110,6 @@ BYTE FATFS_Write(char* stringBuffer, char* fileName)
   filecounter = snprintf(ramBufferWrite,FSBUFFERSIZE,"%s",stringBuffer);
   if ( filecounter > FSBUFFERSIZE )
   {
-#ifdef __PRINT_H
-	  PRINT_Debug(UART1,"SD Card invalid file name!");
-#endif
 	  /* Error. String over-ran the buffer */
 	  return FR_INVALID_NAME;
   }
@@ -148,9 +122,6 @@ BYTE FATFS_Write(char* stringBuffer, char* fileName)
 	res = f_open(&fsrc, fileName, FA_CREATE_ALWAYS | FA_WRITE );
 	if (res != FR_OK)
 	{
-#ifdef __PRINT_H
-		PRINT_Debug(UART1,"SD Card initialized!");
-#endif
 	  /* Error. Cannot create the file */
 	  return res;
 	}
