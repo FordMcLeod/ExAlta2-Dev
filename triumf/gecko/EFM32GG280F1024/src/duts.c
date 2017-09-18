@@ -9,7 +9,8 @@
 #define BUFFERSIZE 255
 
 #include "em_usart.h"
-#include "tasks.h"
+#include "FreeRTOS.h"
+#include "task.h"
 
 typedef struct {
 	char data[BUFFERSIZE];
