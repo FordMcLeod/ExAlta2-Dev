@@ -111,7 +111,7 @@ static void TASK_DutRx(void *pParameters)
     }
     if (!open) {/* do nothing */}
     else if (data == '\t')
-      PRINT_time(UART1,time( NULL ));
+      PRINT_timeFast(UART1,time( NULL ));
     else
       PRINT_Char(UART1,data);
     if (data == '\n') {

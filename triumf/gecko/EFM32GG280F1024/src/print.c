@@ -163,6 +163,33 @@ void PRINT_time(USART_TypeDef* uart, time_t currentTime)
   PRINT_String(uart,displayString);
 }
 
+void PRINT_timeFast(USART_TypeDef* uart, time_t currentTime)
+{
+  uint32_t msecs = 1000 - (BURTC->COMP0 - BURTC->CNT)*1000/COUNTS_PER_SEC;
+  uint8_t i = 0;
+
+  /* Make string from calendar */
+  calendar = * localtime( &currentTime );
+
+  displayStringBuf[0] = 0x30 + (calendar.tm_hour / 10);
+  displayStringBuf[1] = 0x30 + (calendar.tm_hour % 10);
+  displayStringBuf[2] = ':';
+  displayStringBuf[3] = 0x30 + (calendar.tm_min / 10);
+  displayStringBuf[4] = 0x30 + (calendar.tm_min % 10);
+  displayStringBuf[5] = ':';
+  displayStringBuf[6] = 0x30 + (calendar.tm_sec / 10);
+  displayStringBuf[7] = 0x30 + (calendar.tm_sec % 10);
+  displayStringBuf[8] = '.';
+  displayStringBuf[9] = 0x30 + (msecs / 100);
+  displayStringBuf[10] = 0x30 + ((msecs / 10) % 10);
+  displayStringBuf[11] = 0x30 + (msecs % 10);
+
+  f_printf(&fsrc,"%s", displayStringBuf);
+  for(i = 0;displayStringBuf[i]<12;i++){
+    USART_Tx(uart,displayStringBuf[i]);
+  }
+}
+
 /***************************************************************************//**
  * @brief Must be null terminated.
  ******************************************************************************/
