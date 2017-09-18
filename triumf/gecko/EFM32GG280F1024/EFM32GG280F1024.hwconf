@@ -24,6 +24,8 @@
     <property object="PD4" propertyId="ports.settings.pinmode" value="Push-pull"/>
     <property object="PD4" propertyId="ports.settings.pulldirection" value="Pullup"/>
     <property object="PD4" propertyId="ports.settings.pullup" value="Enabled"/>
+    <property object="PE0" propertyId="ports.settings.pinmode" value="Push-pull"/>
+    <property object="PE1" propertyId="ports.settings.pinmode" value="Input"/>
     <property object="PE10" propertyId="ports.settings.pinmode" value="Push-pull"/>
     <property object="PE11" propertyId="ports.settings.pinmode" value="Input"/>
     <property object="PE12" propertyId="ports.settings.pinmode" value="Push-pull"/>
@@ -31,10 +33,9 @@
     <property object="PE13" propertyId="ports.settings.pinmode" value="Push-pull"/>
     <property object="PE2" propertyId="ports.settings.pinmode" value="Push-pull"/>
     <property object="PE3" propertyId="ports.settings.pinmode" value="Input"/>
-    <property object="PF6" propertyId="ports.settings.pinmode" value="Push-pull"/>
-    <property object="PF7" propertyId="ports.settings.pinmode" value="Input"/>
     <property object="PORTIO" propertyId="portio.uart0.enable.rx" value="Enabled"/>
     <property object="PORTIO" propertyId="portio.uart0.enable.tx" value="Enabled"/>
+    <property object="PORTIO" propertyId="portio.uart0.location.uart0" value="1"/>
     <property object="PORTIO" propertyId="portio.uart1.enable.rx" value="Enabled"/>
     <property object="PORTIO" propertyId="portio.uart1.enable.tx" value="Enabled"/>
     <property object="PORTIO" propertyId="portio.uart1.location.uart1" value="3"/>

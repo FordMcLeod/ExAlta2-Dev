@@ -73,11 +73,11 @@ extern void PORTIO_enter_DefaultMode_from_RESET(void);
 #define SDCS_PIN            (13)
 #define SDCS_PORT           (gpioPortE)
 
-#define UART0_RX_PIN        (7)
-#define UART0_RX_PORT       (gpioPortF)
+#define UART0_RX_PIN        (1)
+#define UART0_RX_PORT       (gpioPortE)
 
-#define UART0_TX_PIN        (6)
-#define UART0_TX_PORT       (gpioPortF)
+#define UART0_TX_PIN        (0)
+#define UART0_TX_PORT       (gpioPortE)
 
 #define UART1_RX_PIN        (3)
 #define UART1_RX_PORT       (gpioPortE)

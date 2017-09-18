@@ -654,6 +654,14 @@ extern void PORTIO_enter_DefaultMode_from_RESET(void) {
 
 	// $[Port E Configuration]
 
+	/* Pin PE0 is configured to Push-pull */
+	GPIO->P[4].MODEL = (GPIO->P[4].MODEL & ~_GPIO_P_MODEL_MODE0_MASK)
+			| GPIO_P_MODEL_MODE0_PUSHPULL;
+
+	/* Pin PE1 is configured to Input enabled */
+	GPIO->P[4].MODEL = (GPIO->P[4].MODEL & ~_GPIO_P_MODEL_MODE1_MASK)
+			| GPIO_P_MODEL_MODE1_INPUT;
+
 	/* Pin PE2 is configured to Push-pull */
 	GPIO->P[4].MODEL = (GPIO->P[4].MODEL & ~_GPIO_P_MODEL_MODE2_MASK)
 			| GPIO_P_MODEL_MODE2_PUSHPULL;
@@ -680,17 +688,13 @@ extern void PORTIO_enter_DefaultMode_from_RESET(void) {
 	// [Port E Configuration]$
 
 	// $[Port F Configuration]
-
-	/* Pin PF6 is configured to Push-pull */
-	GPIO->P[5].MODEL = (GPIO->P[5].MODEL & ~_GPIO_P_MODEL_MODE6_MASK)
-			| GPIO_P_MODEL_MODE6_PUSHPULL;
-
-	/* Pin PF7 is configured to Input enabled */
-	GPIO->P[5].MODEL = (GPIO->P[5].MODEL & ~_GPIO_P_MODEL_MODE7_MASK)
-			| GPIO_P_MODEL_MODE7_INPUT;
 	// [Port F Configuration]$
 
 	// $[Route Configuration]
+
+	/* Module UART0 is configured to location 1 */
+	UART0->ROUTE = (UART0->ROUTE & ~_UART_ROUTE_LOCATION_MASK)
+			| UART_ROUTE_LOCATION_LOC1;
 
 	/* Enable signals RX, TX */
 	UART0->ROUTE |= UART_ROUTE_RXPEN | UART_ROUTE_TXPEN;

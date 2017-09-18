@@ -83,9 +83,9 @@ static void TASK_LedBlink(void *pParameters)
   for (;;)
   {
     //GPIO_PortOutSetVal(ENAVR_PORT, 1<<ENAVR_PIN, 1<<ENAVR_PIN);
-    //vTaskDelay(pdMS_TO_TICKS(5000));
+    vTaskDelay(pdMS_TO_TICKS(500));
     //GPIO_PortOutSetVal(ENAVR_PORT, 0<<ENAVR_PIN, 1<<ENAVR_PIN);
-    vTaskDelay(pdMS_TO_TICKS(1000));
+    //vTaskDelay(pdMS_TO_TICKS(1000));
     PRINT_time(UART1,time( NULL ));
     PRINT_Stringln(UART1,"\tHello world!");
   }
@@ -103,10 +103,11 @@ static void TASK_DutRx(void *pParameters)
   for (;;)
   {
 	data = DUTS_getChar(pData->uart);
+	//data = USART_Rx(UART0);
     if (data == '\t')
-      PRINT_time(pData->uart,time( NULL ));
-    else 
-      PRINT_Char(pData->uart,data);
+      PRINT_time(UART1,time( NULL ));
+    else
+      PRINT_Char(UART1,data);
   }
 }
 

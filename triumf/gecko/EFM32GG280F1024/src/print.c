@@ -87,14 +87,14 @@ void PRINT_Char(USART_TypeDef* uart, char data)
   busy = 1;
 
   /* Open or create a log file and ready to append */
-  FATFS_append(&fsrc, FILENAME);
+  //FATFS_append(&fsrc, FILENAME);
 
   USART_Tx(uart,data);
-  f_printf(&fsrc,"%c", data);
-  USART_Tx(uart,'\0');
+  //f_printf(&fsrc,"%c", data);
+  //USART_Tx(uart,'\0');
   
   /* Close the file */
-  f_close(&fsrc);
+  //f_close(&fsrc);
 
   busy = 0;
 }
@@ -178,4 +178,21 @@ void PRINT_time(USART_TypeDef* uart, time_t currentTime)
   displayStringBuf[12] = '\0';
 
   PRINT_String(uart,displayString);
+}
+
+/***************************************************************************//**
+ * @brief Must be null terminated.
+ ******************************************************************************/
+void PRINT_Debug(USART_TypeDef* uart, char* data)
+{
+
+  int i = 0;
+
+  for(i = 0;data[i]!='\0';i++){
+    USART_Tx(uart,data[i]);
+  }
+  USART_Tx(uart,'\n');
+  USART_Tx(uart,'\r');
+  USART_Tx(uart,'\0');
+
 }

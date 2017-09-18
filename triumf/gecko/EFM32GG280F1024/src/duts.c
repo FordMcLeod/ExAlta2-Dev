@@ -118,7 +118,7 @@ uint8_t DUTS_getChar(USART_TypeDef* uart)
   /* Check if there is a byte that is ready to be fetched. If no byte is ready, wait for incoming data */
   if (rxBuf->pendingBytes < 1)
   {
-    while (rxBuf->pendingBytes < 1) __WFI();
+    return 0;
   }
 
   /* Copy data from buffer */
@@ -154,7 +154,7 @@ void DUTS_PutChar(uint8_t ch, USART_TypeDef* uart)
   if ((txBuf->pendingBytes + 1) > BUFFERSIZE)
   {
     /* Wait until there is room in queue */
-    while ((txBuf->pendingBytes + 1) > BUFFERSIZE) __WFI();
+    while ((txBuf->pendingBytes + 1) > BUFFERSIZE) ;
   }
 
   /* Copy ch into txBuffer */

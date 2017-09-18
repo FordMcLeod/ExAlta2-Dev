@@ -1,5 +1,7 @@
 #include "em_device.h"
 #include "em_chip.h"
+#include "em_usart.h"
+#include "em_gpio.h"
 
 #include "InitDevice.h"
 
@@ -21,7 +23,7 @@ int main(void)
   	GPIO_PortOutSetVal(LED_PORT, toggle<<LED_PIN, 1<<LED_PIN);
     toggle = !toggle;
 
-    Delay(100);
+    Delay(2000);
 
     PRINT_Stringln(USART0,"\t Hello from the other side!");
   	
