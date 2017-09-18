@@ -11,25 +11,13 @@
     <property object="PA5" propertyId="ports.settings.custompinname" value="SDCD"/>
     <property object="PA5" propertyId="ports.settings.pinmode" value="Input"/>
     <property object="PA7" propertyId="ports.settings.custompinname" value="ENARM"/>
-    <property object="PA7" propertyId="ports.settings.dout" value="1"/>
-    <property object="PA7" propertyId="ports.settings.filter" value="Enabled"/>
     <property object="PA7" propertyId="ports.settings.pinmode" value="Push-pull"/>
-    <property object="PA7" propertyId="ports.settings.pulldirection" value="Pullup"/>
-    <property object="PA7" propertyId="ports.settings.pullup" value="Enabled"/>
     <property object="PC12" propertyId="ports.settings.custompinname" value="LED"/>
     <property object="PC12" propertyId="ports.settings.pinmode" value="Push-pull"/>
     <property object="PC3" propertyId="ports.settings.custompinname" value="ENAVR"/>
-    <property object="PC3" propertyId="ports.settings.dout" value="1"/>
-    <property object="PC3" propertyId="ports.settings.filter" value="Enabled"/>
     <property object="PC3" propertyId="ports.settings.pinmode" value="Push-pull"/>
-    <property object="PC3" propertyId="ports.settings.pulldirection" value="Pullup"/>
-    <property object="PC3" propertyId="ports.settings.pullup" value="Enabled"/>
     <property object="PC5" propertyId="ports.settings.custompinname" value="ENRAM"/>
-    <property object="PC5" propertyId="ports.settings.dout" value="1"/>
-    <property object="PC5" propertyId="ports.settings.filter" value="Enabled"/>
     <property object="PC5" propertyId="ports.settings.pinmode" value="Push-pull"/>
-    <property object="PC5" propertyId="ports.settings.pulldirection" value="Pullup"/>
-    <property object="PC5" propertyId="ports.settings.pullup" value="Enabled"/>
     <property object="PD4" propertyId="ports.settings.custompinname" value=""/>
     <property object="PD4" propertyId="ports.settings.dout" value="1"/>
     <property object="PD4" propertyId="ports.settings.filter" value="Enabled"/>

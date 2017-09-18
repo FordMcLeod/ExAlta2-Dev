@@ -49,12 +49,14 @@
 #include "em_rmu.h"
 #include "em_timer.h"
 #include "em_burtc.h"
+#include "em_usart.h"
 
 #include "sleep.h"
 #include "print.h"
 #include "clockApp_stk.h"
 #include "fatfs.h"
 #include "microsd.h"
+#include "duts.h"
 
 #define STACK_SIZE_FOR_TASK    (configMINIMAL_STACK_SIZE + 100)
 #define TASK_PRIORITY          (tskIDLE_PRIORITY + 1)
@@ -63,12 +65,19 @@
 /* Declare variables */
 static uint32_t resetcause = 0;
 
+/* Structure with parameters for DutRx */
+typedef struct
+{
+  /* Delay between blink of led */
+  USART_TypeDef * uart;
+} TaskParams_t;
+
 
 /**************************************************************************//**
  * @brief Simple task which is blinking led
  * @param *pParameters pointer to parameters passed to the function
  *****************************************************************************/
-static void LedBlink(void *pParameters)
+static void TASK_LedBlink(void *pParameters)
 {
 
   for (;;)
@@ -76,9 +85,28 @@ static void LedBlink(void *pParameters)
     //GPIO_PortOutSetVal(LED_PORT, 1<<LED_PIN, 1<<LED_PIN);
     //vTaskDelay(pdMS_TO_TICKS(100));
     //GPIO_PortOutSetVal(LED_PORT, 0<<LED_PIN, 1<<LED_PIN);
-    vTaskDelay(pdMS_TO_TICKS(50));
+    vTaskDelay(pdMS_TO_TICKS(1000));
     PRINT_time(UART1,time( NULL ));
     PRINT_Stringln(UART1,"\tHello world!");
+  }
+}
+
+/**************************************************************************//**
+ * @brief Simple task which is blinking led
+ * @param *pParameters pointer to parameters passed to the function
+ *****************************************************************************/
+static void TASK_DutRx(void *pParameters)
+{
+  TaskParams_t* pData = (TaskParams_t*) pParameters;
+  uint8_t data = 0;
+
+  for (;;)
+  {
+	data = DUTS_getChar(pData->uart);
+    if (data == '\t')
+      PRINT_time(pData->uart,time( NULL ));
+    else 
+      PRINT_Char(pData->uart,data);
   }
 }
 
@@ -102,22 +130,13 @@ int main(void)
   SLEEP_SleepBlockBegin((SLEEP_EnergyMode_t)(configSLEEP_MODE+1));
 #endif
 
-
   enter_DefaultMode_from_RESET();
 
-  GPIO_PortOutSetVal(LED_PORT, 1<<LED_PIN, 1<<LED_PIN);
-
   clockSetup(resetcause);
-
-  /* Enable BURTC interrupt on compare match and counter overflow */
-  BURTC_IntEnable( BURTC_IF_COMP0 | BURTC_IF_OF );
 
   /* Enable BURTC interrupts */
   NVIC_ClearPendingIRQ( BURTC_IRQn );
   NVIC_EnableIRQ( BURTC_IRQn );
-
-  //http://community.silabs.com/t5/32-bit-MCU/two-independent-uart-setting/td-p/139961
-  NVIC_EnableIRQ( UART0_RX_IRQn );
 
   /* Initialize SD card and FATFS */
   MICROSD_Init();
@@ -136,12 +155,20 @@ int main(void)
     PRINT_Stringln(UART1,"No SD Card detected!");
   }
 
-  GPIO_PortOutSetVal(ENARM_PORT, 1<<ENARM_PIN, 1<<ENARM_PIN);
-  GPIO_PortOutSetVal(ENAVR_PORT, 1<<ENAVR_PIN, 1<<ENAVR_PIN);
-  GPIO_PortOutSetVal(ENRAM_PORT, 1<<ENRAM_PIN, 1<<ENRAM_PIN);
+  /* Prepare UART Rx and Tx interrupts */
+  DUTS_initIRQs(UART0,UART0_RX_IRQn,UART0_TX_IRQn);
 
-  /*Create two task for blinking leds*/
-  xTaskCreate( LedBlink, (const char *) "LedBlink1", STACK_SIZE_FOR_TASK, NULL, TASK_PRIORITY, NULL);
+  GPIO_PinOutSet(ENARM_PORT,ENARM_PIN);
+  GPIO_PinOutSet(ENAVR_PORT,ENAVR_PIN);
+  GPIO_PinOutSet(ENRAM_PORT,ENRAM_PIN);
+
+  
+  static TaskParams_t parametersToEFM32rx = { UART0 };
+
+  
+  xTaskCreate( TASK_DutRx, (const char *) "EFM32rx", STACK_SIZE_FOR_TASK, &parametersToEFM32rx, TASK_PRIORITY, NULL);
+
+  xTaskCreate( TASK_LedBlink, (const char *) "LedBlink1", STACK_SIZE_FOR_TASK, NULL, TASK_PRIORITY, NULL);
 
   /*Start FreeRTOS Scheduler*/
   vTaskStartScheduler();

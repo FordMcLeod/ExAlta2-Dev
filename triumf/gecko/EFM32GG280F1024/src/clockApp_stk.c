@@ -194,6 +194,9 @@ void clockSetup(uint32_t resetcause)
 	clockAppBackup();
   }
 
+  /* Enable BURTC interrupt on compare match and counter overflow */
+  BURTC_IntEnable( BURTC_IF_COMP0 | BURTC_IF_OF );
+
 
 }
 

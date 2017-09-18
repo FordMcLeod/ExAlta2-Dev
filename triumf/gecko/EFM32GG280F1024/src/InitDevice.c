@@ -622,7 +622,6 @@ extern void PORTIO_enter_DefaultMode_from_RESET(void) {
 			| GPIO_P_MODEL_MODE5_INPUT;
 
 	/* Pin PA7 is configured to Push-pull */
-	GPIO->P[0].DOUT |= (1 << 7);
 	GPIO->P[0].MODEL = (GPIO->P[0].MODEL & ~_GPIO_P_MODEL_MODE7_MASK)
 			| GPIO_P_MODEL_MODE7_PUSHPULL;
 	// [Port A Configuration]$
@@ -633,12 +632,10 @@ extern void PORTIO_enter_DefaultMode_from_RESET(void) {
 	// $[Port C Configuration]
 
 	/* Pin PC3 is configured to Push-pull */
-	GPIO->P[2].DOUT |= (1 << 3);
 	GPIO->P[2].MODEL = (GPIO->P[2].MODEL & ~_GPIO_P_MODEL_MODE3_MASK)
 			| GPIO_P_MODEL_MODE3_PUSHPULL;
 
 	/* Pin PC5 is configured to Push-pull */
-	GPIO->P[2].DOUT |= (1 << 5);
 	GPIO->P[2].MODEL = (GPIO->P[2].MODEL & ~_GPIO_P_MODEL_MODE5_MASK)
 			| GPIO_P_MODEL_MODE5_PUSHPULL;
 
