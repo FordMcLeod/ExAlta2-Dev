@@ -22,5 +22,7 @@ void PRINT_arrayln(USART_TypeDef* uart, char* data,  uint8_t len);
 void PRINT_array(USART_TypeDef* uart, char* data, uint8_t len);
 void PRINT_time(USART_TypeDef* uart, time_t currentTime);
 void PRINT_Debug(USART_TypeDef* uart, char* data);
+void PRINT_open(void);
+void PRINT_close(void);
 
 #endif

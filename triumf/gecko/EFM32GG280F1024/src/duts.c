@@ -9,6 +9,7 @@
 #define BUFFERSIZE 255
 
 #include "em_usart.h"
+#include "tasks.h"
 
 typedef struct {
 	char data[BUFFERSIZE];
@@ -116,9 +117,9 @@ uint8_t DUTS_getChar(USART_TypeDef* uart)
       rxBuf = &rxBuf_USART2;
 
   /* Check if there is a byte that is ready to be fetched. If no byte is ready, wait for incoming data */
-  if (rxBuf->pendingBytes < 1)
+  while (rxBuf->pendingBytes < 1)
   {
-    return 0;
+    vTaskDelay(pdMS_TO_TICKS(1));
   }
 
   /* Copy data from buffer */
@@ -151,10 +152,10 @@ void DUTS_PutChar(uint8_t ch, USART_TypeDef* uart)
   	  txBuf = &txBuf_USART2;
 
   /* Check if Tx queue has room for new data */
-  if ((txBuf->pendingBytes + 1) > BUFFERSIZE)
+  while ((txBuf->pendingBytes + 1) > BUFFERSIZE)
   {
     /* Wait until there is room in queue */
-    while ((txBuf->pendingBytes + 1) > BUFFERSIZE) ;
+    vTaskDelay(pdMS_TO_TICKS(1));
   }
 
   /* Copy ch into txBuffer */

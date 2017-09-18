@@ -35,14 +35,13 @@ void PRINT_Stringln(USART_TypeDef* uart, char* data)
 
   /* Open or create a log file and ready to append */
   FATFS_append(&fsrc, FILENAME);
+
+  f_printf(&fsrc,"%s%c%c", data,'\n','\r');
   for(i = 0;data[i]!='\0';i++){
     USART_Tx(uart,data[i]);
-    f_printf(&fsrc,"%c", data[i]);
   }
   USART_Tx(uart,'\n');
   USART_Tx(uart,'\r');
-  USART_Tx(uart,'\0');
-  f_printf(&fsrc,"%c%c",'\n','\r');
   
   /* Close the file */
   f_close(&fsrc);
@@ -57,18 +56,18 @@ void PRINT_Stringln(USART_TypeDef* uart, char* data)
 void PRINT_String(USART_TypeDef* uart, char* data)
 {
   // avoid taking over other print calls
-  while(busy) __WFI();
+  while(busy) ;
   busy = 1;
 
   int i = 0;
 
   /* Open or create a log file and ready to append */
   FATFS_append(&fsrc, FILENAME);
+
+  f_printf(&fsrc,"%s", data);
   for(i = 0;data[i]!='\0';i++){
     USART_Tx(uart,data[i]);
-    f_printf(&fsrc,"%c", data[i]);
   }
-  USART_Tx(uart,'\0');
   
   /* Close the file */
   f_close(&fsrc);
@@ -82,21 +81,8 @@ void PRINT_String(USART_TypeDef* uart, char* data)
  ******************************************************************************/
 void PRINT_Char(USART_TypeDef* uart, char data)
 {
-  // avoid taking over other print calls
-  while(busy) __WFI();
-  busy = 1;
-
-  /* Open or create a log file and ready to append */
-  //FATFS_append(&fsrc, FILENAME);
-
   USART_Tx(uart,data);
-  //f_printf(&fsrc,"%c", data);
-  //USART_Tx(uart,'\0');
-  
-  /* Close the file */
-  //f_close(&fsrc);
-
-  busy = 0;
+  f_printf(&fsrc,"%c", data);
 }
 
 
@@ -141,8 +127,7 @@ void PRINT_array(USART_TypeDef* uart, char* data, uint8_t len)
 
   int i = 0;
 
-  /* Open or create a log file and ready to append */
-  FATFS_append(&fsrc, FILENAME);
+  
 
   for(i = 0;i < len;i++){
     USART_Tx(uart,data[i]);
@@ -185,6 +170,7 @@ void PRINT_time(USART_TypeDef* uart, time_t currentTime)
  ******************************************************************************/
 void PRINT_Debug(USART_TypeDef* uart, char* data)
 {
+ #ifdef DEBUG
 
   int i = 0;
 
@@ -193,6 +179,22 @@ void PRINT_Debug(USART_TypeDef* uart, char* data)
   }
   USART_Tx(uart,'\n');
   USART_Tx(uart,'\r');
-  USART_Tx(uart,'\0');
-
+#endif
 }
+
+
+void PRINT_open(void)
+{
+  while(busy) __WFI();
+  busy = 1;
+  /* Open or create a log file and ready to append */
+  FATFS_append(&fsrc, FILENAME);
+}
+
+void PRINT_close(void)
+{
+  /* Close the file */
+  f_close(&fsrc);
+  busy = 0;
+}
+

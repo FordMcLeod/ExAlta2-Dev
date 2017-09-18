@@ -99,15 +99,25 @@ static void TASK_DutRx(void *pParameters)
 {
   TaskParams_t* pData = (TaskParams_t*) pParameters;
   uint8_t data = 0;
+  static uint8_t open = 0;
 
   for (;;)
   {
-	data = DUTS_getChar(pData->uart);
-	//data = USART_Rx(UART0);
-    if (data == '\t')
+  	data = DUTS_getChar(pData->uart);
+  	//data = USART_Rx(UART0);
+    if (data == '\r') {
+      PRINT_open();
+      open = 1;
+    }
+    if (!open) /* do nothing */ ;
+    else if (data == '\t')
       PRINT_time(UART1,time( NULL ));
     else
       PRINT_Char(UART1,data);
+    if (data == '\n') {
+      PRINT_close();
+      open = 0;
+    }
   }
 }
 
@@ -167,7 +177,7 @@ int main(void)
   static TaskParams_t parametersToEFM32rx = { UART0 };
 
   
-  xTaskCreate( TASK_DutRx, (const char *) "EFM32rx", STACK_SIZE_FOR_TASK, &parametersToEFM32rx, TASK_PRIORITY, NULL);
+  xTaskCreate( TASK_DutRx, (const char *) "EFM32rx", STACK_SIZE_FOR_TASK, &parametersToEFM32rx, TASK_PRIORITY+1, NULL);
 
   xTaskCreate( TASK_LedBlink, (const char *) "LedBlink1", STACK_SIZE_FOR_TASK, NULL, TASK_PRIORITY, NULL);
 
