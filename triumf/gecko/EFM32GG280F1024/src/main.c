@@ -82,9 +82,9 @@ static void TASK_LedBlink(void *pParameters)
 
   for (;;)
   {
-    //GPIO_PortOutSetVal(LED_PORT, 1<<LED_PIN, 1<<LED_PIN);
-    //vTaskDelay(pdMS_TO_TICKS(100));
-    //GPIO_PortOutSetVal(LED_PORT, 0<<LED_PIN, 1<<LED_PIN);
+    //GPIO_PortOutSetVal(ENAVR_PORT, 1<<ENAVR_PIN, 1<<ENAVR_PIN);
+    //vTaskDelay(pdMS_TO_TICKS(5000));
+    //GPIO_PortOutSetVal(ENAVR_PORT, 0<<ENAVR_PIN, 1<<ENAVR_PIN);
     vTaskDelay(pdMS_TO_TICKS(1000));
     PRINT_time(UART1,time( NULL ));
     PRINT_Stringln(UART1,"\tHello world!");
@@ -145,22 +145,22 @@ int main(void)
   unsigned int sdcd = GPIO_PinInGet(SDCD_PORT,SDCD_PIN);
 
   PRINT_time(UART1,time( NULL ));
-  PRINT_Stringln(UART1,(char*)"HELLO");
+  PRINT_Stringln(UART1,(char*)"\tHELLO");
   if (sdcd) {
     PRINT_time(UART1,time( NULL ));
-    PRINT_Stringln(UART1,"SD Card detected!");
+    PRINT_Stringln(UART1,"\tSD Card detected!");
   }
   else {
     PRINT_time(UART1,time( NULL ));
-    PRINT_Stringln(UART1,"No SD Card detected!");
+    PRINT_Stringln(UART1,"\tNo SD Card detected!");
   }
 
   /* Prepare UART Rx and Tx interrupts */
   DUTS_initIRQs(UART0,UART0_RX_IRQn,UART0_TX_IRQn);
 
   GPIO_PinOutSet(ENARM_PORT,ENARM_PIN);
-  GPIO_PinOutSet(ENAVR_PORT,ENAVR_PIN);
-  GPIO_PinOutSet(ENRAM_PORT,ENRAM_PIN);
+  GPIO_PinOutClear(ENAVR_PORT,ENAVR_PIN);
+  GPIO_PinOutClear(ENRAM_PORT,ENRAM_PIN);
 
   
   static TaskParams_t parametersToEFM32rx = { UART0 };
