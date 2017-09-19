@@ -86,9 +86,9 @@ void PRINT_open(void)
     if(FATFS_append(&fsrc, FILENAME) == FR_OK) {
       busy = 0;
       open = 1;
-      PRINT_Stringln(UART1,"Opened SD card!");
+      PRINT_Stringln(UART1,"\nOpened SD card!\n");
     }
-    else PRINT_Stringln(UART1,"Failed to open SD card!");
+    else PRINT_Stringln(UART1,"\nFailed to open SD card!\n");
   }
 }
 
@@ -117,5 +117,6 @@ void PRINT_getBusy(void)
 
 void PRINT_releaseBusy(void)
 {
+	f_sync(&fsrc);
   busy = 0;
 }
