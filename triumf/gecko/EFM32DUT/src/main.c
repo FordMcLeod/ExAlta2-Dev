@@ -47,16 +47,16 @@ int main(void)
   while (1) {
     Delay(1000);
   	GPIO_PinOutSet(LED_PORT,LED_PIN);
-    PRINT_Stringln(USART0,"ram");
+    PRINT_Stringln(USART0,"\rram\n");
     RAM_test();
-    PRINT_Stringln(USART0,"fla");
+    PRINT_Stringln(USART0,"\rfla\n");
     crc = CRC_calc((void *) 0, (void *) flashSize);
     if (old_crc != crc) {
-      sprintf(buffer,"CRC:%x",crc);
+      sprintf(buffer,"\rCRC:%x\n",crc);
       PRINT_Stringln(USART0,buffer);
       old_crc = crc;
     }
-    PRINT_Stringln(USART0,"end");
+    PRINT_Stringln(USART0,"\rend\n");
     GPIO_PinOutClear(LED_PORT,LED_PIN);
   }
 }
@@ -67,11 +67,11 @@ void PRINT_Stringln(USART_TypeDef* uart, char* data)
   // avoid taking over other print calls
   int i = 0;
 
-  USART_Tx(uart,'\r');
+  //USART_Tx(uart,'\r');
   for(i = 0;data[i]!='\0';i++){
     USART_Tx(uart,data[i]);
   }
-  USART_Tx(uart,'\n');
+  //USART_Tx(uart,'\n');
 }
 
 
@@ -111,7 +111,7 @@ void RAM_test(void) {
     read = testMemArray[j];
     if (read != previous_write) {
       // delayed read
-      sprintf(buffer,"DR:%0x,%0x,%0x",j,read,previous_write);
+      sprintf(buffer,"\rDR:%0x,%0x,%0x\n",j,read,previous_write);
       PRINT_Stringln(USART0,buffer);
       ram_errors++; 
     }
@@ -119,12 +119,12 @@ void RAM_test(void) {
     read = testMemArray[j];
     if (read != next_write) {
       // instantaneous read
-      sprintf(buffer,"IR:%0x,%0x,%0x",j,read,previous_write);
+      sprintf(buffer,"\rIR:%0x,%0x,%0x\n",j,read,previous_write);
       PRINT_Stringln(USART0,buffer);
       ram_errors++;
     }
   }
-  sprintf(buffer,"RE:%u",ram_errors);
+  sprintf(buffer,"\rRE:%u\n",ram_errors);
   PRINT_Stringln(USART0,buffer);
 }
 

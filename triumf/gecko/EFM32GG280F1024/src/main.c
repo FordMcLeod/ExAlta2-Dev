@@ -71,6 +71,7 @@ static uint32_t resetcause = 0;
 typedef struct
 {
   /* Delay between blink of led */
+  uint8_t DUTnum;
   USART_TypeDef * uart;
 } TaskParams_t;
 
@@ -85,7 +86,7 @@ static void TASK_LedBlink(void *pParameters)
   for (;;)
   {
     //GPIO_PortOutSetVal(ENAVR_PORT, 1<<ENAVR_PIN, 1<<ENAVR_PIN);
-    vTaskDelay(pdMS_TO_TICKS(500));
+    vTaskDelay(pdMS_TO_TICKS(1000));
     //GPIO_PortOutSetVal(ENAVR_PORT, 0<<ENAVR_PIN, 1<<ENAVR_PIN);
     //vTaskDelay(pdMS_TO_TICKS(1000));
     PRINT_getBusy();
@@ -113,6 +114,8 @@ static void TASK_DutRx(void *pParameters)
       midLine = 1;
       PRINT_getBusy();
       PRINT_time(UART1,time( NULL ));
+      PRINT_Char(UART1,pData->DUTnum);
+      PRINT_Char(UART1,'\t');
     }
     else if (midLine) {
 	  PRINT_Char(UART1,data);
@@ -180,7 +183,7 @@ int main(void)
   GPIO_PinOutClear(ENRAM_PORT,ENRAM_PIN);
 
   
-  static TaskParams_t parametersToEFM32rx = { UART0 };
+  static TaskParams_t parametersToEFM32rx = { 'A', UART0 };
 
   
   xTaskCreate( TASK_DutRx, (const char *) "EFM32rx", STACK_SIZE_FOR_TASK, &parametersToEFM32rx, TASK_PRIORITY, NULL);
