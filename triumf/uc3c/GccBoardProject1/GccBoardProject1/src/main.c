@@ -68,7 +68,7 @@ int main (void)
 
 	board_init();
 
-	uint32_t flashSize = 64000;
+	uint32_t flashSize = 512000;
 
 	uint16_t crc     = 0;
 	uint16_t old_crc = 0;
