@@ -27,6 +27,7 @@
 
 #define BOARD_OSC0_HZ          20000000
 #define BOARD_OSC0_STARTUP_US    142000
+#define BOARD_OSC0_IS_XTAL		   true
 
 // External oscillator type.
 //!< External clock signal
