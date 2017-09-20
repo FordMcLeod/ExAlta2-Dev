@@ -9,6 +9,14 @@
     <property object="DefaultMode" propertyId="mode.diagramLocation" value="100, 100"/>
     <property object="GPIO" propertyId="ABPeripheral.included" value="true"/>
     <property object="I2C0" propertyId="ABPeripheral.included" value="true"/>
+    <property object="LFXO" propertyId="ABPeripheral.included" value="true"/>
+    <property object="LFXO" propertyId="lfxo.circuitcharacteristics.calculatedclpf" value="7.50"/>
+    <property object="LFXO" propertyId="lfxo.circuitcharacteristics.loadcapacitorcl1pf" value="10"/>
+    <property object="LFXO" propertyId="lfxo.circuitcharacteristics.loadcapacitorcl2pf" value="10"/>
+    <property object="LFXO" propertyId="lfxo.crystalcharacteristics.equivalentseriesresistanceincrystalesrmax" value="80000"/>
+    <property object="LFXO" propertyId="lfxo.crystalcharacteristics.shuntcapacitancepf" value="1"/>
+    <property object="LFXO" propertyId="lfxo.recommendedoscillatorboostsettings.lfxoboostpercent" value="70%"/>
+    <property object="LFXO" propertyId="lfxo.result.rnegesrmaxratio" value="15.386"/>
     <property object="PA5" propertyId="ports.settings.custompinname" value="SDCD"/>
     <property object="PA5" propertyId="ports.settings.pinmode" value="Input"/>
     <property object="PA7" propertyId="ports.settings.custompinname" value="ENARM"/>

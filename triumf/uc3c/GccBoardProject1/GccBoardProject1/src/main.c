@@ -73,7 +73,7 @@ int main (void)
 
 
 	uint16_t crc     = 0;
-	uint32_t iteration = 0;
+	unsigned int iteration = 0;
 	
 	static const gpio_map_t USART_GPIO_MAP =
 	{
