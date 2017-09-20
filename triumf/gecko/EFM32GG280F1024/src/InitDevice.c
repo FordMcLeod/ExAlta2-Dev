@@ -30,6 +30,7 @@
 //==============================================================================
 extern void enter_DefaultMode_from_RESET(void) {
 	// $[Config Calls]
+	LFXO_enter_DefaultMode_from_RESET();
 	CMU_enter_DefaultMode_from_RESET();
 	BURTC_enter_DefaultMode_from_RESET();
 	USART0_enter_DefaultMode_from_RESET();
@@ -57,9 +58,12 @@ extern void HFXO_enter_DefaultMode_from_RESET(void) {
 extern void LFXO_enter_DefaultMode_from_RESET(void) {
 
 	// $[Use oscillator source]
+	CMU->CTRL = (CMU->CTRL & ~_CMU_CTRL_LFXOMODE_MASK) | CMU_CTRL_LFXOMODE_XTAL;
 	// [Use oscillator source]$
 
 	// $[LFXO Boost Percent]
+	CMU->CTRL = (CMU->CTRL & ~_CMU_CTRL_LFXOBOOST_MASK)
+			| CMU_CTRL_LFXOBOOST_70PCENT;
 	// [LFXO Boost Percent]$
 
 	// $[REDLFXO Boost]
@@ -73,9 +77,11 @@ extern void LFXO_enter_DefaultMode_from_RESET(void) {
 extern void CMU_enter_DefaultMode_from_RESET(void) {
 
 	// $[LFXO enable]
+	CMU_OscillatorEnable(cmuOsc_LFXO, true, true);
 	// [LFXO enable]$
 
 	// $[HFXO enable]
+	CMU_OscillatorEnable(cmuOsc_HFXO, true, true);
 	// [HFXO enable]$
 
 	// $[LFACLK Setup]
