@@ -36,6 +36,8 @@
 #include <usart.h>
 #include <stdio.h>
 #include <stdint.h>
+#include <common_nvm.h>
+
 
 #  define USART                 (&AVR32_USART0)
 #  define USART_RX_PIN          AVR32_USART0_RXD_2_PIN
@@ -60,7 +62,7 @@ char buffer[BUFFER_SIZE] = {0};
 void PRINT_Stringln(char* data);
 void Delay(uint16_t milliseconds);
 void RAM_test(void);
-uint16_t CRC_calc(uint8_t *start, uint8_t *end);
+uint16_t CRC_calc(uint32_t start, uint32_t end);
 
 int main (void)
 {
@@ -68,10 +70,10 @@ int main (void)
 
 	board_init();
 
-	uint32_t flashSize = 512000;
+
 
 	uint16_t crc     = 0;
-	uint16_t old_crc = 0;
+	uint32_t iteration = 0;
 	
 	static const gpio_map_t USART_GPIO_MAP =
 	{
@@ -96,7 +98,7 @@ int main (void)
 	// Initialize USART in RS232 mode.
 	usart_init_rs232(USART, &USART_OPTIONS, TARGET_PBACLK_FREQ_HZ);
 	
-	
+	usart_write_line(USART,"\rboot\n");
 
 	/* Insert application code here, after the board has been initialized. */
 	
@@ -105,31 +107,20 @@ int main (void)
 
 	  /* Infinite loop */
   while (1) {
-    delay_ms(1000);
   	gpio_set_pin_high(AVR32_PIN_PA19);
-    PRINT_Stringln("\rram\n");
+    usart_write_line(USART,"\rram\n");
     RAM_test();
-    PRINT_Stringln("\rfla\n");
-    crc = CRC_calc((void *) 0, (void *) flashSize);
-    if (old_crc != crc) {
-      sprintf(buffer,"\rCRC:%x\n",crc);
-      PRINT_Stringln(buffer);
-      old_crc = crc;
-    }
-    PRINT_Stringln("\rend\n");
+    usart_write_line(USART,"\rfla\n");
+	crc = CRC_calc(AVR32_FLASH_ADDRESS,AVR32_FLASH_ADDRESS+AVR32_FLASH_SIZE);
+    sprintf(buffer,"\rCRC:%x\n",crc);
+    usart_write_line(USART,buffer);
+	sprintf(buffer,"\rend%u\n",iteration++);
+    usart_write_line(USART,buffer);
     gpio_set_pin_low(AVR32_PIN_PA19);
   }
 }
 
-void PRINT_Stringln(char* data)
-{
-  // avoid taking over other print calls
-  int i = 0;
 
-  for(i = 0;data[i]!='\0';i++){
-    usart_write_line(USART, &data[i]);
-  }
-}
 
 void RAM_test(void) {
   word read = 0;
@@ -141,7 +132,7 @@ void RAM_test(void) {
     if (read != previous_write) {
       // delayed read
       sprintf(buffer,"\rDR:%0x,%0x,%0x\n",j,read,previous_write);
-      PRINT_Stringln(buffer);
+      usart_write_line(USART,buffer);
       ram_errors++; 
     }
     testMemArray[j]= next_write;
@@ -149,24 +140,26 @@ void RAM_test(void) {
     if (read != next_write) {
       // instantaneous read
       sprintf(buffer,"\rIR:%0x,%0x,%0x\n",j,read,previous_write);
-      PRINT_Stringln(buffer);
+      usart_write_line(USART,buffer);
       ram_errors++;
     }
   }
   sprintf(buffer,"\rRE:%u\n",ram_errors);
-  PRINT_Stringln(buffer);
+  usart_write_line(USART,buffer);
 }
 
 
-uint16_t CRC_calc(uint8_t *start, uint8_t *end)
+uint16_t CRC_calc(uint32_t start, uint32_t end)
 {
   uint16_t crc = 0x0;
-  uint8_t  *data;
+  uint32_t  address;
+  uint8_t  data = 0;
 
-  for (data = start; data < end; data++)
+  for (address = start; address < end; address++)
   {
     crc  = (crc >> 8) | (crc << 8);
-    crc ^= *data;
+	nvm_read_char(INT_FLASH, address, &data);
+    crc ^= data;
     crc ^= (crc & 0xff) >> 4;
     crc ^= crc << 12;
     crc ^= (crc & 0xff) << 5;

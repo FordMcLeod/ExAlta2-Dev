@@ -96,6 +96,18 @@ static void TASK_LedBlink(void *pParameters)
   }
 }
 
+static void TASK_getCurr(void *pParameters)
+{
+
+  for (;;)
+  {
+    //GPIO_PortOutSetVal(ENAVR_PORT, 1<<ENAVR_PIN, 1<<ENAVR_PIN);
+    vTaskDelay(pdMS_TO_TICKS(100));
+    //GPIO_PortOutSetVal(ENAVR_PORT, 0<<ENAVR_PIN, 1<<ENAVR_PIN);
+    //vTaskDelay(pdMS_TO_TICKS(1000));
+  }
+}
+
 /**************************************************************************//**
  * @brief Simple task which is blinking led
  * @param *pParameters pointer to parameters passed to the function
@@ -189,6 +201,8 @@ int main(void)
   xTaskCreate( TASK_DutRx, (const char *) "EFM32rx", STACK_SIZE_FOR_TASK, &parametersToEFM32rx, TASK_PRIORITY, NULL);
 
   xTaskCreate( TASK_LedBlink, (const char *) "LedBlink1", STACK_SIZE_FOR_TASK, NULL, TASK_PRIORITY, NULL);
+
+  xTaskCreate( TASK_getCurr, (const char *) "getCurr", STACK_SIZE_FOR_TASK, NULL, TASK_PRIORITY, NULL);
 
   /*Start FreeRTOS Scheduler*/
   vTaskStartScheduler();

@@ -36,7 +36,7 @@ int main(void)
   uint32_t flashSize = 0;
 
   uint16_t crc     = 0;
-  uint16_t old_crc = 0;
+  uint32_t iteration = 0;
 
   /* Find the size of the flash. DEVINFO->MSIZE is the
    * size in KB so left shift by 10. */
@@ -51,12 +51,10 @@ int main(void)
     RAM_test();
     PRINT_Stringln(USART0,"\rfla\n");
     crc = CRC_calc((void *) 0, (void *) flashSize);
-    if (old_crc != crc) {
-      sprintf(buffer,"\rCRC:%x\n",crc);
-      PRINT_Stringln(USART0,buffer);
-      old_crc = crc;
-    }
-    PRINT_Stringln(USART0,"\rend\n");
+    sprintf(buffer,"\rCRC:%x\n",crc);
+    PRINT_Stringln(buffer);
+    sprintf(buffer,"\rend%u\n",iteration++);
+    PRINT_Stringln(buffer);
     GPIO_PinOutClear(LED_PORT,LED_PIN);
   }
 }

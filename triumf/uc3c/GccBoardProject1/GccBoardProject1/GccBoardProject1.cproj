@@ -30,10 +30,11 @@
       <framework-data>
   <options>
     <option id="avr32.drivers.gpio" value="Add" config="" content-id="Atmel.ASF" />
+    <option id="avr32.drivers.pm" value="Add" config="" content-id="Atmel.ASF" />
     <option id="avr32.drivers.usart" value="Add" config="" content-id="Atmel.ASF" />
     <option id="common.boards" value="Add" config="" content-id="Atmel.ASF" />
     <option id="common.services.delay" value="Add" config="" content-id="Atmel.ASF" />
-    <option id="avr32.drivers.pm" value="Add" config="" content-id="Atmel.ASF" />
+    <option id="common.drivers.nvm" value="Add" config="no_extmem" content-id="Atmel.ASF" />
   </options>
   <configurations>
     <configuration key="config.avr32.utils.trampoline" value="yes" default="yes" content-id="Atmel.ASF" />
@@ -94,6 +95,10 @@
     <file path="src/ASF/avr32/drivers/pm/sleep.h" framework="" version="3.32.0" source="avr32\drivers\pm\sleep.h" changed="False" content-id="Atmel.ASF" />
     <file path="src/ASF/avr32/drivers/scif/scif_uc3c.c" framework="" version="3.32.0" source="avr32\drivers\scif\scif_uc3c.c" changed="False" content-id="Atmel.ASF" />
     <file path="src/ASF/avr32/drivers/scif/scif_uc3c.h" framework="" version="3.32.0" source="avr32\drivers\scif\scif_uc3c.h" changed="False" content-id="Atmel.ASF" />
+    <file path="src/ASF/common/drivers/nvm/uc3/uc3_nvm.c" framework="" version="3.32.0" source="common\drivers\nvm\uc3\uc3_nvm.c" changed="False" content-id="Atmel.ASF" />
+    <file path="src/ASF/common/drivers/nvm/uc3/flash_api.h" framework="" version="3.32.0" source="common\drivers\nvm\uc3\flash_api.h" changed="False" content-id="Atmel.ASF" />
+    <file path="src/ASF/common/drivers/nvm/common_nvm.h" framework="" version="3.32.0" source="common\drivers\nvm\common_nvm.h" changed="False" content-id="Atmel.ASF" />
+    <file path="src/Config/conf_nvm.h" framework="" version="3.32.0" source="common\drivers\nvm\uc3\module_config\conf_nvm.h" changed="False" content-id="Atmel.ASF" />
   </files>
   <documentation help="http://asf.atmel.com/docs/3.32.0/common.applications.user_application.user_board.uc3c/html/index.html" />
   <offline-documentation help="" />
@@ -153,6 +158,7 @@
       <Value>../src/ASF/avr32/drivers/usart</Value>
       <Value>../src/ASF/avr32/drivers/pm</Value>
       <Value>../src/ASF/avr32/drivers/scif</Value>
+      <Value>../src/ASF/common/drivers/nvm</Value>
     </ListValues>
   </avr32gcc.compiler.directories.IncludePaths>
   <avr32gcc.compiler.optimization.level>Optimize for size (-Os)</avr32gcc.compiler.optimization.level>
@@ -191,6 +197,7 @@
       <Value>../src/ASF/avr32/drivers/usart</Value>
       <Value>../src/ASF/avr32/drivers/pm</Value>
       <Value>../src/ASF/avr32/drivers/scif</Value>
+      <Value>../src/ASF/common/drivers/nvm</Value>
     </ListValues>
   </avr32gcc.assembler.general.IncludePaths>
   <avr32gcc.preprocessingassembler.general.AssemblerFlags>-mrelax -DBOARD=USER_BOARD</avr32gcc.preprocessingassembler.general.AssemblerFlags>
@@ -213,6 +220,7 @@
       <Value>../src/ASF/avr32/drivers/usart</Value>
       <Value>../src/ASF/avr32/drivers/pm</Value>
       <Value>../src/ASF/avr32/drivers/scif</Value>
+      <Value>../src/ASF/common/drivers/nvm</Value>
     </ListValues>
   </avr32gcc.preprocessingassembler.general.IncludePaths>
 </Avr32Gcc>
@@ -250,6 +258,7 @@
       <Value>../src/ASF/avr32/drivers/usart</Value>
       <Value>../src/ASF/avr32/drivers/pm</Value>
       <Value>../src/ASF/avr32/drivers/scif</Value>
+      <Value>../src/ASF/common/drivers/nvm</Value>
     </ListValues>
   </avr32gcc.compiler.directories.IncludePaths>
   <avr32gcc.compiler.optimization.level>Optimize (-O1)</avr32gcc.compiler.optimization.level>
@@ -289,6 +298,7 @@
       <Value>../src/ASF/avr32/drivers/usart</Value>
       <Value>../src/ASF/avr32/drivers/pm</Value>
       <Value>../src/ASF/avr32/drivers/scif</Value>
+      <Value>../src/ASF/common/drivers/nvm</Value>
     </ListValues>
   </avr32gcc.assembler.general.IncludePaths>
   <avr32gcc.assembler.debugging.DebugLevel>Default (-g)</avr32gcc.assembler.debugging.DebugLevel>
@@ -312,6 +322,7 @@
       <Value>../src/ASF/avr32/drivers/usart</Value>
       <Value>../src/ASF/avr32/drivers/pm</Value>
       <Value>../src/ASF/avr32/drivers/scif</Value>
+      <Value>../src/ASF/common/drivers/nvm</Value>
     </ListValues>
   </avr32gcc.preprocessingassembler.general.IncludePaths>
   <avr32gcc.preprocessingassembler.debugging.DebugLevel>Default (-Wa,-g)</avr32gcc.preprocessingassembler.debugging.DebugLevel>
@@ -339,6 +350,9 @@
     <Folder Include="src\ASF\common\" />
     <Folder Include="src\ASF\common\boards\" />
     <Folder Include="src\ASF\common\boards\user_board\" />
+    <Folder Include="src\ASF\common\drivers\" />
+    <Folder Include="src\ASF\common\drivers\nvm\" />
+    <Folder Include="src\ASF\common\drivers\nvm\uc3\" />
     <Folder Include="src\ASF\common\services\" />
     <Folder Include="src\ASF\common\services\clock\" />
     <Folder Include="src\ASF\common\services\clock\uc3c\" />
@@ -405,6 +419,15 @@
     <None Include="src\ASF\avr32\drivers\usart\usart.h">
       <SubType>compile</SubType>
     </None>
+    <None Include="src\ASF\common\drivers\nvm\uc3\flash_api.h">
+      <SubType>compile</SubType>
+    </None>
+    <None Include="src\ASF\common\drivers\nvm\common_nvm.h">
+      <SubType>compile</SubType>
+    </None>
+    <Compile Include="src\ASF\common\drivers\nvm\uc3\uc3_nvm.c">
+      <SubType>compile</SubType>
+    </Compile>
     <Compile Include="src\ASF\common\services\clock\uc3c\osc.c">
       <SubType>compile</SubType>
     </Compile>
@@ -504,6 +527,9 @@
     <Compile Include="src\ASF\common\boards\user_board\init.c">
       <SubType>compile</SubType>
     </Compile>
+    <None Include="src\config\conf_nvm.h">
+      <SubType>compile</SubType>
+    </None>
     <Compile Include="src\main.c">
       <SubType>compile</SubType>
     </Compile>
