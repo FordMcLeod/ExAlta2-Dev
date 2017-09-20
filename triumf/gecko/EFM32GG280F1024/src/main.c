@@ -179,8 +179,8 @@ int main(void)
   DUTS_initIRQs(UART0,UART0_RX_IRQn,UART0_TX_IRQn);
 
   GPIO_PinOutSet(ENARM_PORT,ENARM_PIN);
-  GPIO_PinOutClear(ENAVR_PORT,ENAVR_PIN);
-  GPIO_PinOutClear(ENRAM_PORT,ENRAM_PIN);
+  GPIO_PinOutSet(ENAVR_PORT,ENAVR_PIN);
+  GPIO_PinOutSet(ENRAM_PORT,ENRAM_PIN);
 
   
   static TaskParams_t parametersToEFM32rx = { 'A', UART0 };
