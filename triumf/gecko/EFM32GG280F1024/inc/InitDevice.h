@@ -64,6 +64,12 @@ extern void PORTIO_enter_DefaultMode_from_RESET(void);
 #define ENRAM_PIN           (5)
 #define ENRAM_PORT          (gpioPortC)
 
+#define I2C0_SCL_PIN        (1)
+#define I2C0_SCL_PORT       (gpioPortC)
+
+#define I2C0_SDA_PIN        (0)
+#define I2C0_SDA_PORT       (gpioPortC)
+
 #define LED_PIN             (12)
 #define LED_PORT            (gpioPortC)
 
