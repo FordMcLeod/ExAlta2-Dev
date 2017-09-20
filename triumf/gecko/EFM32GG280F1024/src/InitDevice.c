@@ -22,7 +22,6 @@
 #include "em_burtc.h"
 #include "em_rmu.h"
 #include "em_gpio.h"
-#include "em_i2c.h"
 #include "em_usart.h"
 // [Library includes]$
 
@@ -34,9 +33,9 @@ extern void enter_DefaultMode_from_RESET(void) {
 	CMU_enter_DefaultMode_from_RESET();
 	BURTC_enter_DefaultMode_from_RESET();
 	USART0_enter_DefaultMode_from_RESET();
+	USART1_enter_DefaultMode_from_RESET();
 	UART0_enter_DefaultMode_from_RESET();
 	UART1_enter_DefaultMode_from_RESET();
-	I2C0_enter_DefaultMode_from_RESET();
 	PORTIO_enter_DefaultMode_from_RESET();
 	// [Config Calls]$
 
@@ -95,9 +94,6 @@ extern void CMU_enter_DefaultMode_from_RESET(void) {
 	/* No LF peripherals enabled */
 	// [LF clock tree setup]$
 	// $[Peripheral Clock enables]
-	/* Enable clock for I2C0 */
-	CMU_ClockEnable(cmuClock_I2C0, true);
-
 	/* Enable clock for UART0 */
 	CMU_ClockEnable(cmuClock_UART0, true);
 
@@ -106,6 +102,9 @@ extern void CMU_enter_DefaultMode_from_RESET(void) {
 
 	/* Enable clock for USART0 */
 	CMU_ClockEnable(cmuClock_USART0, true);
+
+	/* Enable clock for USART1 */
+	CMU_ClockEnable(cmuClock_USART1, true);
 
 	/* Enable clock for GPIO by default */
 	CMU_ClockEnable(cmuClock_GPIO, true);
@@ -306,12 +305,33 @@ extern void USART0_enter_DefaultMode_from_RESET(void) {
 extern void USART1_enter_DefaultMode_from_RESET(void) {
 
 	// $[USART_InitAsync]
+	USART_InitAsync_TypeDef initasync = USART_INITASYNC_DEFAULT;
+
+	initasync.baudrate = 115200;
+	initasync.databits = usartDatabits8;
+	initasync.parity = usartNoParity;
+	initasync.stopbits = usartStopbits1;
+	initasync.oversampling = usartOVS16;
+#if defined( USART_INPUT_RXPRS ) && defined( USART_CTRL_MVDIS )
+	initasync.mvdis = 0;
+	initasync.prsRxEnable = 0;
+	initasync.prsRxCh = 0;
+#endif
+
+	USART_InitAsync(USART1, &initasync);
 	// [USART_InitAsync]$
 
 	// $[USART_InitSync]
 	// [USART_InitSync]$
 
 	// $[USART_InitPrsTrigger]
+	USART_PrsTriggerInit_TypeDef initprs = USART_INITPRSTRIGGER_DEFAULT;
+
+	initprs.rxTriggerEnable = 0;
+	initprs.txTriggerEnable = 0;
+	initprs.prsTriggerChannel = usartPrsTriggerCh0;
+
+	USART_InitPrsTrigger(USART1, &initprs);
 	// [USART_InitPrsTrigger]$
 
 }
@@ -452,13 +472,6 @@ extern void WDOG_enter_DefaultMode_from_RESET(void) {
 extern void I2C0_enter_DefaultMode_from_RESET(void) {
 
 	// $[I2C0 initialization]
-	I2C_Init_TypeDef init = I2C_INIT_DEFAULT;
-
-	init.enable = 1;
-	init.master = 1;
-	init.freq = I2C_FREQ_STANDARD_MAX;
-	init.clhr = i2cClockHLRStandard;
-	I2C_Init(I2C0, &init);
 	// [I2C0 initialization]$
 
 }
@@ -643,14 +656,6 @@ extern void PORTIO_enter_DefaultMode_from_RESET(void) {
 
 	// $[Port C Configuration]
 
-	/* Pin PC0 is configured to Open-drain with pull-up and filter */
-	GPIO->P[2].MODEL = (GPIO->P[2].MODEL & ~_GPIO_P_MODEL_MODE0_MASK)
-			| GPIO_P_MODEL_MODE0_WIREDANDPULLUPFILTER;
-
-	/* Pin PC1 is configured to Open-drain with pull-up and filter */
-	GPIO->P[2].MODEL = (GPIO->P[2].MODEL & ~_GPIO_P_MODEL_MODE1_MASK)
-			| GPIO_P_MODEL_MODE1_WIREDANDPULLUPFILTER;
-
 	/* Pin PC3 is configured to Push-pull */
 	GPIO->P[2].MODEL = (GPIO->P[2].MODEL & ~_GPIO_P_MODEL_MODE3_MASK)
 			| GPIO_P_MODEL_MODE3_PUSHPULL;
@@ -665,6 +670,14 @@ extern void PORTIO_enter_DefaultMode_from_RESET(void) {
 	// [Port C Configuration]$
 
 	// $[Port D Configuration]
+
+	/* Pin PD0 is configured to Push-pull */
+	GPIO->P[3].MODEL = (GPIO->P[3].MODEL & ~_GPIO_P_MODEL_MODE0_MASK)
+			| GPIO_P_MODEL_MODE0_PUSHPULL;
+
+	/* Pin PD1 is configured to Input enabled */
+	GPIO->P[3].MODEL = (GPIO->P[3].MODEL & ~_GPIO_P_MODEL_MODE1_MASK)
+			| GPIO_P_MODEL_MODE1_INPUT;
 
 	/* Pin PD4 is configured to Push-pull */
 	GPIO->P[3].DOUT |= (1 << 4);
@@ -712,13 +725,6 @@ extern void PORTIO_enter_DefaultMode_from_RESET(void) {
 
 	// $[Route Configuration]
 
-	/* Module I2C0 is configured to location 4 */
-	I2C0->ROUTE = (I2C0->ROUTE & ~_I2C_ROUTE_LOCATION_MASK)
-			| I2C_ROUTE_LOCATION_LOC4;
-
-	/* Enable signals SCL, SDA */
-	I2C0->ROUTE |= I2C_ROUTE_SCLPEN | I2C_ROUTE_SDAPEN;
-
 	/* Module UART0 is configured to location 1 */
 	UART0->ROUTE = (UART0->ROUTE & ~_UART_ROUTE_LOCATION_MASK)
 			| UART_ROUTE_LOCATION_LOC1;
@@ -736,6 +742,13 @@ extern void PORTIO_enter_DefaultMode_from_RESET(void) {
 	/* Enable signals CLK, CS, RX, TX */
 	USART0->ROUTE |= USART_ROUTE_CLKPEN | USART_ROUTE_CSPEN | USART_ROUTE_RXPEN
 			| USART_ROUTE_TXPEN;
+
+	/* Module USART1 is configured to location 1 */
+	USART1->ROUTE = (USART1->ROUTE & ~_USART_ROUTE_LOCATION_MASK)
+			| USART_ROUTE_LOCATION_LOC1;
+
+	/* Enable signals RX, TX */
+	USART1->ROUTE |= USART_ROUTE_RXPEN | USART_ROUTE_TXPEN;
 	// [Route Configuration]$
 
 }

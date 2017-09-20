@@ -106,7 +106,7 @@ void budSetup(void)
 
   /*Setup EM4 configuration structure */
   em4Init.lockConfig = true;
-  em4Init.osc = emuEM4Osc_LFXO;
+  em4Init.osc = emuEM4Osc_LFRCO;
   em4Init.buRtcWakeup = false;
   em4Init.vreg = true;
 
@@ -140,7 +140,7 @@ void budSetup(void)
 void clockSetup(uint32_t resetcause)
 {
   /* Configure Backup Domain */
-  budSetup();
+  //budSetup();
 
 
 

@@ -64,12 +64,6 @@ extern void PORTIO_enter_DefaultMode_from_RESET(void);
 #define ENRAM_PIN           (5)
 #define ENRAM_PORT          (gpioPortC)
 
-#define I2C0_SCL_PIN        (1)
-#define I2C0_SCL_PORT       (gpioPortC)
-
-#define I2C0_SDA_PIN        (0)
-#define I2C0_SDA_PORT       (gpioPortC)
-
 #define LED_PIN             (12)
 #define LED_PORT            (gpioPortC)
 
@@ -102,6 +96,12 @@ extern void PORTIO_enter_DefaultMode_from_RESET(void);
 
 #define USART0_TX_PIN       (10)
 #define USART0_TX_PORT      (gpioPortE)
+
+#define USART1_RX_PIN       (1)
+#define USART1_RX_PORT      (gpioPortD)
+
+#define USART1_TX_PIN       (0)
+#define USART1_TX_PORT      (gpioPortD)
 
 // [User-defined pin name abstraction]$
 
