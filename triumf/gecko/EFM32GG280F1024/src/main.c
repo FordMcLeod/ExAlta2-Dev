@@ -188,17 +188,23 @@ int main(void)
   }
 
   /* Prepare UART Rx and Tx interrupts */
-  DUTS_initIRQs(UART0,UART0_RX_IRQn,UART0_TX_IRQn);
+  //DUTS_initIRQs(UART0,UART0_RX_IRQn);
+  //DUTS_initIRQs(USART1,USART1_RX_IRQn);
+  DUTS_initIRQs(USART2,USART2_RX_IRQn);
 
-  GPIO_PinOutSet(ENARM_PORT,ENARM_PIN);
-  GPIO_PinOutClear(ENAVR_PORT,ENAVR_PIN);
-  GPIO_PinOutClear(ENRAM_PORT,ENRAM_PIN);
+  //GPIO_PinOutSet(ENARM_PORT,ENARM_PIN);
+  //GPIO_PinOutSet(ENAVR_PORT,ENAVR_PIN);
+  GPIO_PinOutSet(ENRAM_PORT,ENRAM_PIN);
 
   
-  static TaskParams_t parametersToEFM32rx = { 'A', UART0 };
+  static TaskParams_t parametersToArx = { 'A', UART0 };
+  static TaskParams_t parametersToBrx = { 'B', USART1 };
+  static TaskParams_t parametersToCrx = { 'C', USART2 };
 
   
-  xTaskCreate( TASK_DutRx, (const char *) "EFM32rx", STACK_SIZE_FOR_TASK, &parametersToEFM32rx, TASK_PRIORITY, NULL);
+  xTaskCreate( TASK_DutRx, (const char *) "Arx", STACK_SIZE_FOR_TASK, &parametersToArx, TASK_PRIORITY, NULL);
+  xTaskCreate( TASK_DutRx, (const char *) "Brx", STACK_SIZE_FOR_TASK, &parametersToBrx, TASK_PRIORITY, NULL);
+  xTaskCreate( TASK_DutRx, (const char *) "Crx", STACK_SIZE_FOR_TASK, &parametersToCrx, TASK_PRIORITY, NULL);
 
   xTaskCreate( TASK_LedBlink, (const char *) "LedBlink1", STACK_SIZE_FOR_TASK, NULL, TASK_PRIORITY, NULL);
 

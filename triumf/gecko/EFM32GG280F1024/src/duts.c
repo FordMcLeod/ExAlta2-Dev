@@ -60,43 +60,61 @@ void UART0_RX_IRQHandler(void)
 /**************************************************************************//**
  * @brief UART0 TX IRQ Handler
  *****************************************************************************/
-void UART0_TX_IRQHandler(void)
+void USART1_RX_IRQHandler(void)
 {
-  /* Clear interrupt flags by reading them. */
-  USART_IntGet(UART0);
-
-  /* Check TX buffer level status */
-  if (UART0->STATUS & UART_STATUS_TXBL)
+  /* Check for RX data valid interrupt */
+  if (USART1->STATUS & UART_STATUS_RXDATAV)
   {
-    if (txBuf_UART0.pendingBytes > 0)
+    /* Copy data into RX Buffer */
+    uint8_t rxData = USART_Rx(USART1);
+    rxBuf_USART1.data[rxBuf_USART1.wrI] = rxData;
+    rxBuf_USART1.wrI = (rxBuf_USART1.wrI + 1) % BUFFERSIZE;
+    rxBuf_USART1.pendingBytes++;
+
+    /* Flag Rx overflow */
+    if (rxBuf_USART1.pendingBytes > BUFFERSIZE)
     {
-      /* Transmit pending character */
-      USART_Tx(UART0, txBuf_UART0.data[txBuf_UART0.rdI]);
-      txBuf_UART0.rdI = (txBuf_UART0.rdI + 1) % BUFFERSIZE;
-      txBuf_UART0.pendingBytes--;
+    	rxBuf_USART1.overflow = true;
     }
 
-    /* Disable Tx interrupt if no more bytes in queue */
-    if (txBuf_UART0.pendingBytes == 0)
-    {
-      USART_IntDisable(UART0, UART_IF_TXBL);
-    }
+    /* Clear RXDATAV interrupt */
+    USART_IntClear(USART1, USART_IF_RXDATAV);
   }
 }
 
-void DUTS_initIRQs(USART_TypeDef* uart, IRQn_Type rxIRQn, IRQn_Type txIRQn)
+/**************************************************************************//**
+ * @brief UART0 TX IRQ Handler
+ *****************************************************************************/
+void USART2_RX_IRQHandler(void)
+{
+  /* Check for RX data valid interrupt */
+  if (USART2->STATUS & UART_STATUS_RXDATAV)
+  {
+    /* Copy data into RX Buffer */
+    uint8_t rxData = USART_Rx(USART2);
+    rxBuf_USART2.data[rxBuf_USART2.wrI] = rxData;
+    rxBuf_USART2.wrI = (rxBuf_USART2.wrI + 1) % BUFFERSIZE;
+    rxBuf_USART2.pendingBytes++;
+
+    /* Flag Rx overflow */
+    if (rxBuf_USART2.pendingBytes > BUFFERSIZE)
+    {
+      rxBuf_USART2.overflow = true;
+    }
+
+    /* Clear RXDATAV interrupt */
+    USART_IntClear(USART2, USART_IF_RXDATAV);
+  }
+}
+
+
+void DUTS_initIRQs(USART_TypeDef* uart, IRQn_Type rxIRQn)
 {
   /* Prepare UART Rx and Tx interrupts */
   USART_IntClear(uart, _UART_IF_MASK);
   USART_IntEnable(uart, UART_IF_RXDATAV);
-  if (rxIRQn != 0) {
-  	NVIC_ClearPendingIRQ(rxIRQn);
-  	NVIC_EnableIRQ(rxIRQn);
-  }
-  if (txIRQn != 0) {
-  	NVIC_ClearPendingIRQ(txIRQn);
-  	NVIC_EnableIRQ(txIRQn);
-  }
+  NVIC_ClearPendingIRQ(rxIRQn);
+  NVIC_EnableIRQ(rxIRQn);
 }
 
 

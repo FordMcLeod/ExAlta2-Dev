@@ -64,7 +64,7 @@ extern void LFXO_enter_DefaultMode_from_RESET(void) {
 
 	// $[LFXO Boost Percent]
 	CMU->CTRL = (CMU->CTRL & ~_CMU_CTRL_LFXOBOOST_MASK)
-			| CMU_CTRL_LFXOBOOST_70PCENT;
+			| CMU_CTRL_LFXOBOOST_100PCENT;
 	// [LFXO Boost Percent]$
 
 	// $[REDLFXO Boost]

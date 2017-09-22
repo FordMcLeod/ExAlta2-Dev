@@ -11,7 +11,7 @@
 
 #include "em_usart.h"
 
-void DUTS_initIRQs(USART_TypeDef*, IRQn_Type, IRQn_Type);
+void DUTS_initIRQs(USART_TypeDef* uart, IRQn_Type rxIRQn);
 uint8_t DUTS_getChar(USART_TypeDef*);
 void DUTS_PutChar(uint8_t, USART_TypeDef*);
 
