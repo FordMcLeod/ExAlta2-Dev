@@ -70,7 +70,6 @@ static uint32_t resetcause = 0;
 /* Structure with parameters for DutRx */
 typedef struct
 {
-  /* Delay between blink of led */
   uint8_t DUTnum;
   USART_TypeDef * uart;
 } TaskParams_t;
@@ -85,13 +84,13 @@ static void TASK_LedBlink(void *pParameters)
 
   for (;;)
   {
-    //GPIO_PortOutSetVal(ENAVR_PORT, 1<<ENAVR_PIN, 1<<ENAVR_PIN);
-    vTaskDelay(pdMS_TO_TICKS(1000));
-    //GPIO_PortOutSetVal(ENAVR_PORT, 0<<ENAVR_PIN, 1<<ENAVR_PIN);
-    //vTaskDelay(pdMS_TO_TICKS(1000));
+    GPIO_PortOutSetVal(LED_PORT, 1<<LED_PIN, 1<<LED_PIN);
+    vTaskDelay(pdMS_TO_TICKS(200));
+    GPIO_PortOutSetVal(LED_PORT, 0<<LED_PIN, 1<<LED_PIN);
+    vTaskDelay(pdMS_TO_TICKS(200));
     PRINT_getBusy();
-    PRINT_time(UART1,time( NULL ));
-    PRINT_Stringln(UART1,"\tHello world!\n");
+    PRINT_time(LEUART0,time( NULL ));
+    PRINT_Stringln(LEUART0,"\tHello world!\n");
     PRINT_releaseBusy();
   }
 }
@@ -169,32 +168,32 @@ int main(void)
   NVIC_EnableIRQ( BURTC_IRQn );
 
   /* Initialize SD card and FATFS */
-  MICROSD_Init();
-  FATFS_Init();
+  //MICROSD_Init();
+  //FATFS_Init();
 
-  unsigned int sdcd = GPIO_PinInGet(SDCD_PORT,SDCD_PIN);
+  unsigned int sdcd = GPIO_PinInGet(SD_CD_PORT,SD_CD_PIN);
 
   PRINT_open();
 
-  PRINT_time(UART1,time( NULL ));
-  PRINT_Stringln(UART1,(char*)"\tHELLO");
+  PRINT_time(LEUART0,time( NULL ));
+  PRINT_Stringln(LEUART0,(char*)"\tHELLO");
   if (sdcd) {
-    PRINT_time(UART1,time( NULL ));
-    PRINT_Stringln(UART1,"\tSD Card detected!");
+    PRINT_time(LEUART0,time( NULL ));
+    PRINT_Stringln(LEUART0,"\tSD Card detected!");
   }
   else {
-    PRINT_time(UART1,time( NULL ));
-    PRINT_Stringln(UART1,"\tNo SD Card detected!");
+    PRINT_time(LEUART0,time( NULL ));
+    PRINT_Stringln(LEUART0,"\tNo SD Card detected!");
   }
 
   /* Prepare UART Rx and Tx interrupts */
   //DUTS_initIRQs(UART0,UART0_RX_IRQn);
   //DUTS_initIRQs(USART1,USART1_RX_IRQn);
-  DUTS_initIRQs(USART2,USART2_RX_IRQn);
+  //DUTS_initIRQs(USART2,USART2_RX_IRQn);
 
   //GPIO_PinOutSet(ENARM_PORT,ENARM_PIN);
   //GPIO_PinOutSet(ENAVR_PORT,ENAVR_PIN);
-  GPIO_PinOutSet(ENRAM_PORT,ENRAM_PIN);
+  //GPIO_PinOutSet(ENRAM_PORT,ENRAM_PIN);
 
   
   static TaskParams_t parametersToArx = { 'A', UART0 };
@@ -202,13 +201,13 @@ int main(void)
   static TaskParams_t parametersToCrx = { 'C', USART2 };
 
   
-  xTaskCreate( TASK_DutRx, (const char *) "Arx", STACK_SIZE_FOR_TASK, &parametersToArx, TASK_PRIORITY, NULL);
-  xTaskCreate( TASK_DutRx, (const char *) "Brx", STACK_SIZE_FOR_TASK, &parametersToBrx, TASK_PRIORITY, NULL);
-  xTaskCreate( TASK_DutRx, (const char *) "Crx", STACK_SIZE_FOR_TASK, &parametersToCrx, TASK_PRIORITY, NULL);
+  //xTaskCreate( TASK_DutRx, (const char *) "Arx", STACK_SIZE_FOR_TASK, &parametersToArx, TASK_PRIORITY, NULL);
+  //xTaskCreate( TASK_DutRx, (const char *) "Brx", STACK_SIZE_FOR_TASK, &parametersToBrx, TASK_PRIORITY, NULL);
+  //xTaskCreate( TASK_DutRx, (const char *) "Crx", STACK_SIZE_FOR_TASK, &parametersToCrx, TASK_PRIORITY, NULL);
 
   xTaskCreate( TASK_LedBlink, (const char *) "LedBlink1", STACK_SIZE_FOR_TASK, NULL, TASK_PRIORITY, NULL);
 
-  xTaskCreate( TASK_getCurr, (const char *) "getCurr", STACK_SIZE_FOR_TASK, NULL, TASK_PRIORITY, NULL);
+  //xTaskCreate( TASK_getCurr, (const char *) "getCurr", STACK_SIZE_FOR_TASK, NULL, TASK_PRIORITY, NULL);
 
   /*Start FreeRTOS Scheduler*/
   vTaskStartScheduler();

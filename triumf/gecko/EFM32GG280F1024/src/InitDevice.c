@@ -23,6 +23,7 @@
 #include "em_rmu.h"
 #include "em_gpio.h"
 #include "em_i2c.h"
+#include "em_leuart.h"
 #include "em_usart.h"
 // [Library includes]$
 
@@ -31,12 +32,16 @@
 //==============================================================================
 extern void enter_DefaultMode_from_RESET(void) {
 	// $[Config Calls]
+	HFXO_enter_DefaultMode_from_RESET();
 	LFXO_enter_DefaultMode_from_RESET();
 	CMU_enter_DefaultMode_from_RESET();
 	BURTC_enter_DefaultMode_from_RESET();
 	USART0_enter_DefaultMode_from_RESET();
+	USART2_enter_DefaultMode_from_RESET();
 	UART0_enter_DefaultMode_from_RESET();
 	UART1_enter_DefaultMode_from_RESET();
+	LEUART0_enter_DefaultMode_from_RESET();
+	LEUART1_enter_DefaultMode_from_RESET();
 	I2C0_enter_DefaultMode_from_RESET();
 	PORTIO_enter_DefaultMode_from_RESET();
 	// [Config Calls]$
@@ -49,6 +54,13 @@ extern void enter_DefaultMode_from_RESET(void) {
 extern void HFXO_enter_DefaultMode_from_RESET(void) {
 
 	// $[HFXO]
+	CMU->CTRL = (CMU->CTRL & ~_CMU_CTRL_HFXOMODE_MASK)
+			| CMU_CTRL_HFXOMODE_DIGEXTCLK;
+
+	CMU->CTRL = (CMU->CTRL & ~_CMU_CTRL_HFXOBOOST_MASK)
+			| CMU_CTRL_HFXOBOOST_50PCENT;
+
+	SystemHFXOClockSet(48000000);
 	// [HFXO]$
 
 }
@@ -59,7 +71,8 @@ extern void HFXO_enter_DefaultMode_from_RESET(void) {
 extern void LFXO_enter_DefaultMode_from_RESET(void) {
 
 	// $[Use oscillator source]
-	CMU->CTRL = (CMU->CTRL & ~_CMU_CTRL_LFXOMODE_MASK) | CMU_CTRL_LFXOMODE_XTAL;
+	CMU->CTRL = (CMU->CTRL & ~_CMU_CTRL_LFXOMODE_MASK)
+			| CMU_CTRL_LFXOMODE_DIGEXTCLK;
 	// [Use oscillator source]$
 
 	// $[LFXO Boost Percent]
@@ -89,8 +102,8 @@ extern void CMU_enter_DefaultMode_from_RESET(void) {
 	// [LFACLK Setup]$
 
 	// $[High Frequency Clock select]
-	/* Using HFRCO at 14MHz as high frequency clock, HFCLK */
-	CMU_ClockSelectSet(cmuClock_HF, cmuSelect_HFRCO);
+	/* Using HFXO as high frequency clock, HFCLK */
+	CMU_ClockSelectSet(cmuClock_HF, cmuSelect_HFXO);
 
 	/* Enable peripheral clock */
 	CMU_ClockEnable(cmuClock_HFPER, true);
@@ -98,11 +111,19 @@ extern void CMU_enter_DefaultMode_from_RESET(void) {
 	// [High Frequency Clock select]$
 
 	// $[LF clock tree setup]
-	/* No LF peripherals enabled */
+	/* Enable LF clocks */
+	CMU_ClockEnable(cmuClock_CORELE, true);
+	CMU_ClockSelectSet(cmuClock_LFB, cmuSelect_LFXO);
 	// [LF clock tree setup]$
 	// $[Peripheral Clock enables]
 	/* Enable clock for I2C0 */
 	CMU_ClockEnable(cmuClock_I2C0, true);
+
+	/* Enable clock for LEUART0 */
+	CMU_ClockEnable(cmuClock_LEUART0, true);
+
+	/* Enable clock for LEUART1 */
+	CMU_ClockEnable(cmuClock_LEUART1, true);
 
 	/* Enable clock for UART0 */
 	CMU_ClockEnable(cmuClock_UART0, true);
@@ -112,6 +133,9 @@ extern void CMU_enter_DefaultMode_from_RESET(void) {
 
 	/* Enable clock for USART0 */
 	CMU_ClockEnable(cmuClock_USART0, true);
+
+	/* Enable clock for USART2 */
+	CMU_ClockEnable(cmuClock_USART2, true);
 
 	/* Enable clock for GPIO by default */
 	CMU_ClockEnable(cmuClock_GPIO, true);
@@ -275,23 +299,23 @@ extern void OPAMP2_enter_DefaultMode_from_RESET(void) {
 extern void USART0_enter_DefaultMode_from_RESET(void) {
 
 	// $[USART_InitAsync]
+	USART_InitAsync_TypeDef initasync = USART_INITASYNC_DEFAULT;
+
+	initasync.baudrate = 32786;
+	initasync.databits = usartDatabits8;
+	initasync.parity = usartNoParity;
+	initasync.stopbits = usartStopbits1;
+	initasync.oversampling = usartOVS16;
+#if defined( USART_INPUT_RXPRS ) && defined( USART_CTRL_MVDIS )
+	initasync.mvdis = 0;
+	initasync.prsRxEnable = 0;
+	initasync.prsRxCh = 0;
+#endif
+
+	USART_InitAsync(USART0, &initasync);
 	// [USART_InitAsync]$
 
 	// $[USART_InitSync]
-	USART_InitSync_TypeDef initsync = USART_INITSYNC_DEFAULT;
-
-	initsync.baudrate = 230400;
-	initsync.databits = usartDatabits8;
-	initsync.master = 1;
-	initsync.msbf = 1;
-	initsync.clockMode = usartClockMode0;
-#if defined( USART_INPUT_RXPRS ) && defined( USART_TRIGCTRL_AUTOTXTEN )
-	initsync.prsRxEnable = 0;
-	initsync.prsRxCh = 0;
-	initsync.autoTx = 0;
-#endif
-
-	USART_InitSync(USART0, &initsync);
 	// [USART_InitSync]$
 
 	// $[USART_InitPrsTrigger]
@@ -331,9 +355,30 @@ extern void USART2_enter_DefaultMode_from_RESET(void) {
 	// [USART_InitAsync]$
 
 	// $[USART_InitSync]
+	USART_InitSync_TypeDef initsync = USART_INITSYNC_DEFAULT;
+
+	initsync.baudrate = 115200;
+	initsync.databits = usartDatabits8;
+	initsync.master = 1;
+	initsync.msbf = 1;
+	initsync.clockMode = usartClockMode0;
+#if defined( USART_INPUT_RXPRS ) && defined( USART_TRIGCTRL_AUTOTXTEN )
+	initsync.prsRxEnable = 0;
+	initsync.prsRxCh = 0;
+	initsync.autoTx = 0;
+#endif
+
+	USART_InitSync(USART2, &initsync);
 	// [USART_InitSync]$
 
 	// $[USART_InitPrsTrigger]
+	USART_PrsTriggerInit_TypeDef initprs = USART_INITPRSTRIGGER_DEFAULT;
+
+	initprs.rxTriggerEnable = 0;
+	initprs.txTriggerEnable = 0;
+	initprs.prsTriggerChannel = usartPrsTriggerCh0;
+
+	USART_InitPrsTrigger(USART2, &initprs);
 	// [USART_InitPrsTrigger]$
 
 }
@@ -346,7 +391,7 @@ extern void UART0_enter_DefaultMode_from_RESET(void) {
 	// $[UART_InitAsync]
 	USART_InitAsync_TypeDef initasync = USART_INITASYNC_DEFAULT;
 
-	initasync.baudrate = 115200;
+	initasync.baudrate = 32786;
 	initasync.databits = usartDatabits8;
 	initasync.parity = usartNoParity;
 	initasync.stopbits = usartStopbits1;
@@ -380,7 +425,7 @@ extern void UART1_enter_DefaultMode_from_RESET(void) {
 	// $[UART_InitAsync]
 	USART_InitAsync_TypeDef initasync = USART_INITASYNC_DEFAULT;
 
-	initasync.baudrate = 115200;
+	initasync.baudrate = 32786;
 	initasync.databits = usartDatabits8;
 	initasync.parity = usartNoParity;
 	initasync.stopbits = usartStopbits1;
@@ -412,6 +457,19 @@ extern void UART1_enter_DefaultMode_from_RESET(void) {
 extern void LEUART0_enter_DefaultMode_from_RESET(void) {
 
 	// $[LEUART0 initialization]
+	LEUART_Init_TypeDef initleuart = LEUART_INIT_DEFAULT;
+
+	initleuart.enable = leuartEnable;
+	initleuart.baudrate = 32786;
+	initleuart.databits = leuartDatabits8;
+	initleuart.parity = leuartNoParity;
+	initleuart.stopbits = leuartStopbits1;
+	LEUART_Init(LEUART0, &initleuart);
+
+	/* Configuring non-standard properties */
+	LEUART_TxDmaInEM2Enable(LEUART0, 0);
+	LEUART_RxDmaInEM2Enable(LEUART0, 0);
+
 	// [LEUART0 initialization]$
 
 }
@@ -422,6 +480,19 @@ extern void LEUART0_enter_DefaultMode_from_RESET(void) {
 extern void LEUART1_enter_DefaultMode_from_RESET(void) {
 
 	// $[LEUART1 initialization]
+	LEUART_Init_TypeDef initleuart = LEUART_INIT_DEFAULT;
+
+	initleuart.enable = leuartEnable;
+	initleuart.baudrate = 32786;
+	initleuart.databits = leuartDatabits8;
+	initleuart.parity = leuartNoParity;
+	initleuart.stopbits = leuartStopbits1;
+	LEUART_Init(LEUART1, &initleuart);
+
+	/* Configuring non-standard properties */
+	LEUART_TxDmaInEM2Enable(LEUART1, 0);
+	LEUART_RxDmaInEM2Enable(LEUART1, 0);
+
 	// [LEUART1 initialization]$
 
 }
@@ -635,16 +706,36 @@ extern void PORTIO_enter_DefaultMode_from_RESET(void) {
 
 	// $[Port A Configuration]
 
-	/* Pin PA5 is configured to Input enabled */
-	GPIO->P[0].MODEL = (GPIO->P[0].MODEL & ~_GPIO_P_MODEL_MODE5_MASK)
-			| GPIO_P_MODEL_MODE5_INPUT;
+	/* Pin PA2 is configured to Input enabled */
+	GPIO->P[0].MODEL = (GPIO->P[0].MODEL & ~_GPIO_P_MODEL_MODE2_MASK)
+			| GPIO_P_MODEL_MODE2_INPUT;
 
-	/* Pin PA7 is configured to Push-pull */
-	GPIO->P[0].MODEL = (GPIO->P[0].MODEL & ~_GPIO_P_MODEL_MODE7_MASK)
-			| GPIO_P_MODEL_MODE7_PUSHPULL;
+	/* Pin PA3 is configured to Input enabled */
+	GPIO->P[0].MODEL = (GPIO->P[0].MODEL & ~_GPIO_P_MODEL_MODE3_MASK)
+			| GPIO_P_MODEL_MODE3_INPUT;
 	// [Port A Configuration]$
 
 	// $[Port B Configuration]
+
+	/* Pin PB1 is configured to Push-pull */
+	GPIO->P[1].MODEL = (GPIO->P[1].MODEL & ~_GPIO_P_MODEL_MODE1_MASK)
+			| GPIO_P_MODEL_MODE1_PUSHPULL;
+
+	/* Pin PB3 is configured to Push-pull */
+	GPIO->P[1].MODEL = (GPIO->P[1].MODEL & ~_GPIO_P_MODEL_MODE3_MASK)
+			| GPIO_P_MODEL_MODE3_PUSHPULL;
+
+	/* Pin PB4 is configured to Input enabled */
+	GPIO->P[1].MODEL = (GPIO->P[1].MODEL & ~_GPIO_P_MODEL_MODE4_MASK)
+			| GPIO_P_MODEL_MODE4_INPUT;
+
+	/* Pin PB5 is configured to Push-pull */
+	GPIO->P[1].MODEL = (GPIO->P[1].MODEL & ~_GPIO_P_MODEL_MODE5_MASK)
+			| GPIO_P_MODEL_MODE5_PUSHPULL;
+
+	/* Pin PB6 is configured to Push-pull */
+	GPIO->P[1].MODEL = (GPIO->P[1].MODEL & ~_GPIO_P_MODEL_MODE6_MASK)
+			| GPIO_P_MODEL_MODE6_PUSHPULL;
 	// [Port B Configuration]$
 
 	// $[Port C Configuration]
@@ -657,17 +748,29 @@ extern void PORTIO_enter_DefaultMode_from_RESET(void) {
 	GPIO->P[2].MODEL = (GPIO->P[2].MODEL & ~_GPIO_P_MODEL_MODE1_MASK)
 			| GPIO_P_MODEL_MODE1_WIREDANDPULLUPFILTER;
 
-	/* Pin PC3 is configured to Push-pull */
-	GPIO->P[2].MODEL = (GPIO->P[2].MODEL & ~_GPIO_P_MODEL_MODE3_MASK)
-			| GPIO_P_MODEL_MODE3_PUSHPULL;
+	/* Pin PC6 is configured to Push-pull */
+	GPIO->P[2].MODEL = (GPIO->P[2].MODEL & ~_GPIO_P_MODEL_MODE6_MASK)
+			| GPIO_P_MODEL_MODE6_PUSHPULL;
 
-	/* Pin PC5 is configured to Push-pull */
-	GPIO->P[2].MODEL = (GPIO->P[2].MODEL & ~_GPIO_P_MODEL_MODE5_MASK)
-			| GPIO_P_MODEL_MODE5_PUSHPULL;
+	/* Pin PC7 is configured to Input enabled */
+	GPIO->P[2].MODEL = (GPIO->P[2].MODEL & ~_GPIO_P_MODEL_MODE7_MASK)
+			| GPIO_P_MODEL_MODE7_INPUT;
 
-	/* Pin PC12 is configured to Push-pull */
-	GPIO->P[2].MODEH = (GPIO->P[2].MODEH & ~_GPIO_P_MODEH_MODE12_MASK)
-			| GPIO_P_MODEH_MODE12_PUSHPULL;
+	/* Pin PC8 is configured to Input enabled */
+	GPIO->P[2].MODEH = (GPIO->P[2].MODEH & ~_GPIO_P_MODEH_MODE8_MASK)
+			| GPIO_P_MODEH_MODE8_INPUT;
+
+	/* Pin PC9 is configured to Input enabled */
+	GPIO->P[2].MODEH = (GPIO->P[2].MODEH & ~_GPIO_P_MODEH_MODE9_MASK)
+			| GPIO_P_MODEH_MODE9_INPUT;
+
+	/* Pin PC10 is configured to Push-pull */
+	GPIO->P[2].MODEH = (GPIO->P[2].MODEH & ~_GPIO_P_MODEH_MODE10_MASK)
+			| GPIO_P_MODEH_MODE10_PUSHPULL;
+
+	/* Pin PC11 is configured to Push-pull */
+	GPIO->P[2].MODEH = (GPIO->P[2].MODEH & ~_GPIO_P_MODEH_MODE11_MASK)
+			| GPIO_P_MODEH_MODE11_PUSHPULL;
 	// [Port C Configuration]$
 
 	// $[Port D Configuration]
@@ -696,6 +799,22 @@ extern void PORTIO_enter_DefaultMode_from_RESET(void) {
 	GPIO->P[4].MODEL = (GPIO->P[4].MODEL & ~_GPIO_P_MODEL_MODE3_MASK)
 			| GPIO_P_MODEL_MODE3_INPUT;
 
+	/* Pin PE4 is configured to Input enabled */
+	GPIO->P[4].MODEL = (GPIO->P[4].MODEL & ~_GPIO_P_MODEL_MODE4_MASK)
+			| GPIO_P_MODEL_MODE4_INPUT;
+
+	/* Pin PE5 is configured to Input enabled */
+	GPIO->P[4].MODEL = (GPIO->P[4].MODEL & ~_GPIO_P_MODEL_MODE5_MASK)
+			| GPIO_P_MODEL_MODE5_INPUT;
+
+	/* Pin PE6 is configured to Push-pull */
+	GPIO->P[4].MODEL = (GPIO->P[4].MODEL & ~_GPIO_P_MODEL_MODE6_MASK)
+			| GPIO_P_MODEL_MODE6_PUSHPULL;
+
+	/* Pin PE7 is configured to Push-pull */
+	GPIO->P[4].MODEL = (GPIO->P[4].MODEL & ~_GPIO_P_MODEL_MODE7_MASK)
+			| GPIO_P_MODEL_MODE7_PUSHPULL;
+
 	/* Pin PE10 is configured to Push-pull with alt. drive strength */
 	GPIO->P[4].MODEH = (GPIO->P[4].MODEH & ~_GPIO_P_MODEH_MODE10_MASK)
 			| GPIO_P_MODEH_MODE10_PUSHPULLDRIVE;
@@ -704,13 +823,13 @@ extern void PORTIO_enter_DefaultMode_from_RESET(void) {
 	GPIO->P[4].MODEH = (GPIO->P[4].MODEH & ~_GPIO_P_MODEH_MODE11_MASK)
 			| GPIO_P_MODEH_MODE11_INPUT;
 
-	/* Pin PE12 is configured to Push-pull with alt. drive strength */
-	GPIO->P[4].MODEH = (GPIO->P[4].MODEH & ~_GPIO_P_MODEH_MODE12_MASK)
-			| GPIO_P_MODEH_MODE12_PUSHPULLDRIVE;
+	/* Pin PE14 is configured to Push-pull */
+	GPIO->P[4].MODEH = (GPIO->P[4].MODEH & ~_GPIO_P_MODEH_MODE14_MASK)
+			| GPIO_P_MODEH_MODE14_PUSHPULL;
 
-	/* Pin PE13 is configured to Push-pull with alt. drive strength */
-	GPIO->P[4].MODEH = (GPIO->P[4].MODEH & ~_GPIO_P_MODEH_MODE13_MASK)
-			| GPIO_P_MODEH_MODE13_PUSHPULLDRIVE;
+	/* Pin PE15 is configured to Input enabled */
+	GPIO->P[4].MODEH = (GPIO->P[4].MODEH & ~_GPIO_P_MODEH_MODE15_MASK)
+			| GPIO_P_MODEH_MODE15_INPUT;
 	// [Port E Configuration]$
 
 	// $[Port F Configuration]
@@ -724,6 +843,16 @@ extern void PORTIO_enter_DefaultMode_from_RESET(void) {
 
 	/* Enable signals SCL, SDA */
 	I2C0->ROUTE |= I2C_ROUTE_SCLPEN | I2C_ROUTE_SDAPEN;
+
+	/* Module LEUART0 is configured to location 2 */
+	LEUART0->ROUTE = (LEUART0->ROUTE & ~_LEUART_ROUTE_LOCATION_MASK)
+			| LEUART_ROUTE_LOCATION_LOC2;
+
+	/* Enable signals RX, TX */
+	LEUART0->ROUTE |= LEUART_ROUTE_RXPEN | LEUART_ROUTE_TXPEN;
+
+	/* Enable signals RX, TX */
+	LEUART1->ROUTE |= LEUART_ROUTE_RXPEN | LEUART_ROUTE_TXPEN;
 
 	/* Module UART0 is configured to location 1 */
 	UART0->ROUTE = (UART0->ROUTE & ~_UART_ROUTE_LOCATION_MASK)
@@ -739,9 +868,15 @@ extern void PORTIO_enter_DefaultMode_from_RESET(void) {
 	/* Enable signals RX, TX */
 	UART1->ROUTE |= UART_ROUTE_RXPEN | UART_ROUTE_TXPEN;
 
-	/* Enable signals CLK, CS, RX, TX */
-	USART0->ROUTE |= USART_ROUTE_CLKPEN | USART_ROUTE_CSPEN | USART_ROUTE_RXPEN
-			| USART_ROUTE_TXPEN;
+	/* Enable signals RX, TX */
+	USART0->ROUTE |= USART_ROUTE_RXPEN | USART_ROUTE_TXPEN;
+
+	/* Module USART2 is configured to location 1 */
+	USART2->ROUTE = (USART2->ROUTE & ~_USART_ROUTE_LOCATION_MASK)
+			| USART_ROUTE_LOCATION_LOC1;
+
+	/* Enable signals CLK, RX, TX */
+	USART2->ROUTE |= USART_ROUTE_CLKPEN | USART_ROUTE_RXPEN | USART_ROUTE_TXPEN;
 	// [Route Configuration]$
 
 }

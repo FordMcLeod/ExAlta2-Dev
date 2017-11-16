@@ -55,14 +55,38 @@ extern void PORTIO_enter_DefaultMode_from_RESET(void);
 
 // $[User-defined pin name abstraction]
 
-#define ENARM_PIN           (7)
-#define ENARM_PORT          (gpioPortA)
+#define BU_VIN_PIN          (8)
+#define BU_VIN_PORT         (gpioPortD)
 
-#define ENAVR_PIN           (3)
-#define ENAVR_PORT          (gpioPortC)
+#define DUT0_AL_PIN         (8)
+#define DUT0_AL_PORT        (gpioPortC)
 
-#define ENRAM_PIN           (5)
-#define ENRAM_PORT          (gpioPortC)
+#define DUT0_EN_PIN         (10)
+#define DUT0_EN_PORT        (gpioPortC)
+
+#define DUT0_WDI_PIN        (2)
+#define DUT0_WDI_PORT       (gpioPortA)
+
+#define DUT1_AL_PIN         (9)
+#define DUT1_AL_PORT        (gpioPortC)
+
+#define DUT1_EN_PIN         (11)
+#define DUT1_EN_PORT        (gpioPortC)
+
+#define DUT2_AL_PIN         (4)
+#define DUT2_AL_PORT        (gpioPortE)
+
+#define DUT2_EN_PIN         (6)
+#define DUT2_EN_PORT        (gpioPortE)
+
+#define DUT3_AL_PIN         (5)
+#define DUT3_AL_PORT        (gpioPortE)
+
+#define DUT3_EN_PIN         (7)
+#define DUT3_EN_PORT        (gpioPortE)
+
+#define HFXO_N_PIN          (14)
+#define HFXO_N_PORT         (gpioPortB)
 
 #define I2C0_SCL_PIN        (1)
 #define I2C0_SCL_PORT       (gpioPortC)
@@ -70,14 +94,29 @@ extern void PORTIO_enter_DefaultMode_from_RESET(void);
 #define I2C0_SDA_PIN        (0)
 #define I2C0_SDA_PORT       (gpioPortC)
 
-#define LED_PIN             (12)
-#define LED_PORT            (gpioPortC)
+#define LED_PIN             (1)
+#define LED_PORT            (gpioPortB)
 
-#define SDCD_PIN            (5)
-#define SDCD_PORT           (gpioPortA)
+#define LEUART0_RX_PIN      (15)
+#define LEUART0_RX_PORT     (gpioPortE)
 
-#define SDCS_PIN            (13)
-#define SDCS_PORT           (gpioPortE)
+#define LEUART0_TX_PIN      (14)
+#define LEUART0_TX_PORT     (gpioPortE)
+
+#define LEUART1_RX_PIN      (7)
+#define LEUART1_RX_PORT     (gpioPortC)
+
+#define LEUART1_TX_PIN      (6)
+#define LEUART1_TX_PORT     (gpioPortC)
+
+#define LFXO_N_PIN          (8)
+#define LFXO_N_PORT         (gpioPortB)
+
+#define SD_CD_PIN           (3)
+#define SD_CD_PORT          (gpioPortA)
+
+#define SD_NCS_PIN          (6)
+#define SD_NCS_PORT         (gpioPortB)
 
 #define UART0_RX_PIN        (1)
 #define UART0_RX_PORT       (gpioPortE)
@@ -91,17 +130,20 @@ extern void PORTIO_enter_DefaultMode_from_RESET(void);
 #define UART1_TX_PIN        (2)
 #define UART1_TX_PORT       (gpioPortE)
 
-#define USART0_CLK_PIN      (12)
-#define USART0_CLK_PORT     (gpioPortE)
-
-#define USART0_CS_PIN       (13)
-#define USART0_CS_PORT      (gpioPortE)
-
 #define USART0_RX_PIN       (11)
 #define USART0_RX_PORT      (gpioPortE)
 
 #define USART0_TX_PIN       (10)
 #define USART0_TX_PORT      (gpioPortE)
+
+#define USART2_CLK_PIN      (5)
+#define USART2_CLK_PORT     (gpioPortB)
+
+#define USART2_RX_PIN       (4)
+#define USART2_RX_PORT      (gpioPortB)
+
+#define USART2_TX_PIN       (3)
+#define USART2_TX_PORT      (gpioPortB)
 
 // [User-defined pin name abstraction]$
 

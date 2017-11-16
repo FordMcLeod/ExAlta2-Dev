@@ -3,8 +3,8 @@
 #include "em_gpio.h"
 #include "em_chip.h"
 
-  #define LED_PORT    gpioPortB
-  #define LED_PIN     1
+  #define LED_PORT    gpioPortA
+  #define LED_PIN     7
 
 
 /******************************************************************************

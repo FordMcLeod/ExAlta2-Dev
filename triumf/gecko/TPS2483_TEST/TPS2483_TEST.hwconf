@@ -8,6 +8,12 @@
     <property object="PB1" propertyId="ports.settings.pinmode" value="Push-pull"/>
     <property object="PC0" propertyId="ports.settings.pinmode" value="Wired-and pullup filter"/>
     <property object="PC1" propertyId="ports.settings.pinmode" value="Wired-and pullup filter"/>
+    <property object="PC10" propertyId="ports.settings.custompinname" value="DUT0EN"/>
+    <property object="PC10" propertyId="ports.settings.pinmode" value="Push-pull"/>
+    <property object="PC11" propertyId="ports.settings.custompinname" value="DUT2EN"/>
+    <property object="PC11" propertyId="ports.settings.pinmode" value="Push-pull"/>
+    <property object="PE6" propertyId="ports.settings.custompinname" value="DUT1EN"/>
+    <property object="PE6" propertyId="ports.settings.pinmode" value="Push-pull"/>
     <property object="PE7" propertyId="ports.settings.custompinname" value="DUT3EN"/>
     <property object="PE7" propertyId="ports.settings.pinmode" value="Push-pull"/>
     <property object="PORTIO" propertyId="portio.i2c0.enable.scl" value="Enabled"/>

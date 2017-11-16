@@ -41,6 +41,9 @@ int main(void)
 
   /* Turn current sensor on */
   GPIO_PortOutSetVal(DUT3EN_PORT, 1<<DUT3EN_PIN, 1<<DUT3EN_PIN);
+  GPIO_PortOutSetVal(DUT2EN_PORT, 1<<DUT2EN_PIN, 1<<DUT2EN_PIN);
+  GPIO_PortOutSetVal(DUT1EN_PORT, 1<<DUT1EN_PIN, 1<<DUT1EN_PIN);
+  GPIO_PortOutSetVal(DUT0EN_PORT, 1<<DUT0EN_PIN, 1<<DUT0EN_PIN);
   Delay(100); /* Wait */
 
   TPS2483_Init();

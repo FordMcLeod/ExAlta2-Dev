@@ -547,12 +547,24 @@ extern void PORTIO_enter_DefaultMode_from_RESET(void) {
 	/* Pin PC1 is configured to Open-drain with pull-up and filter */
 	GPIO->P[2].MODEL = (GPIO->P[2].MODEL & ~_GPIO_P_MODEL_MODE1_MASK)
 			| GPIO_P_MODEL_MODE1_WIREDANDPULLUPFILTER;
+
+	/* Pin PC10 is configured to Push-pull */
+	GPIO->P[2].MODEH = (GPIO->P[2].MODEH & ~_GPIO_P_MODEH_MODE10_MASK)
+			| GPIO_P_MODEH_MODE10_PUSHPULL;
+
+	/* Pin PC11 is configured to Push-pull */
+	GPIO->P[2].MODEH = (GPIO->P[2].MODEH & ~_GPIO_P_MODEH_MODE11_MASK)
+			| GPIO_P_MODEH_MODE11_PUSHPULL;
 	// [Port C Configuration]$
 
 	// $[Port D Configuration]
 	// [Port D Configuration]$
 
 	// $[Port E Configuration]
+
+	/* Pin PE6 is configured to Push-pull */
+	GPIO->P[4].MODEL = (GPIO->P[4].MODEL & ~_GPIO_P_MODEL_MODE6_MASK)
+			| GPIO_P_MODEL_MODE6_PUSHPULL;
 
 	/* Pin PE7 is configured to Push-pull */
 	GPIO->P[4].MODEL = (GPIO->P[4].MODEL & ~_GPIO_P_MODEL_MODE7_MASK)

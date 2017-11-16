@@ -55,6 +55,15 @@ extern void PORTIO_enter_DefaultMode_from_RESET(void);
 
 // $[User-defined pin name abstraction]
 
+#define DUT0EN_PIN          (10)
+#define DUT0EN_PORT         (gpioPortC)
+
+#define DUT1EN_PIN          (6)
+#define DUT1EN_PORT         (gpioPortE)
+
+#define DUT2EN_PIN          (11)
+#define DUT2EN_PORT         (gpioPortC)
+
 #define DUT3EN_PIN          (7)
 #define DUT3EN_PORT         (gpioPortE)
 
