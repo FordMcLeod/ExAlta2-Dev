@@ -3,15 +3,23 @@
   <mode name="DefaultMode">
     <property object="DefaultMode" propertyId="mode.diagramLocation" value="100, 100"/>
     <property object="GPIO" propertyId="ABPeripheral.included" value="true"/>
-    <property object="PD4" propertyId="ports.settings.custompinname" value="LED"/>
-    <property object="PD4" propertyId="ports.settings.pinmode" value="Push-pull"/>
-    <property object="PE10" propertyId="ports.settings.pinmode" value="Push-pull"/>
-    <property object="PE11" propertyId="ports.settings.pinmode" value="Input"/>
-    <property object="PE2" propertyId="ports.settings.custompinname" value="WDT"/>
-    <property object="PE2" propertyId="ports.settings.pinmode" value="Push-pull"/>
+    <property object="HFXO" propertyId="ABPeripheral.included" value="true"/>
+    <property object="HFXO" propertyId="hfxo.circuitcharacteristics.calculatedclpf" value="12.50"/>
+    <property object="HFXO" propertyId="hfxo.crystalcharacteristics.oscillationfrequency" value="48000000"/>
+    <property object="HFXO" propertyId="hfxo.oscillatormode.useoscillatorsource" value="External sine wave"/>
+    <property object="HFXO" propertyId="hfxo.result.rnegesrmaxratio" value="28.819"/>
+    <property object="PA7" propertyId="ports.settings.custompinname" value="LED"/>
+    <property object="PA7" propertyId="ports.settings.pinmode" value="Push-pull"/>
+    <property object="PD4" propertyId="ports.settings.custompinname" value=""/>
+    <property object="PE2" propertyId="ports.settings.custompinname" value=""/>
+    <property object="PE6" propertyId="ports.settings.pinmode" value="Input"/>
+    <property object="PE7" propertyId="ports.settings.pinmode" value="Push-pull"/>
+    <property object="PORTIO" propertyId="portio.hfxo.enable.n" value="Enabled"/>
     <property object="PORTIO" propertyId="portio.usart0.enable.rx" value="Enabled"/>
     <property object="PORTIO" propertyId="portio.usart0.enable.tx" value="Enabled"/>
+    <property object="PORTIO" propertyId="portio.usart0.location.usart0" value="1"/>
     <property object="USART0" propertyId="ABPeripheral.included" value="true"/>
+    <property object="USART0" propertyId="usart.asynchronoussettings.baudrate" value="32786"/>
   </mode>
   <modeTransition>
     <property object="RESET &#x2192; DefaultMode" propertyId="modeTransition.source" value="RESET"/>

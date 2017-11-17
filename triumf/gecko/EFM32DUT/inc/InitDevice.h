@@ -55,17 +55,17 @@ extern void PORTIO_enter_DefaultMode_from_RESET(void);
 
 // $[User-defined pin name abstraction]
 
-#define LED_PIN             (4)
-#define LED_PORT            (gpioPortD)
+#define HFXO_N_PIN          (14)
+#define HFXO_N_PORT         (gpioPortB)
 
-#define USART0_RX_PIN       (11)
+#define LED_PIN             (7)
+#define LED_PORT            (gpioPortA)
+
+#define USART0_RX_PIN       (6)
 #define USART0_RX_PORT      (gpioPortE)
 
-#define USART0_TX_PIN       (10)
+#define USART0_TX_PIN       (7)
 #define USART0_TX_PORT      (gpioPortE)
-
-#define WDT_PIN             (2)
-#define WDT_PORT            (gpioPortE)
 
 // [User-defined pin name abstraction]$
 
