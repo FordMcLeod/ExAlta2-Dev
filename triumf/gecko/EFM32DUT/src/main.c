@@ -97,7 +97,7 @@ void RAM_test(void) {
     else irRetries = 0;
 
     if(irRetries > MAX_RETRIES){
-		PRINT_Stringln(USART0,"\rTOO MANY IR ERRORS! Halting...\n");
+		  PRINT_Stringln(USART0,"\rTOO MANY IR ERRORS! Halting...\n");
     	while (1){
     		/* DO NOTHING */
     	}
