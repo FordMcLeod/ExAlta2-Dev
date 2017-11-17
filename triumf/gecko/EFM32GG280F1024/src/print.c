@@ -175,8 +175,10 @@ PRINT_Current_LEUART(LEUART_TypeDef* leuart, int curr)
 }
 
 
-void PRINT_open(void)
+FRESULT PRINT_open(void)
 {
+  FRESULT res = FR_OK;
+
   /* Open or create a log file and ready to append */
   if(!open) {
     if(FATFS_append(&fsrc, FILENAME) == FR_OK) {
@@ -184,23 +186,30 @@ void PRINT_open(void)
       open = 1;
       PRINT_Stringln(USART1,"\nOpened SD card!\n");
     }
-    else PRINT_Stringln(USART1,"\nFailed to open SD card!\n");
+    else {
+	  PRINT_Stringln(USART1,"\nFailed to open SD card!\n");
+    }
   }
+  return res;
 }
 
 
-void PRINT_close(void)
+FRESULT PRINT_close(void)
 {
   while(busy) vTaskDelay(pdMS_TO_TICKS(1));
+  FRESULT res;
+
   /* Close the file */
-  if(open) {
-    if(f_close(&fsrc) == FR_OK) {
-      busy = 0;
-      open = 0;
-      PRINT_Stringln(USART1,"Closed SD card!");
-    }
-    else PRINT_Stringln(USART1,"Failed to close SD card!");
+  res = f_close(&fsrc);
+  if(res == FR_OK) {
+	busy = 0;
+	open = 0;
+	PRINT_Stringln(USART1,"Closed SD card!");
   }
+  else {
+	PRINT_Stringln(USART1,"Failed to close SD card!");
+  }
+  return res;
 }
 
 

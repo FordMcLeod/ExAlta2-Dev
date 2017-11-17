@@ -32,13 +32,13 @@
     <property object="PA7" propertyId="ports.settings.custompinname" value=""/>
     <property object="PB1" propertyId="ports.settings.custompinname" value="LED"/>
     <property object="PB1" propertyId="ports.settings.pinmode" value="Push-pull"/>
-    <property object="PB3" propertyId="ports.settings.custompinname" value="SD_DI"/>
+    <property object="PB3" propertyId="ports.settings.custompinname" value=""/>
     <property object="PB3" propertyId="ports.settings.pinmode" value="Push-pull"/>
-    <property object="PB4" propertyId="ports.settings.custompinname" value="SD_DO"/>
+    <property object="PB4" propertyId="ports.settings.custompinname" value=""/>
     <property object="PB4" propertyId="ports.settings.pinmode" value="Input"/>
-    <property object="PB5" propertyId="ports.settings.custompinname" value="SD_CLK"/>
+    <property object="PB5" propertyId="ports.settings.custompinname" value=""/>
     <property object="PB5" propertyId="ports.settings.pinmode" value="Push-pull"/>
-    <property object="PB6" propertyId="ports.settings.custompinname" value="SD_nCS"/>
+    <property object="PB6" propertyId="ports.settings.custompinname" value=""/>
     <property object="PB6" propertyId="ports.settings.pinmode" value="Push-pull"/>
     <property object="PC0" propertyId="ports.settings.pinmode" value="Wired-and pullup filter"/>
     <property object="PC1" propertyId="ports.settings.custompinname" value=""/>
@@ -93,6 +93,10 @@
     <property object="PORTIO" propertyId="portio.usart1.enable.rx" value="Enabled"/>
     <property object="PORTIO" propertyId="portio.usart1.enable.tx" value="Enabled"/>
     <property object="PORTIO" propertyId="portio.usart1.location.usart1" value="2"/>
+    <property object="PORTIO" propertyId="portio.usart2.enable.clk" value="Enabled"/>
+    <property object="PORTIO" propertyId="portio.usart2.enable.cs" value="Enabled"/>
+    <property object="PORTIO" propertyId="portio.usart2.enable.rx" value="Enabled"/>
+    <property object="PORTIO" propertyId="portio.usart2.enable.tx" value="Enabled"/>
     <property object="PORTIO" propertyId="portio.usart2.location.usart2" value="1"/>
     <property object="UART0" propertyId="ABPeripheral.included" value="true"/>
     <property object="UART0" propertyId="uart.asynchronoussettings.baudrate" value="32786"/>
@@ -103,6 +107,7 @@
     <property object="USART0" propertyId="usart.synchronoussettings.baudrate" value="230400"/>
     <property object="USART1" propertyId="ABPeripheral.included" value="true"/>
     <property object="USART1" propertyId="usart.asynchronoussettings.baudrate" value="921600"/>
+    <property object="USART2" propertyId="ABPeripheral.included" value="true"/>
     <property object="USART2" propertyId="usart.mode.usartmode" value="Synchronous Mode (SPI / I2S)"/>
   </mode>
   <modeTransition>

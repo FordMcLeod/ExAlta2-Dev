@@ -68,7 +68,7 @@ void MICROSD_Init(void)
 {
 
   // Ensure CS pin is normal GPIO
-  USART0->ROUTE = USART0->ROUTE & ~USART_ROUTE_CSPEN;
+  //USART0->ROUTE = USART0->ROUTE & ~USART_ROUTE_CSPEN;
 
   xfersPrMsec   = MICROSD_LO_SPI_FREQ / 8000;
 

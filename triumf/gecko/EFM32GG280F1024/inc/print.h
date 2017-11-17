@@ -33,6 +33,7 @@
 /* Include libraries */
 #include "em_usart.h"
 #include "clock.h"
+#include "ff.h"
 
 
 /* Function prototypes*/
@@ -46,8 +47,8 @@ void PRINT_Current_USART(USART_TypeDef* uart, int curr);
 void PRINT_Current_LEUART(LEUART_TypeDef* uart, int curr);
 
 
-void PRINT_open(void);
-void PRINT_close(void);
+FRESULT PRINT_open(void);
+FRESULT PRINT_close(void);
 void PRINT_getBusy(void);
 void PRINT_releaseBusy(void);
 

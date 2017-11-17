@@ -56,6 +56,7 @@
 #include "clockApp_stk.h"
 #include "fatfs.h"
 #include "microsd.h"
+#include "ff.h"
 #include "duts.h"
 #include "TPS2483.h"
 
@@ -197,12 +198,14 @@ int main(void)
 
   TPS2483_Init();
 
-
+  USART_SpiTransfer(USART2,'A');
 
   unsigned int sdcd = GPIO_PinInGet(SD_CD_PORT,SD_CD_PIN);
 
   PRINT_Time(USART1,time( NULL ));
   PRINT_Stringln(USART1,(char*)"\tHELLO");
+
+
   if (sdcd) {
     PRINT_Time(USART1,time( NULL ));
     PRINT_Stringln(USART1,"\tSD Card detected!");
@@ -215,6 +218,8 @@ int main(void)
     PRINT_Time(USART1,time( NULL ));
     PRINT_Stringln(USART1,"\tNo SD Card detected!");
   }
+
+  USART_BaudrateSyncSet(MICROSD_USART, 0, 16000000);
 
   /* Prepare UART Rx and Tx interrupts */
   //DUTS_initIRQs(UART0,UART0_RX_IRQn);

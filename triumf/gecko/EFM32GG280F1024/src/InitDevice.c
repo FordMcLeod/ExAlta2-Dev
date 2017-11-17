@@ -38,6 +38,7 @@ extern void enter_DefaultMode_from_RESET(void) {
 	BURTC_enter_DefaultMode_from_RESET();
 	USART0_enter_DefaultMode_from_RESET();
 	USART1_enter_DefaultMode_from_RESET();
+	USART2_enter_DefaultMode_from_RESET();
 	UART0_enter_DefaultMode_from_RESET();
 	UART1_enter_DefaultMode_from_RESET();
 	LEUART1_enter_DefaultMode_from_RESET();
@@ -132,6 +133,9 @@ extern void CMU_enter_DefaultMode_from_RESET(void) {
 
 	/* Enable clock for USART1 */
 	CMU_ClockEnable(cmuClock_USART1, true);
+
+	/* Enable clock for USART2 */
+	CMU_ClockEnable(cmuClock_USART2, true);
 
 	/* Enable clock for GPIO by default */
 	CMU_ClockEnable(cmuClock_GPIO, true);
@@ -372,9 +376,30 @@ extern void USART2_enter_DefaultMode_from_RESET(void) {
 	// [USART_InitAsync]$
 
 	// $[USART_InitSync]
+	USART_InitSync_TypeDef initsync = USART_INITSYNC_DEFAULT;
+
+	initsync.baudrate = 115200;
+	initsync.databits = usartDatabits8;
+	initsync.master = 1;
+	initsync.msbf = 1;
+	initsync.clockMode = usartClockMode0;
+#if defined( USART_INPUT_RXPRS ) && defined( USART_TRIGCTRL_AUTOTXTEN )
+	initsync.prsRxEnable = 0;
+	initsync.prsRxCh = 0;
+	initsync.autoTx = 0;
+#endif
+
+	USART_InitSync(USART2, &initsync);
 	// [USART_InitSync]$
 
 	// $[USART_InitPrsTrigger]
+	USART_PrsTriggerInit_TypeDef initprs = USART_INITPRSTRIGGER_DEFAULT;
+
+	initprs.rxTriggerEnable = 0;
+	initprs.txTriggerEnable = 0;
+	initprs.prsTriggerChannel = usartPrsTriggerCh0;
+
+	USART_InitPrsTrigger(USART2, &initprs);
 	// [USART_InitPrsTrigger]$
 
 }
@@ -844,6 +869,14 @@ extern void PORTIO_enter_DefaultMode_from_RESET(void) {
 
 	/* Enable signals RX, TX */
 	USART1->ROUTE |= USART_ROUTE_RXPEN | USART_ROUTE_TXPEN;
+
+	/* Module USART2 is configured to location 1 */
+	USART2->ROUTE = (USART2->ROUTE & ~_USART_ROUTE_LOCATION_MASK)
+			| USART_ROUTE_LOCATION_LOC1;
+
+	/* Enable signals CLK, CS, RX, TX */
+	USART2->ROUTE |= USART_ROUTE_CLKPEN | USART_ROUTE_RXPEN
+			| USART_ROUTE_TXPEN;
 	// [Route Configuration]$
 
 }
