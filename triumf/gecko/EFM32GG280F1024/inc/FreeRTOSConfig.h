@@ -181,7 +181,7 @@ extern "C" {
 #define INCLUDE_eTaskGetState                     ( 0 )
 
 /* Default value of CPU clock (RC)*/
-#define configCPU_CLOCK_HZ                        (( unsigned long ) 14000000)
+#define configCPU_CLOCK_HZ                        (( unsigned long ) 48000000)
 
 /* Defines used in energy modes */
 #if ( ( configSLEEP_MODE == 2 )  && ( ( configUSE_SLEEP_MODE_IN_IDLE == 1 ) || ( configUSE_TICKLESS_IDLE == 1 ) ) )

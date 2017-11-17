@@ -11,11 +11,9 @@
     <property object="HFXO" propertyId="ABPeripheral.included" value="true"/>
     <property object="HFXO" propertyId="hfxo.circuitcharacteristics.calculatedclpf" value="12.50"/>
     <property object="HFXO" propertyId="hfxo.crystalcharacteristics.oscillationfrequency" value="48000000"/>
-    <property object="HFXO" propertyId="hfxo.oscillatormode.useoscillatorsource" value="External digital clock"/>
+    <property object="HFXO" propertyId="hfxo.oscillatormode.useoscillatorsource" value="External sine wave"/>
     <property object="HFXO" propertyId="hfxo.result.rnegesrmaxratio" value="28.819"/>
     <property object="I2C0" propertyId="ABPeripheral.included" value="true"/>
-    <property object="LEUART0" propertyId="ABPeripheral.included" value="true"/>
-    <property object="LEUART0" propertyId="leuart.settings.baudrate" value="32786"/>
     <property object="LEUART1" propertyId="ABPeripheral.included" value="true"/>
     <property object="LEUART1" propertyId="leuart.settings.baudrate" value="32786"/>
     <property object="LFXO" propertyId="ABPeripheral.included" value="true"/>
@@ -25,8 +23,7 @@
     <property object="LFXO" propertyId="lfxo.oscillatormode.useoscillatorsource" value="External digital clock"/>
     <property object="LFXO" propertyId="lfxo.recommendedoscillatorboostsettings.lfxoboostpercent" value="100%"/>
     <property object="LFXO" propertyId="lfxo.result.rnegesrmaxratio" value="17.788"/>
-    <property object="PA2" propertyId="ports.settings.custompinname" value="DUT0_WDI"/>
-    <property object="PA2" propertyId="ports.settings.pinmode" value="Input"/>
+    <property object="PA2" propertyId="ports.settings.custompinname" value=""/>
     <property object="PA3" propertyId="ports.settings.custompinname" value="SD_CD"/>
     <property object="PA3" propertyId="ports.settings.pinmode" value="Input"/>
     <property object="PA4" propertyId="ports.settings.custompinname" value=""/>
@@ -35,8 +32,11 @@
     <property object="PA7" propertyId="ports.settings.custompinname" value=""/>
     <property object="PB1" propertyId="ports.settings.custompinname" value="LED"/>
     <property object="PB1" propertyId="ports.settings.pinmode" value="Push-pull"/>
+    <property object="PB3" propertyId="ports.settings.custompinname" value="SD_DI"/>
     <property object="PB3" propertyId="ports.settings.pinmode" value="Push-pull"/>
+    <property object="PB4" propertyId="ports.settings.custompinname" value="SD_DO"/>
     <property object="PB4" propertyId="ports.settings.pinmode" value="Input"/>
+    <property object="PB5" propertyId="ports.settings.custompinname" value="SD_CLK"/>
     <property object="PB5" propertyId="ports.settings.pinmode" value="Push-pull"/>
     <property object="PB6" propertyId="ports.settings.custompinname" value="SD_nCS"/>
     <property object="PB6" propertyId="ports.settings.pinmode" value="Push-pull"/>
@@ -45,7 +45,7 @@
     <property object="PC1" propertyId="ports.settings.pinmode" value="Wired-and pullup filter"/>
     <property object="PC10" propertyId="ports.settings.custompinname" value="DUT0_EN"/>
     <property object="PC10" propertyId="ports.settings.pinmode" value="Push-pull"/>
-    <property object="PC11" propertyId="ports.settings.custompinname" value="DUT1_EN"/>
+    <property object="PC11" propertyId="ports.settings.custompinname" value="DUT2_EN"/>
     <property object="PC11" propertyId="ports.settings.pinmode" value="Push-pull"/>
     <property object="PC12" propertyId="ports.settings.custompinname" value=""/>
     <property object="PC3" propertyId="ports.settings.custompinname" value=""/>
@@ -54,28 +54,23 @@
     <property object="PC7" propertyId="ports.settings.pinmode" value="Input"/>
     <property object="PC8" propertyId="ports.settings.custompinname" value="DUT0_AL"/>
     <property object="PC8" propertyId="ports.settings.pinmode" value="Input"/>
-    <property object="PC9" propertyId="ports.settings.custompinname" value="DUT1_AL"/>
+    <property object="PC9" propertyId="ports.settings.custompinname" value="DUT2_AL"/>
     <property object="PC9" propertyId="ports.settings.pinmode" value="Input"/>
     <property object="PD4" propertyId="ports.settings.custompinname" value=""/>
-    <property object="PD4" propertyId="ports.settings.dout" value="1"/>
-    <property object="PD4" propertyId="ports.settings.filter" value="Enabled"/>
-    <property object="PD4" propertyId="ports.settings.pinmode" value="Push-pull"/>
-    <property object="PD4" propertyId="ports.settings.pulldirection" value="Pullup"/>
-    <property object="PD4" propertyId="ports.settings.pullup" value="Enabled"/>
+    <property object="PD6" propertyId="ports.settings.pinmode" value="Input"/>
+    <property object="PD7" propertyId="ports.settings.pinmode" value="Push-pull"/>
     <property object="PE0" propertyId="ports.settings.pinmode" value="Push-pull"/>
     <property object="PE1" propertyId="ports.settings.pinmode" value="Input"/>
     <property object="PE10" propertyId="ports.settings.pinmode" value="Push-pull drive"/>
     <property object="PE11" propertyId="ports.settings.pinmode" value="Input"/>
     <property object="PE13" propertyId="ports.settings.custompinname" value=""/>
-    <property object="PE14" propertyId="ports.settings.pinmode" value="Push-pull"/>
-    <property object="PE15" propertyId="ports.settings.pinmode" value="Input"/>
     <property object="PE2" propertyId="ports.settings.pinmode" value="Push-pull"/>
     <property object="PE3" propertyId="ports.settings.pinmode" value="Input"/>
-    <property object="PE4" propertyId="ports.settings.custompinname" value="DUT2_AL"/>
+    <property object="PE4" propertyId="ports.settings.custompinname" value="DUT1_AL"/>
     <property object="PE4" propertyId="ports.settings.pinmode" value="Input"/>
     <property object="PE5" propertyId="ports.settings.custompinname" value="DUT3_AL"/>
     <property object="PE5" propertyId="ports.settings.pinmode" value="Input"/>
-    <property object="PE6" propertyId="ports.settings.custompinname" value="DUT2_EN"/>
+    <property object="PE6" propertyId="ports.settings.custompinname" value="DUT1_EN"/>
     <property object="PE6" propertyId="ports.settings.pinmode" value="Push-pull"/>
     <property object="PE7" propertyId="ports.settings.custompinname" value="DUT3_EN"/>
     <property object="PE7" propertyId="ports.settings.pinmode" value="Push-pull"/>
@@ -84,9 +79,6 @@
     <property object="PORTIO" propertyId="portio.i2c0.enable.scl" value="Enabled"/>
     <property object="PORTIO" propertyId="portio.i2c0.enable.sda" value="Enabled"/>
     <property object="PORTIO" propertyId="portio.i2c0.location.i2c0" value="4"/>
-    <property object="PORTIO" propertyId="portio.leuart0.enable.rx" value="Enabled"/>
-    <property object="PORTIO" propertyId="portio.leuart0.enable.tx" value="Enabled"/>
-    <property object="PORTIO" propertyId="portio.leuart0.location.leuart0" value="2"/>
     <property object="PORTIO" propertyId="portio.leuart1.enable.rx" value="Enabled"/>
     <property object="PORTIO" propertyId="portio.leuart1.enable.tx" value="Enabled"/>
     <property object="PORTIO" propertyId="portio.lfxo.enable.n" value="Enabled"/>
@@ -98,10 +90,9 @@
     <property object="PORTIO" propertyId="portio.uart1.location.uart1" value="3"/>
     <property object="PORTIO" propertyId="portio.usart0.enable.rx" value="Enabled"/>
     <property object="PORTIO" propertyId="portio.usart0.enable.tx" value="Enabled"/>
+    <property object="PORTIO" propertyId="portio.usart1.enable.rx" value="Enabled"/>
+    <property object="PORTIO" propertyId="portio.usart1.enable.tx" value="Enabled"/>
     <property object="PORTIO" propertyId="portio.usart1.location.usart1" value="2"/>
-    <property object="PORTIO" propertyId="portio.usart2.enable.clk" value="Enabled"/>
-    <property object="PORTIO" propertyId="portio.usart2.enable.rx" value="Enabled"/>
-    <property object="PORTIO" propertyId="portio.usart2.enable.tx" value="Enabled"/>
     <property object="PORTIO" propertyId="portio.usart2.location.usart2" value="1"/>
     <property object="UART0" propertyId="ABPeripheral.included" value="true"/>
     <property object="UART0" propertyId="uart.asynchronoussettings.baudrate" value="32786"/>
@@ -110,7 +101,8 @@
     <property object="USART0" propertyId="ABPeripheral.included" value="true"/>
     <property object="USART0" propertyId="usart.asynchronoussettings.baudrate" value="32786"/>
     <property object="USART0" propertyId="usart.synchronoussettings.baudrate" value="230400"/>
-    <property object="USART2" propertyId="ABPeripheral.included" value="true"/>
+    <property object="USART1" propertyId="ABPeripheral.included" value="true"/>
+    <property object="USART1" propertyId="usart.asynchronoussettings.baudrate" value="921600"/>
     <property object="USART2" propertyId="usart.mode.usartmode" value="Synchronous Mode (SPI / I2S)"/>
   </mode>
   <modeTransition>

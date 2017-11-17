@@ -8,10 +8,10 @@
  ******************************************************************************/
 
 /** I2C device address for temperature sensor on DVK */
-#define TPS2483_ADDR0      0x90
-#define TPS2483_ADDR1      0x90
-#define TPS2483_ADDR2      0x90
-#define TPS2483_ADDR3      0x90
+#define TPS2483_ADDR0      0x8A
+#define TPS2483_ADDR1      0x9E
+#define TPS2483_ADDR2      0x9A
+#define TPS2483_ADDR3      0x80
 
 #define TPS2483_CONFIG_MODE 			(0x7UL << 0)
 #define _TPS2483_CONFIG_MODE_SHIFT 		0
@@ -182,7 +182,7 @@ typedef enum
   TPS2483_ModePowerDown2 	= 	4,	/**< Power-down mode */
   TPS2483_ModeShuntCont 	= 	5,	/**< Shunt voltage, continuous mode */
   TPS2483_ModeBusCont 		= 	6,	/**< Bus voltage, continuous mode */
-  TPS2483_RegShuntBusTrig 	= 	7 	/**< Shunt and bus, continuous mode (default) */
+  TPS2483_ModeShuntBusCont 	= 	7 	/**< Shunt and bus, continuous mode (default) */
 } TPS2483_Mode_TypeDef;
 
 typedef enum
@@ -229,12 +229,12 @@ void TPS2483_Init(void);
 
 int TPS2483_RegisterSet(I2C_TypeDef *i2c,
                          uint8_t addr,
-                         TEMPSENS_Register_TypeDef reg,
+						 TPS2483_Register_TypeDef reg,
                          uint16_t val);
 
 int TPS2483_RegisterGet(I2C_TypeDef *i2c,
                          uint8_t addr,
-                         TEMPSENS_Register_TypeDef reg,
+						 TPS2483_Register_TypeDef reg,
                          uint16_t *val);
 
 int TPS2483_ReadShuntVoltage(I2C_TypeDef *i2c,
