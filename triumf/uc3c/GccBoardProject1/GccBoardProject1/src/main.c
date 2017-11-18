@@ -101,7 +101,7 @@ int main (void)
 	// Initialize USART in RS232 mode.
 	usart_init_rs232(USART, &USART_OPTIONS, TARGET_PBACLK_FREQ_HZ);
 	
-	usart_write_line(USART,"\rboot\n");
+	usart_write_line(USART,"\rboot\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n");
 
 	/* Insert application code here, after the board has been initialized. */
 	
@@ -112,13 +112,13 @@ int main (void)
 	  /* Infinite loop */
   while (1) {
     gpio_toggle_pin(AVR32_PIN_PA08);
-    usart_write_line(USART,"\rram\n");
+    usart_write_line(USART,"\rram\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n");
     RAM_test();
-    usart_write_line(USART,"\rfla\n");
+    usart_write_line(USART,"\rfla\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n");
 	crc = CRC_calc(AVR32_FLASH_ADDRESS,AVR32_FLASH_ADDRESS+AVR32_FLASH_SIZE);
-    sprintf(buffer,"\rCRC:%x\n",crc);
+    sprintf(buffer,"\rCRC:%x\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n",crc);
     usart_write_line(USART,buffer);
-	sprintf(buffer,"\rend%u\n",iteration++);
+	sprintf(buffer,"\rend%u\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n",iteration++);
     usart_write_line(USART,buffer);
   }
 }
@@ -134,7 +134,7 @@ void RAM_test(void) {
     read = testMemArray[j];
     if (read != previous_write) {
       // delayed read
-      sprintf(buffer,"\rDR:%0x,%0x,%0x\n",j,read,previous_write);
+      sprintf(buffer,"\rDR:%0x,%0x,%0x\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n",j,read,previous_write);
       usart_write_line(USART,buffer);
       ram_errors++; 
     }
@@ -142,7 +142,7 @@ void RAM_test(void) {
     read = testMemArray[j];
     if (read != next_write) {
       // instantaneous read
-      sprintf(buffer,"\rIR:%0x,%0x,%0x\n",j,read,previous_write);
+      sprintf(buffer,"\rIR:%0x,%0x,%0x\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n",j,read,previous_write);
       usart_write_line(USART,buffer);
       ram_errors++;
       irRetries++;
@@ -150,13 +150,13 @@ void RAM_test(void) {
     else irRetries = 0;
 
     if(irRetries > MAX_RETRIES){
-      usart_write_line(USART,"\rTOO MANY IR ERRORS! Halting...\n");
+      usart_write_line(USART,"\rTOO MANY IR ERRORS! Halting...\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n");
       while (1){
         /* DO NOTHING */
       }
     }
   }
-  sprintf(buffer,"\rRE:%u\n",ram_errors);
+  sprintf(buffer,"\rRE:%u\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n",ram_errors);
   usart_write_line(USART,buffer);
 }
 

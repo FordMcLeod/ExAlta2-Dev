@@ -10,9 +10,11 @@
 
 #include "em_usart.h"
 #include "em_leuart.h"
+#include "em_gpio.h"
 #include "FreeRTOS.h"
 #include "task.h"
 #include "duts.h"
+#include "InitDevice.h"
 
 typedef struct {
 	char data[BUFFERSIZE];
@@ -36,6 +38,11 @@ data_buffer txBuf_LEUART0= BUF_DEFAULT;
 data_buffer rxBuf_LEUART0= BUF_DEFAULT;
 data_buffer txBuf_LEUART1= BUF_DEFAULT;
 data_buffer rxBuf_LEUART1= BUF_DEFAULT;
+
+uint8_t resetA = 0;
+uint8_t resetB = 0;
+uint8_t resetC = 0;
+uint8_t resetD = 0;
 
 
 /**************************************************************************//**
@@ -224,6 +231,67 @@ void DUTS_initIRQs_LEUART(LEUART_TypeDef* leuart, IRQn_Type rxIRQn)
   NVIC_ClearPendingIRQ(rxIRQn);
   NVIC_EnableIRQ(rxIRQn);
 }
+
+
+void DUTS_purge(DUTNUM_TypeDef dutNum)
+{
+
+
+  if (dutNum == DUT_A){
+	  rxBuf_UART0  = (data_buffer)BUF_DEFAULT;
+  	  UART0_enter_DefaultMode_from_RESET();
+  }
+  else if (dutNum == DUT_B){
+	  rxBuf_USART0  = (data_buffer)BUF_DEFAULT;
+  	  USART0_enter_DefaultMode_from_RESET();
+  }
+  else if (dutNum == DUT_C){
+	  rxBuf_UART1  = (data_buffer)BUF_DEFAULT;
+  	  UART1_enter_DefaultMode_from_RESET();
+  }
+  else if (dutNum == DUT_D){
+	  rxBuf_LEUART1  = (data_buffer)BUF_DEFAULT;
+	  LEUART1_enter_DefaultMode_from_RESET();
+  }
+}
+
+void DUTS_reset(DUTNUM_TypeDef dutNum)
+{
+  if (dutNum == DUT_A)
+	resetA = 1;
+  else if (dutNum == DUT_B)
+	resetB = 1;
+  else if (dutNum == DUT_C)
+	resetC = 1;
+  else if (dutNum == DUT_D)
+	resetD = 1;
+}
+
+uint8_t DUTS_needReset(DUTNUM_TypeDef dutNum)
+{
+  if (dutNum == DUT_A && resetA){
+	  resetA = 0;
+	return 1;
+  }
+  else if (dutNum == DUT_B && resetB){
+	  resetB = 0;
+	return 1;
+  }
+  else if (dutNum == DUT_C && resetC){
+	  resetC = 0;
+	return 1;
+  }
+  else if (dutNum == DUT_D && resetD){
+	  resetD = 0;
+	return 1;
+  }
+  else return 0;
+}
+
+
+
+
+
 
 
 uint8_t DUTS_getChar(DUTNUM_TypeDef dutNum)

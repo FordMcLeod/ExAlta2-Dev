@@ -46,13 +46,13 @@ int main(void)
 
   /* Infinite loop */
   while (1) {
-    PRINT_Stringln(USART0,"\rram\n");
+    PRINT_Stringln(USART0,"\rram\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n");
     RAM_test();
-    PRINT_Stringln(USART0,"\rfla\n");
+    PRINT_Stringln(USART0,"\rfla\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n");
     crc = CRC_calc((void *) 0, (void *) flashSize);
-    sprintf(buffer,"\rCRC:%x\n",crc);
+    sprintf(buffer,"\rCRC:%x\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n",crc);
     PRINT_Stringln(USART0,buffer);
-    sprintf(buffer,"\rend%u\n",iteration++);
+    sprintf(buffer,"\rend%u\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n",iteration++);
     PRINT_Stringln(USART0,buffer);
     GPIO_PinOutToggle(LED_PORT,LED_PIN);
   }
@@ -81,7 +81,7 @@ void RAM_test(void) {
     read = testMemArray[j];
     if (read != previous_write) {
       // delayed read
-      sprintf(buffer,"\rDR:%0x,%0x,%0x\n",j,read,previous_write);
+      sprintf(buffer,"\rDR:%0x,%0x,%0x\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n",j,read,previous_write);
       PRINT_Stringln(USART0,buffer);
       ram_errors++; 
     }
@@ -89,7 +89,7 @@ void RAM_test(void) {
     read = testMemArray[j];
     if (read != next_write) {
       // instantaneous read
-      sprintf(buffer,"\rIR:%0x,%0x,%0x\n",j,read,previous_write);
+      sprintf(buffer,"\rIR:%0x,%0x,%0x\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n",j,read,previous_write);
       PRINT_Stringln(USART0,buffer);
       ram_errors++;
       irRetries++;
@@ -97,13 +97,13 @@ void RAM_test(void) {
     else irRetries = 0;
 
     if(irRetries > MAX_RETRIES){
-		  PRINT_Stringln(USART0,"\rTOO MANY IR ERRORS! Halting...\n");
+		  PRINT_Stringln(USART0,"\rTOO MANY IR ERRORS! Halting...\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n");
     	while (1){
     		/* DO NOTHING */
     	}
     }
   }
-  sprintf(buffer,"\rRE:%u\n",ram_errors);
+  sprintf(buffer,"\rRE:%u\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n",ram_errors);
 
 }
 

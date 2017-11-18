@@ -171,7 +171,7 @@ int TPS2483_ReadShuntVoltage(I2C_TypeDef *i2c,
   {
   	*val = -(tmp & 0x7FFF);
   }
-  else *val = tmp*5;
+  else *val = tmp*10;
 
   return((int)I2C_Status);
 

@@ -278,7 +278,9 @@ int MICROSD_BlockTx(const uint8_t *buff, uint8_t token)
     val |= *buff++ << 8;
     bc  -= 2;
 
-    while (!(MICROSD_USART->STATUS & USART_STATUS_TXBL));
+    uint16_t retries = 0;
+
+    while (!(MICROSD_USART->STATUS & USART_STATUS_TXBL) && retries++ < 0xFFFF);
 
     MICROSD_USART->TXDOUBLE = val;
   } while (bc);

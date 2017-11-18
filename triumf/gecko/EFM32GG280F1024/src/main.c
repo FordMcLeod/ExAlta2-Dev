@@ -64,12 +64,13 @@
 
 #define STACK_SIZE_FOR_TASK    (configMINIMAL_STACK_SIZE + 100)
 #define TASK_PRIORITY          (tskIDLE_PRIORITY + 1)
-#define MUTEX_TIMEOUT          (pdMS_TO_TICKS(100))
+#define MUTEX_TIMEOUT          (pdMS_TO_TICKS(250))
 #define LED_PERIOD			   (pdMS_TO_TICKS(1000))
 #define CURR_PERIOD			   (pdMS_TO_TICKS(100))
 #define MAX_DUT_LINE_LENGTH    (20)
-#define DUT_MAX_RETRIES        (1)
-
+#define DUT_MAX_RETRIES        (10)
+#define DUT_WDT_TIMEOUT		   (pdMS_TO_TICKS(2000))
+#define MAX_OVERCURR_COUNTS    (10)
 
 /* Declare variables */
 static uint32_t resetcause = 0;
@@ -96,8 +97,31 @@ static void TASK_LedBlink(void *pParameters)
 
   for (;;)
   {
-	GPIO_PinOutToggle(LED_PORT,LED_PIN);
+
 	vTaskDelayUntil( &xLastWakeTime, xFrequency );
+	GPIO_PinOutToggle(LED_PORT,LED_PIN);
+
+
+	if (DUTS_needReset(DUT_A)){
+	  GPIO_PinOutClear(DUT0_EN_PORT,DUT0_EN_PIN);
+	  vTaskDelay(RESET_DELAY);
+	  GPIO_PinOutSet(DUT0_EN_PORT,DUT0_EN_PIN);
+	}
+	if (DUTS_needReset(DUT_B)){
+	  GPIO_PinOutClear(DUT1_EN_PORT,DUT1_EN_PIN);
+	  vTaskDelay(RESET_DELAY);
+	  GPIO_PinOutSet(DUT1_EN_PORT,DUT1_EN_PIN);
+	}
+	if (DUTS_needReset(DUT_C)){
+	  GPIO_PinOutClear(DUT2_EN_PORT,DUT2_EN_PIN);
+	  vTaskDelay(RESET_DELAY);
+	  GPIO_PinOutSet(DUT2_EN_PORT,DUT2_EN_PIN);
+	}
+	if (DUTS_needReset(DUT_D)){
+	  GPIO_PinOutClear(DUT3_EN_PORT,DUT3_EN_PIN);
+	  vTaskDelay(RESET_DELAY);
+	  GPIO_PinOutSet(DUT3_EN_PORT,DUT3_EN_PIN);
+	}
   }
 }
 
@@ -109,8 +133,15 @@ static void TASK_getCurr(void *pParameters)
   int curr2 = 0;
   int curr3 = 0;
 
+  uint8_t highCurrCount0 = 0;
+  uint8_t highCurrCount1 = 0;
+  uint8_t highCurrCount2 = 0;
+  uint8_t highCurrCount3 = 0;
+
   TickType_t xLastWakeTime;
   const TickType_t xFrequency = CURR_PERIOD;
+
+  time_t timestamp = 0;
 
   // Initialise the xLastWakeTime variable with the current time.
   xLastWakeTime = xTaskGetTickCount();
@@ -119,28 +150,76 @@ static void TASK_getCurr(void *pParameters)
   {
 
 	vTaskDelayUntil( &xLastWakeTime, xFrequency );
+
+	timestamp = time( NULL );
+	TPS2483_ReadShuntVoltage(I2C0,TPS2483_ADDR0,&curr0);
+    TPS2483_ReadShuntVoltage(I2C0,TPS2483_ADDR1,&curr1);
+    TPS2483_ReadShuntVoltage(I2C0,TPS2483_ADDR2,&curr2);
+    TPS2483_ReadShuntVoltage(I2C0,TPS2483_ADDR3,&curr3);
+
+    if(curr0 > 50000) highCurrCount0++;
+    else highCurrCount0 = 0;
+    if(curr1 > 50000) highCurrCount1++;
+    else highCurrCount1 = 0;
+    if(curr2 > 50000) highCurrCount2++;
+    else highCurrCount2 = 0;
+    if(curr3 > 50000) highCurrCount3++;
+    else highCurrCount3 = 0;
+
 	if(xSemaphoreTake(gatekeeper, MUTEX_TIMEOUT))
 	{
-	  PRINT_Time(USART1,time( NULL ));
-
-	  TPS2483_ReadShuntVoltage(I2C0,TPS2483_ADDR0,&curr0);
-	  TPS2483_ReadShuntVoltage(I2C0,TPS2483_ADDR1,&curr1);
-	  TPS2483_ReadShuntVoltage(I2C0,TPS2483_ADDR2,&curr2);
-	  TPS2483_ReadShuntVoltage(I2C0,TPS2483_ADDR3,&curr3);
-
+	  PRINT_Time(USART1,timestamp);
 	  PRINT_Current(USART1,curr0);
 	  PRINT_Current(USART1,curr1);
 	  PRINT_Current(USART1,curr2);
 	  PRINT_Current(USART1,curr3);
 	  PRINT_Char(USART1,'\n');
-	  PRINT_fsync();
 	  xSemaphoreGive(gatekeeper);
 	}
-	else
-	{
-	  PRINT_Char(USART1,'#');
-	  PRINT_Char(USART1,'\n');
-	  PRINT_fsync();
+
+	if(highCurrCount0 > MAX_OVERCURR_COUNTS){
+	  DUTS_reset(DUT_A);
+	  //DUTS_purge(DUT_A);
+	  if(xSemaphoreTake(gatekeeper, MUTEX_TIMEOUT))
+	  {
+		PRINT_Time(USART1,time( NULL ));
+		PRINT_Char(USART1,'A');
+		PRINT_Stringln(USART1,"\tLatchup? Resetting..\n");
+		xSemaphoreGive(gatekeeper);
+	  }
+	}
+	if(highCurrCount1 > MAX_OVERCURR_COUNTS){
+	  DUTS_reset(DUT_B);
+	  //DUTS_purge(DUT_B);
+	  if(xSemaphoreTake(gatekeeper, MUTEX_TIMEOUT))
+	  {
+		PRINT_Time(USART1,time( NULL ));
+		PRINT_Char(USART1,'B');
+		PRINT_Stringln(USART1,"\tLatchup? Resetting..\n");
+		xSemaphoreGive(gatekeeper);
+	  }
+	}
+	if(highCurrCount2 > MAX_OVERCURR_COUNTS){
+	  DUTS_reset(DUT_C);
+	  //DUTS_purge(DUT_C);
+	  if(xSemaphoreTake(gatekeeper, MUTEX_TIMEOUT))
+	  {
+		PRINT_Time(USART1,time( NULL ));
+		PRINT_Char(USART1,'C');
+		PRINT_Stringln(USART1,"\tLatchup? Resetting..\n");
+		xSemaphoreGive(gatekeeper);
+	  }
+	}
+	if(highCurrCount3 > MAX_OVERCURR_COUNTS){
+	  DUTS_reset(DUT_D);
+	  //DUTS_purge(DUT_D);
+	  if(xSemaphoreTake(gatekeeper, MUTEX_TIMEOUT))
+	  {
+		PRINT_Time(USART1,time( NULL ));
+		PRINT_Char(USART1,'D');
+		PRINT_Stringln(USART1,"\tLatchup? Resetting..\n");
+		xSemaphoreGive(gatekeeper);
+	  }
 	}
   }
 }
@@ -156,11 +235,27 @@ static void TASK_DutRx(void *pParameters)
   uint8_t charCount = 0;
   uint8_t noCharCount = 0;
 
+  TickType_t lastMessageTime = 0;
+
   for (;;)
   {
   	data = DUTS_getChar(pData->uart);
 
-    if (data == '\r') {
+  	if(xTaskGetTickCount()-lastMessageTime > DUT_WDT_TIMEOUT) {
+  	  DUTS_reset(pData->uart);
+  	  lastMessageTime = xTaskGetTickCount();
+  	  //DUTS_purge(pData->uart);
+  	  if(xSemaphoreTake(gatekeeper, MUTEX_TIMEOUT))
+  	  {
+		PRINT_Time(USART1,time( NULL ));
+		PRINT_Char(USART1,pData->DUTnum);
+		PRINT_Stringln(USART1,"\tNo response. Resetting..\n");
+		xSemaphoreGive(gatekeeper);
+  	  }
+  	}
+
+  	if (data == '\r') {
+      lastMessageTime = xTaskGetTickCount();
       if(xSemaphoreTake(gatekeeper, MUTEX_TIMEOUT))
       {
 		PRINT_Time(USART1,time( NULL ));
@@ -183,26 +278,22 @@ static void TASK_DutRx(void *pParameters)
 		  }
 		  if (data == '\n')
 		  {
-			  break;
+			  PRINT_fsync();
+			  xSemaphoreGive(gatekeeper);
+			  charCount = MAX_DUT_LINE_LENGTH;
 		  }
-		  if (noCharCount > DUT_MAX_RETRIES)
+		  else if (noCharCount > DUT_MAX_RETRIES)
 		  {
 			  PRINT_Char(USART1,'!');
 			  PRINT_Char(USART1,pData->DUTnum);
 			  PRINT_Char(USART1,'\n');
-			  PRINT_fsync();
-			  break;
+			  xSemaphoreGive(gatekeeper);
+			  charCount = MAX_DUT_LINE_LENGTH;
+			  //DUTS_purge(pData->uart);
+
 		  }
 		}
-		PRINT_fsync();
 		xSemaphoreGive(gatekeeper);
-      }
-      else
-      {
-    	  PRINT_Char(USART1,'$');
-    	  PRINT_Char(USART1,pData->DUTnum);
-    	  PRINT_Char(USART1,'\n');
-    	  PRINT_fsync();
       }
     }
   }
@@ -295,14 +386,14 @@ int main(void)
   static RxTaskParams_t parametersToCrx = { 'C', DUT_C };
   static RxTaskParams_t parametersToDrx = { 'D', DUT_D };
   
-  xTaskCreate( TASK_DutRx, (const char *) "Arx", STACK_SIZE_FOR_TASK, &parametersToArx, TASK_PRIORITY+1, NULL);
-  xTaskCreate( TASK_DutRx, (const char *) "Brx", STACK_SIZE_FOR_TASK, &parametersToBrx, TASK_PRIORITY+1, NULL);
-  xTaskCreate( TASK_DutRx, (const char *) "Crx", STACK_SIZE_FOR_TASK, &parametersToCrx, TASK_PRIORITY+1, NULL);
-  xTaskCreate( TASK_DutRx, (const char *) "Drx", STACK_SIZE_FOR_TASK, &parametersToDrx, TASK_PRIORITY+1, NULL);
+  xTaskCreate( TASK_DutRx, (const char *) "Arx", STACK_SIZE_FOR_TASK, &parametersToArx, TASK_PRIORITY+2, NULL);
+  xTaskCreate( TASK_DutRx, (const char *) "Brx", STACK_SIZE_FOR_TASK, &parametersToBrx, TASK_PRIORITY+2, NULL);
+  xTaskCreate( TASK_DutRx, (const char *) "Crx", STACK_SIZE_FOR_TASK, &parametersToCrx, TASK_PRIORITY+2, NULL);
+  xTaskCreate( TASK_DutRx, (const char *) "Drx", STACK_SIZE_FOR_TASK, &parametersToDrx, TASK_PRIORITY+2, NULL);
 
-  xTaskCreate( TASK_LedBlink, (const char *) "LedBlink1", STACK_SIZE_FOR_TASK, NULL, TASK_PRIORITY, NULL);
+  xTaskCreate( TASK_LedBlink, (const char *) "LedBlink1", STACK_SIZE_FOR_TASK, NULL, TASK_PRIORITY+1, NULL);
 
-  xTaskCreate( TASK_getCurr, (const char *) "curr", STACK_SIZE_FOR_TASK, NULL, TASK_PRIORITY+1, NULL);
+  xTaskCreate( TASK_getCurr, (const char *) "curr", STACK_SIZE_FOR_TASK, NULL, TASK_PRIORITY+2, NULL);
 
   /*Start FreeRTOS Scheduler*/
   vTaskStartScheduler();
