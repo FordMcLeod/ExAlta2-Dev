@@ -230,7 +230,7 @@ uint8_t DUTS_getChar(DUTNUM_TypeDef dutNum)
 {
   uint8_t ch;
 
-  data_buffer *rxBuf;
+  data_buffer *rxBuf = 0;
 
   if (dutNum == DUT_A)
       rxBuf = &rxBuf_UART0;
@@ -265,7 +265,7 @@ uint8_t DUTS_getChar(DUTNUM_TypeDef dutNum)
 void DUTS_PutChar(uint8_t ch, DUTNUM_TypeDef dutNum)
 {
 
-  data_buffer *txBuf;
+  data_buffer *txBuf = 0;
 
   if (dutNum == DUT_A)
         txBuf = &txBuf_UART0;

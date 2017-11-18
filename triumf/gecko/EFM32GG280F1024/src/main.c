@@ -64,11 +64,12 @@
 
 #define STACK_SIZE_FOR_TASK    (configMINIMAL_STACK_SIZE + 100)
 #define TASK_PRIORITY          (tskIDLE_PRIORITY + 1)
-#define MUTEX_TIMEOUT          (pdMS_TO_TICKS(100))
+
 #define LED_PERIOD			   (pdMS_TO_TICKS(1000))
 #define CURR_PERIOD			   (pdMS_TO_TICKS(100))
 #define MAX_DUT_LINE_LENGTH    (20)
 #define DUT_MAX_RETRIES        (1)
+#define MUTEX_TIMEOUT          (pdMS_TO_TICKS(100))
 
 
 /* Declare variables */
@@ -119,14 +120,15 @@ static void TASK_getCurr(void *pParameters)
   {
 
 	vTaskDelayUntil( &xLastWakeTime, xFrequency );
+
+	TPS2483_ReadShuntVoltage(I2C0,TPS2483_ADDR0,&curr0);
+    TPS2483_ReadShuntVoltage(I2C0,TPS2483_ADDR1,&curr1);
+    TPS2483_ReadShuntVoltage(I2C0,TPS2483_ADDR2,&curr2);
+    TPS2483_ReadShuntVoltage(I2C0,TPS2483_ADDR3,&curr3);
+
 	if(xSemaphoreTake(gatekeeper, MUTEX_TIMEOUT))
 	{
 	  PRINT_Time(USART1,time( NULL ));
-
-	  TPS2483_ReadShuntVoltage(I2C0,TPS2483_ADDR0,&curr0);
-	  TPS2483_ReadShuntVoltage(I2C0,TPS2483_ADDR1,&curr1);
-	  TPS2483_ReadShuntVoltage(I2C0,TPS2483_ADDR2,&curr2);
-	  TPS2483_ReadShuntVoltage(I2C0,TPS2483_ADDR3,&curr3);
 
 	  PRINT_Current(USART1,curr0);
 	  PRINT_Current(USART1,curr1);
@@ -276,10 +278,10 @@ int main(void)
   USART_BaudrateSyncSet(MICROSD_USART, 0, 16000000);
 
   /* Prepare UART Rx and Tx interrupts */
-  DUTS_initIRQs(UART0,UART0_RX_IRQn);
-  DUTS_initIRQs(USART0,USART0_RX_IRQn);
-  DUTS_initIRQs(UART1,UART1_RX_IRQn);
-  DUTS_initIRQs(LEUART1,LEUART1_IRQn);
+  DUTS_initIRQs_USART(UART0,UART0_RX_IRQn);
+  DUTS_initIRQs_USART(USART0,USART0_RX_IRQn);
+  DUTS_initIRQs_USART(UART1,UART1_RX_IRQn);
+  DUTS_initIRQs_LEUART(LEUART1,LEUART1_IRQn);
   //DUTS_initIRQs(USART1,USART1_RX_IRQn);
   //DUTS_initIRQs(USART2,USART2_RX_IRQn);
 
@@ -302,7 +304,7 @@ int main(void)
 
   xTaskCreate( TASK_LedBlink, (const char *) "LedBlink1", STACK_SIZE_FOR_TASK, NULL, TASK_PRIORITY, NULL);
 
-  xTaskCreate( TASK_getCurr, (const char *) "curr", STACK_SIZE_FOR_TASK, NULL, TASK_PRIORITY+1, NULL);
+  xTaskCreate( TASK_getCurr, (const char *) "curr", STACK_SIZE_FOR_TASK, NULL, TASK_PRIORITY, NULL);
 
   /*Start FreeRTOS Scheduler*/
   vTaskStartScheduler();
