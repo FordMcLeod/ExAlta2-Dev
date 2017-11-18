@@ -49,7 +49,7 @@ void PRINT_Current_LEUART(LEUART_TypeDef* uart, int curr);
 
 FRESULT PRINT_open(void);
 FRESULT PRINT_close(void);
-void PRINT_getBusy(void);
-void PRINT_releaseBusy(void);
+
+void PRINT_fsync(void);
 
 #endif

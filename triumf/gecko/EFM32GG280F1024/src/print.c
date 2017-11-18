@@ -17,7 +17,6 @@
 #include "task.h"
 
 FIL fsrc; /* File object */
-uint8_t busy = 0;
 uint8_t open = 0;
 
 /* Calendar struct */
@@ -182,7 +181,6 @@ FRESULT PRINT_open(void)
   /* Open or create a log file and ready to append */
   if(!open) {
     if(FATFS_append(&fsrc, FILENAME) == FR_OK) {
-      busy = 0;
       open = 1;
       PRINT_Stringln(USART1,"\nOpened SD card!\n");
     }
@@ -196,13 +194,11 @@ FRESULT PRINT_open(void)
 
 FRESULT PRINT_close(void)
 {
-  while(busy) vTaskDelay(pdMS_TO_TICKS(1));
   FRESULT res;
 
   /* Close the file */
   res = f_close(&fsrc);
   if(res == FR_OK) {
-	busy = 0;
 	open = 0;
 	PRINT_Stringln(USART1,"Closed SD card!");
   }
@@ -213,15 +209,7 @@ FRESULT PRINT_close(void)
 }
 
 
-void PRINT_getBusy(void)
-{
-  while(busy) vTaskDelay(pdMS_TO_TICKS(1));
-  busy = 1;
-}
-
-
-void PRINT_releaseBusy(void)
+void PRINT_fsync(void)
 {
   if(open) f_sync(&fsrc);
-  busy = 0;
 }

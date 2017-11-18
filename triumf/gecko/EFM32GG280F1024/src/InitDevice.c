@@ -875,7 +875,7 @@ extern void PORTIO_enter_DefaultMode_from_RESET(void) {
 			| USART_ROUTE_LOCATION_LOC1;
 
 	/* Enable signals CLK, CS, RX, TX */
-	USART2->ROUTE |= USART_ROUTE_CLKPEN | USART_ROUTE_CSPEN | USART_ROUTE_RXPEN
+	USART2->ROUTE |= USART_ROUTE_CLKPEN | USART_ROUTE_RXPEN
 			| USART_ROUTE_TXPEN;
 	// [Route Configuration]$
 

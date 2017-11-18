@@ -48,9 +48,12 @@ void UART0_RX_IRQHandler(void)
   {
     /* Copy data into RX Buffer */
     uint8_t rxData = USART_Rx(UART0);
-    rxBuf_UART0.data[rxBuf_UART0.wrI] = rxData;
-    rxBuf_UART0.wrI = (rxBuf_UART0.wrI + 1) % BUFFERSIZE;
-    rxBuf_UART0.pendingBytes++;
+    if(!rxBuf_UART0.overflow)
+	{
+	  rxBuf_UART0.data[rxBuf_UART0.wrI] = rxData;
+	  rxBuf_UART0.wrI = (rxBuf_UART0.wrI + 1) % BUFFERSIZE;
+	  rxBuf_UART0.pendingBytes++;
+	}
 
     /* Flag Rx overflow */
     if (rxBuf_UART0.pendingBytes > BUFFERSIZE)
@@ -73,9 +76,12 @@ void UART1_RX_IRQHandler(void)
   {
     /* Copy data into RX Buffer */
     uint8_t rxData = USART_Rx(UART1);
-    rxBuf_UART1.data[rxBuf_UART1.wrI] = rxData;
-    rxBuf_UART1.wrI = (rxBuf_UART1.wrI + 1) % BUFFERSIZE;
-    rxBuf_UART1.pendingBytes++;
+    if(!rxBuf_UART1.overflow)
+	{
+	  rxBuf_UART1.data[rxBuf_UART1.wrI] = rxData;
+	  rxBuf_UART1.wrI = (rxBuf_UART1.wrI + 1) % BUFFERSIZE;
+	  rxBuf_UART1.pendingBytes++;
+	}
 
     /* Flag Rx overflow */
     if (rxBuf_UART1.pendingBytes > BUFFERSIZE)
@@ -98,9 +104,12 @@ void USART0_RX_IRQHandler(void)
   {
     /* Copy data into RX Buffer */
     uint8_t rxData = USART_Rx(USART0);
-    rxBuf_USART0.data[rxBuf_USART0.wrI] = rxData;
-    rxBuf_USART0.wrI = (rxBuf_USART0.wrI + 1) % BUFFERSIZE;
-    rxBuf_USART0.pendingBytes++;
+    if(!rxBuf_USART0.overflow)
+	{
+	  rxBuf_USART0.data[rxBuf_USART0.wrI] = rxData;
+	  rxBuf_USART0.wrI = (rxBuf_USART0.wrI + 1) % BUFFERSIZE;
+	  rxBuf_USART0.pendingBytes++;
+	}
 
     /* Flag Rx overflow */
     if (rxBuf_USART0.pendingBytes > BUFFERSIZE)
@@ -123,9 +132,12 @@ void USART1_RX_IRQHandler(void)
   {
     /* Copy data into RX Buffer */
     uint8_t rxData = USART_Rx(USART1);
-    rxBuf_USART1.data[rxBuf_USART1.wrI] = rxData;
-    rxBuf_USART1.wrI = (rxBuf_USART1.wrI + 1) % BUFFERSIZE;
-    rxBuf_USART1.pendingBytes++;
+    if(!rxBuf_USART1.overflow)
+    {
+      rxBuf_USART1.data[rxBuf_USART1.wrI] = rxData;
+      rxBuf_USART1.wrI = (rxBuf_USART1.wrI + 1) % BUFFERSIZE;
+      rxBuf_USART1.pendingBytes++;
+    }
 
     /* Flag Rx overflow */
     if (rxBuf_USART1.pendingBytes > BUFFERSIZE)
@@ -148,9 +160,12 @@ void LEUART0_IRQHandler(void)
   {
     /* Copy data into RX Buffer */
     uint8_t rxData = LEUART_Rx(LEUART0);
-    rxBuf_LEUART0.data[rxBuf_LEUART0.wrI] = rxData;
-    rxBuf_LEUART0.wrI = (rxBuf_LEUART0.wrI + 1) % BUFFERSIZE;
-    rxBuf_LEUART0.pendingBytes++;
+    if(!rxBuf_LEUART0.overflow)
+	{
+	  rxBuf_LEUART0.data[rxBuf_LEUART0.wrI] = rxData;
+	  rxBuf_LEUART0.wrI = (rxBuf_LEUART0.wrI + 1) % BUFFERSIZE;
+	  rxBuf_LEUART0.pendingBytes++;
+	}
 
     /* Flag Rx overflow */
     if (rxBuf_LEUART0.pendingBytes > BUFFERSIZE)
@@ -173,9 +188,12 @@ void LEUART1_IRQHandler(void)
   {
     /* Copy data into RX Buffer */
     uint8_t rxData = LEUART_Rx(LEUART1);
-    rxBuf_LEUART1.data[rxBuf_LEUART1.wrI] = rxData;
-    rxBuf_LEUART1.wrI = (rxBuf_LEUART1.wrI + 1) % BUFFERSIZE;
-    rxBuf_LEUART1.pendingBytes++;
+    if(!rxBuf_LEUART1.overflow)
+	{
+	  rxBuf_LEUART1.data[rxBuf_LEUART1.wrI] = rxData;
+	  rxBuf_LEUART1.wrI = (rxBuf_LEUART1.wrI + 1) % BUFFERSIZE;
+	  rxBuf_LEUART1.pendingBytes++;
+	}
 
     /* Flag Rx overflow */
     if (rxBuf_LEUART1.pendingBytes > BUFFERSIZE)
@@ -224,9 +242,9 @@ uint8_t DUTS_getChar(DUTNUM_TypeDef dutNum)
       rxBuf = &rxBuf_LEUART1;
 
   /* Check if there is a byte that is ready to be fetched. If no byte is ready, wait for incoming data */
-  while (rxBuf->pendingBytes < 1)
+  if (rxBuf->pendingBytes < 1)
   {
-    vTaskDelay(pdMS_TO_TICKS(1));
+    return 0;
   }
 
   /* Copy data from buffer */
@@ -235,6 +253,8 @@ uint8_t DUTS_getChar(DUTNUM_TypeDef dutNum)
 
   /* Decrement pending byte counter */
   rxBuf->pendingBytes--;
+
+  rxBuf->overflow = false;
 
   return ch;
 }

@@ -64,12 +64,17 @@
 
 #define STACK_SIZE_FOR_TASK    (configMINIMAL_STACK_SIZE + 100)
 #define TASK_PRIORITY          (tskIDLE_PRIORITY + 1)
+#define MUTEX_TIMEOUT          (pdMS_TO_TICKS(100))
+#define LED_PERIOD			   (pdMS_TO_TICKS(1000))
+#define CURR_PERIOD			   (pdMS_TO_TICKS(100))
+#define MAX_DUT_LINE_LENGTH    (20)
+#define DUT_MAX_RETRIES        (1)
 
 
 /* Declare variables */
 static uint32_t resetcause = 0;
 
-
+xSemaphoreHandle gatekeeper = 0;
 
 /* Structure with parameters for TASK_DutRx */
 typedef struct
@@ -86,16 +91,13 @@ typedef struct
 static void TASK_LedBlink(void *pParameters)
 {
 
+  TickType_t xLastWakeTime;
+  const TickType_t xFrequency = LED_PERIOD;
+
   for (;;)
   {
-    GPIO_PortOutSetVal(LED_PORT, 1<<LED_PIN, 1<<LED_PIN);
-    vTaskDelay(pdMS_TO_TICKS(500));
-    GPIO_PortOutSetVal(LED_PORT, 0<<LED_PIN, 1<<LED_PIN);
-    vTaskDelay(pdMS_TO_TICKS(500));
-    PRINT_getBusy();
-    PRINT_Time(USART1,time( NULL ));
-    PRINT_Stringln(USART1,"\tHello world!\n");
-    PRINT_releaseBusy();
+	GPIO_PinOutToggle(LED_PORT,LED_PIN);
+	vTaskDelayUntil( &xLastWakeTime, xFrequency );
   }
 }
 
@@ -108,7 +110,7 @@ static void TASK_getCurr(void *pParameters)
   int curr3 = 0;
 
   TickType_t xLastWakeTime;
-  const TickType_t xFrequency = pdMS_TO_TICKS(100);
+  const TickType_t xFrequency = CURR_PERIOD;
 
   // Initialise the xLastWakeTime variable with the current time.
   xLastWakeTime = xTaskGetTickCount();
@@ -117,24 +119,29 @@ static void TASK_getCurr(void *pParameters)
   {
 
 	vTaskDelayUntil( &xLastWakeTime, xFrequency );
+	if(xSemaphoreTake(gatekeeper, MUTEX_TIMEOUT))
+	{
+	  PRINT_Time(USART1,time( NULL ));
 
-	PRINT_getBusy();
-	PRINT_Time(USART1,time( NULL ));
+	  TPS2483_ReadShuntVoltage(I2C0,TPS2483_ADDR0,&curr0);
+	  TPS2483_ReadShuntVoltage(I2C0,TPS2483_ADDR1,&curr1);
+	  TPS2483_ReadShuntVoltage(I2C0,TPS2483_ADDR2,&curr2);
+	  TPS2483_ReadShuntVoltage(I2C0,TPS2483_ADDR3,&curr3);
 
-	TPS2483_ReadShuntVoltage(I2C0,TPS2483_ADDR0,&curr0);
-	TPS2483_ReadShuntVoltage(I2C0,TPS2483_ADDR1,&curr1);
-	TPS2483_ReadShuntVoltage(I2C0,TPS2483_ADDR2,&curr2);
-	TPS2483_ReadShuntVoltage(I2C0,TPS2483_ADDR3,&curr3);
-    //GPIO_PortOutSetVal(ENAVR_PORT, 1<<ENAVR_PIN, 1<<ENAVR_PIN);
-
-    PRINT_Current(USART1,curr0);
-    PRINT_Current(USART1,curr1);
-    PRINT_Current(USART1,curr2);
-    PRINT_Current(USART1,curr3);
-    PRINT_Char(USART1,'\n');
-    PRINT_releaseBusy();
-    //GPIO_PortOutSetVal(ENAVR_PORT, 0<<ENAVR_PIN, 1<<ENAVR_PIN);
-    //vTaskDelay(pdMS_TO_TICKS(1000));
+	  PRINT_Current(USART1,curr0);
+	  PRINT_Current(USART1,curr1);
+	  PRINT_Current(USART1,curr2);
+	  PRINT_Current(USART1,curr3);
+	  PRINT_Char(USART1,'\n');
+	  PRINT_fsync();
+	  xSemaphoreGive(gatekeeper);
+	}
+	else
+	{
+	  PRINT_Char(USART1,'#');
+	  PRINT_Char(USART1,'\n');
+	  PRINT_fsync();
+	}
   }
 }
 
@@ -146,26 +153,57 @@ static void TASK_DutRx(void *pParameters)
 {
   RxTaskParams_t* pData = (RxTaskParams_t*) pParameters;
   uint8_t data = 0;
-  static uint8_t midLine = 0;
+  uint8_t charCount = 0;
+  uint8_t noCharCount = 0;
 
   for (;;)
   {
   	data = DUTS_getChar(pData->uart);
 
     if (data == '\r') {
-      midLine = 1;
-      PRINT_getBusy();
-      PRINT_Time(USART1,time( NULL ));
-      PRINT_Char(USART1,pData->DUTnum);
-      PRINT_Char(USART1,'\t');
-    }
-    else if (midLine) {
-	  PRINT_Char(USART1,data);
-    }
-    if (data == '\n') {
-      midLine = 0;
-      PRINT_releaseBusy();
-      vTaskDelay(pdMS_TO_TICKS(1));
+      if(xSemaphoreTake(gatekeeper, MUTEX_TIMEOUT))
+      {
+		PRINT_Time(USART1,time( NULL ));
+		PRINT_Char(USART1,pData->DUTnum);
+		PRINT_Char(USART1,'\t');
+		charCount = 0;
+		noCharCount = 0;
+		while(charCount < MAX_DUT_LINE_LENGTH)
+		{
+		  data = DUTS_getChar(pData->uart);
+		  if(!data)
+		  {
+			  noCharCount++;
+		  }
+		  else
+		  {
+			  charCount++;
+			  PRINT_Char(USART1,data);
+			  noCharCount = 0;
+		  }
+		  if (data == '\n')
+		  {
+			  break;
+		  }
+		  if (noCharCount > DUT_MAX_RETRIES)
+		  {
+			  PRINT_Char(USART1,'!');
+			  PRINT_Char(USART1,pData->DUTnum);
+			  PRINT_Char(USART1,'\n');
+			  PRINT_fsync();
+			  break;
+		  }
+		}
+		PRINT_fsync();
+		xSemaphoreGive(gatekeeper);
+      }
+      else
+      {
+    	  PRINT_Char(USART1,'$');
+    	  PRINT_Char(USART1,pData->DUTnum);
+    	  PRINT_Char(USART1,'\n');
+    	  PRINT_fsync();
+      }
     }
   }
 }
@@ -203,11 +241,6 @@ int main(void)
     init.baudrate = 921600;
     LEUART_Init(LEUART1, &init);
     LEUART1->ROUTE |= LEUART_ROUTE_RXPEN;
-    uint8_t c = 0;
-    //while(1){
-  	//  c = LEUART_Rx(LEUART1);
-  	//  PRINT_Char(USART1,c);
-    //}
 
   clockSetup(resetcause);
 
@@ -236,6 +269,10 @@ int main(void)
     PRINT_Stringln(USART1,"\tNo SD Card detected!");
   }
 
+  PRINT_fsync();
+
+  gatekeeper = xSemaphoreCreateMutex();
+
   USART_BaudrateSyncSet(MICROSD_USART, 0, 16000000);
 
   /* Prepare UART Rx and Tx interrupts */
@@ -258,14 +295,14 @@ int main(void)
   static RxTaskParams_t parametersToCrx = { 'C', DUT_C };
   static RxTaskParams_t parametersToDrx = { 'D', DUT_D };
   
-  xTaskCreate( TASK_DutRx, (const char *) "Arx", STACK_SIZE_FOR_TASK, &parametersToArx, TASK_PRIORITY, NULL);
-  xTaskCreate( TASK_DutRx, (const char *) "Brx", STACK_SIZE_FOR_TASK, &parametersToBrx, TASK_PRIORITY, NULL);
-  xTaskCreate( TASK_DutRx, (const char *) "Crx", STACK_SIZE_FOR_TASK, &parametersToCrx, TASK_PRIORITY, NULL);
-  xTaskCreate( TASK_DutRx, (const char *) "Drx", STACK_SIZE_FOR_TASK, &parametersToDrx, TASK_PRIORITY, NULL);
+  xTaskCreate( TASK_DutRx, (const char *) "Arx", STACK_SIZE_FOR_TASK, &parametersToArx, TASK_PRIORITY+1, NULL);
+  xTaskCreate( TASK_DutRx, (const char *) "Brx", STACK_SIZE_FOR_TASK, &parametersToBrx, TASK_PRIORITY+1, NULL);
+  xTaskCreate( TASK_DutRx, (const char *) "Crx", STACK_SIZE_FOR_TASK, &parametersToCrx, TASK_PRIORITY+1, NULL);
+  xTaskCreate( TASK_DutRx, (const char *) "Drx", STACK_SIZE_FOR_TASK, &parametersToDrx, TASK_PRIORITY+1, NULL);
 
   xTaskCreate( TASK_LedBlink, (const char *) "LedBlink1", STACK_SIZE_FOR_TASK, NULL, TASK_PRIORITY, NULL);
 
-  xTaskCreate( TASK_getCurr, (const char *) "curr", STACK_SIZE_FOR_TASK, NULL, TASK_PRIORITY, NULL);
+  xTaskCreate( TASK_getCurr, (const char *) "curr", STACK_SIZE_FOR_TASK, NULL, TASK_PRIORITY+1, NULL);
 
   /*Start FreeRTOS Scheduler*/
   vTaskStartScheduler();
