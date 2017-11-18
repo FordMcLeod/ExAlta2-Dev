@@ -47,9 +47,11 @@
 #include "em_gpio.h"
 #include "em_chip.h"
 #include "em_rmu.h"
+#include "em_cmu.h"
 #include "em_timer.h"
 #include "em_burtc.h"
 #include "em_usart.h"
+#include "em_leuart.h"
 
 #include "sleep.h"
 #include "print.h"
@@ -73,7 +75,7 @@ static uint32_t resetcause = 0;
 typedef struct
 {
   uint8_t DUTnum;
-  USART_TypeDef * uart;
+  DUTNUM_TypeDef uart;
 } RxTaskParams_t;
 
 
@@ -190,6 +192,23 @@ int main(void)
 
   enter_DefaultMode_from_RESET();
 
+  CMU_ClockSelectSet(cmuClock_LFB, cmuSelect_CORELEDIV2);
+    CMU_ClockEnable(cmuClock_LFB, true);
+    CMU_ClockEnable(cmuClock_CORELE, true);
+    GPIO_PinModeSet(gpioPortC, 6, gpioModeInput, 1);
+    LEUART_Init_TypeDef init = LEUART_INIT_DEFAULT;
+    CMU_ClockEnable(cmuClock_LEUART1, true);
+    LEUART_Reset(LEUART1);
+    init.refFreq = CMU_ClockFreqGet(cmuClock_LEUART1);
+    init.baudrate = 921600;
+    LEUART_Init(LEUART1, &init);
+    LEUART1->ROUTE |= LEUART_ROUTE_RXPEN;
+    uint8_t c = 0;
+    //while(1){
+  	//  c = LEUART_Rx(LEUART1);
+  	//  PRINT_Char(USART1,c);
+    //}
+
   clockSetup(resetcause);
 
   /* Enable BURTC interrupts */
@@ -197,8 +216,6 @@ int main(void)
   NVIC_EnableIRQ( BURTC_IRQn );
 
   TPS2483_Init();
-
-  USART_SpiTransfer(USART2,'A');
 
   unsigned int sdcd = GPIO_PinInGet(SD_CD_PORT,SD_CD_PIN);
 
@@ -222,9 +239,13 @@ int main(void)
   USART_BaudrateSyncSet(MICROSD_USART, 0, 16000000);
 
   /* Prepare UART Rx and Tx interrupts */
-  //DUTS_initIRQs(UART0,UART0_RX_IRQn);
+  DUTS_initIRQs(UART0,UART0_RX_IRQn);
+  DUTS_initIRQs(USART0,USART0_RX_IRQn);
+  DUTS_initIRQs(UART1,UART1_RX_IRQn);
+  DUTS_initIRQs(LEUART1,LEUART1_IRQn);
   //DUTS_initIRQs(USART1,USART1_RX_IRQn);
   //DUTS_initIRQs(USART2,USART2_RX_IRQn);
+
 
   GPIO_PinOutSet(DUT0_EN_PORT,DUT0_EN_PIN);
   GPIO_PinOutSet(DUT1_EN_PORT,DUT1_EN_PIN);
@@ -232,13 +253,15 @@ int main(void)
   GPIO_PinOutSet(DUT3_EN_PORT,DUT3_EN_PIN);
 
   
-  //static TaskParams_t parametersToArx = { 'A', UART0 };
-  //static TaskParams_t parametersToBrx = { 'B', USART1 };
-  //static TaskParams_t parametersToCrx = { 'C', USART2 };
+  static RxTaskParams_t parametersToArx = { 'A', DUT_A };
+  static RxTaskParams_t parametersToBrx = { 'B', DUT_B };
+  static RxTaskParams_t parametersToCrx = { 'C', DUT_C };
+  static RxTaskParams_t parametersToDrx = { 'D', DUT_D };
   
-  //xTaskCreate( TASK_DutRx, (const char *) "Arx", STACK_SIZE_FOR_TASK, &parametersToArx, TASK_PRIORITY, NULL);
-  //xTaskCreate( TASK_DutRx, (const char *) "Brx", STACK_SIZE_FOR_TASK, &parametersToBrx, TASK_PRIORITY, NULL);
-  //xTaskCreate( TASK_DutRx, (const char *) "Crx", STACK_SIZE_FOR_TASK, &parametersToCrx, TASK_PRIORITY, NULL);
+  xTaskCreate( TASK_DutRx, (const char *) "Arx", STACK_SIZE_FOR_TASK, &parametersToArx, TASK_PRIORITY, NULL);
+  xTaskCreate( TASK_DutRx, (const char *) "Brx", STACK_SIZE_FOR_TASK, &parametersToBrx, TASK_PRIORITY, NULL);
+  xTaskCreate( TASK_DutRx, (const char *) "Crx", STACK_SIZE_FOR_TASK, &parametersToCrx, TASK_PRIORITY, NULL);
+  xTaskCreate( TASK_DutRx, (const char *) "Drx", STACK_SIZE_FOR_TASK, &parametersToDrx, TASK_PRIORITY, NULL);
 
   xTaskCreate( TASK_LedBlink, (const char *) "LedBlink1", STACK_SIZE_FOR_TASK, NULL, TASK_PRIORITY, NULL);
 

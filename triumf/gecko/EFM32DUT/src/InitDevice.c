@@ -243,7 +243,7 @@ extern void USART0_enter_DefaultMode_from_RESET(void) {
 	// $[USART_InitAsync]
 	USART_InitAsync_TypeDef initasync = USART_INITASYNC_DEFAULT;
 
-	initasync.baudrate = 32786;
+	initasync.baudrate = 921600;
 	initasync.databits = usartDatabits8;
 	initasync.parity = usartNoParity;
 	initasync.stopbits = usartStopbits1;

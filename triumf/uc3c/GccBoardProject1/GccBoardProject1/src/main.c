@@ -87,7 +87,7 @@ int main (void)
 	// USART options.
 	static const usart_options_t USART_OPTIONS =
 	{
-		.baudrate     = 32786,
+		.baudrate     = 921600,
 		.charlength   = 8,
 		.paritytype   = USART_NO_PARITY,
 		.stopbits     = USART_1_STOPBIT,

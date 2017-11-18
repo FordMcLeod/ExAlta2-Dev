@@ -195,7 +195,7 @@ typedef enum
   TPS2483_BusCT2116us		=	5,
   TPS2483_BusCT4156us		=	6,
   TPS2483_BusCT8244us		=	7
-} TPS2483_BusCT_TypeDeg;
+} TPS2483_BusCT_TypeDef;
 
 typedef enum
 {
@@ -207,7 +207,7 @@ typedef enum
   TPS2483_ShuntCT2116us		=	5,
   TPS2483_ShuntCT4156us		=	6,
   TPS2483_ShuntCT8244us		=	7
-} TPS2483_ShuntCT_TypeDeg;
+} TPS2483_ShuntCT_TypeDef;
 
 typedef enum
 {
@@ -219,7 +219,7 @@ typedef enum
   TPS2483_AVG256			=	5,
   TPS2483_AVG512			=	6,
   TPS2483_AVG1024			=	7
-} TPS2483_AVG_TypeDeg;
+} TPS2483_AVG_TypeDef;
 
 /*******************************************************************************
  *****************************   PROTOTYPES   **********************************

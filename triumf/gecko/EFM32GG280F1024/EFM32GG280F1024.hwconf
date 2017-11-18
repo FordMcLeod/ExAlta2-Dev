@@ -15,7 +15,6 @@
     <property object="HFXO" propertyId="hfxo.result.rnegesrmaxratio" value="28.819"/>
     <property object="I2C0" propertyId="ABPeripheral.included" value="true"/>
     <property object="LEUART1" propertyId="ABPeripheral.included" value="true"/>
-    <property object="LEUART1" propertyId="leuart.settings.baudrate" value="32786"/>
     <property object="LFXO" propertyId="ABPeripheral.included" value="true"/>
     <property object="LFXO" propertyId="lfxo.circuitcharacteristics.calculatedclpf" value="12.50"/>
     <property object="LFXO" propertyId="lfxo.crystalcharacteristics.equivalentseriesresistanceincrystalesrmax" value="80000"/>
@@ -99,11 +98,11 @@
     <property object="PORTIO" propertyId="portio.usart2.enable.tx" value="Enabled"/>
     <property object="PORTIO" propertyId="portio.usart2.location.usart2" value="1"/>
     <property object="UART0" propertyId="ABPeripheral.included" value="true"/>
-    <property object="UART0" propertyId="uart.asynchronoussettings.baudrate" value="32786"/>
+    <property object="UART0" propertyId="uart.asynchronoussettings.baudrate" value="921600"/>
     <property object="UART1" propertyId="ABPeripheral.included" value="true"/>
-    <property object="UART1" propertyId="uart.asynchronoussettings.baudrate" value="32786"/>
+    <property object="UART1" propertyId="uart.asynchronoussettings.baudrate" value="921600"/>
     <property object="USART0" propertyId="ABPeripheral.included" value="true"/>
-    <property object="USART0" propertyId="usart.asynchronoussettings.baudrate" value="32786"/>
+    <property object="USART0" propertyId="usart.asynchronoussettings.baudrate" value="921600"/>
     <property object="USART0" propertyId="usart.synchronoussettings.baudrate" value="230400"/>
     <property object="USART1" propertyId="ABPeripheral.included" value="true"/>
     <property object="USART1" propertyId="usart.asynchronoussettings.baudrate" value="921600"/>

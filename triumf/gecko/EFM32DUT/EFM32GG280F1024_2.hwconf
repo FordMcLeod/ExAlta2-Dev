@@ -19,7 +19,7 @@
     <property object="PORTIO" propertyId="portio.usart0.enable.tx" value="Enabled"/>
     <property object="PORTIO" propertyId="portio.usart0.location.usart0" value="1"/>
     <property object="USART0" propertyId="ABPeripheral.included" value="true"/>
-    <property object="USART0" propertyId="usart.asynchronoussettings.baudrate" value="32786"/>
+    <property object="USART0" propertyId="usart.asynchronoussettings.baudrate" value="921600"/>
   </mode>
   <modeTransition>
     <property object="RESET &#x2192; DefaultMode" propertyId="modeTransition.source" value="RESET"/>

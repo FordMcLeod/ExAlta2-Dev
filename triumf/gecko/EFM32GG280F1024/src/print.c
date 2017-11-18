@@ -121,7 +121,7 @@ void PRINT_Time_LEUART(LEUART_TypeDef* leuart, time_t currentTime)
   }
 }
 
-PRINT_Current_USART(USART_TypeDef* uart, int curr)
+void PRINT_Current_USART(USART_TypeDef* uart, int curr)
 {
 	uint8_t i = 0;
 
@@ -147,7 +147,7 @@ PRINT_Current_USART(USART_TypeDef* uart, int curr)
 	  USART_Tx(uart,displayStringBuf[i]);
     }
 }
-PRINT_Current_LEUART(LEUART_TypeDef* leuart, int curr)
+void PRINT_Current_LEUART(LEUART_TypeDef* leuart, int curr)
 {
 	uint8_t i = 0;
 

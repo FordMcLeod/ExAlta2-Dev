@@ -301,7 +301,7 @@ extern void USART0_enter_DefaultMode_from_RESET(void) {
 	// $[USART_InitAsync]
 	USART_InitAsync_TypeDef initasync = USART_INITASYNC_DEFAULT;
 
-	initasync.baudrate = 32786;
+	initasync.baudrate = 921600;
 	initasync.databits = usartDatabits8;
 	initasync.parity = usartNoParity;
 	initasync.stopbits = usartStopbits1;
@@ -412,7 +412,7 @@ extern void UART0_enter_DefaultMode_from_RESET(void) {
 	// $[UART_InitAsync]
 	USART_InitAsync_TypeDef initasync = USART_INITASYNC_DEFAULT;
 
-	initasync.baudrate = 32786;
+	initasync.baudrate = 921600;
 	initasync.databits = usartDatabits8;
 	initasync.parity = usartNoParity;
 	initasync.stopbits = usartStopbits1;
@@ -446,7 +446,7 @@ extern void UART1_enter_DefaultMode_from_RESET(void) {
 	// $[UART_InitAsync]
 	USART_InitAsync_TypeDef initasync = USART_INITASYNC_DEFAULT;
 
-	initasync.baudrate = 32786;
+	initasync.baudrate = 921600;
 	initasync.databits = usartDatabits8;
 	initasync.parity = usartNoParity;
 	initasync.stopbits = usartStopbits1;
@@ -491,7 +491,7 @@ extern void LEUART1_enter_DefaultMode_from_RESET(void) {
 	LEUART_Init_TypeDef initleuart = LEUART_INIT_DEFAULT;
 
 	initleuart.enable = leuartEnable;
-	initleuart.baudrate = 32786;
+	initleuart.baudrate = 9600;
 	initleuart.databits = leuartDatabits8;
 	initleuart.parity = leuartNoParity;
 	initleuart.stopbits = leuartStopbits1;
@@ -875,7 +875,7 @@ extern void PORTIO_enter_DefaultMode_from_RESET(void) {
 			| USART_ROUTE_LOCATION_LOC1;
 
 	/* Enable signals CLK, CS, RX, TX */
-	USART2->ROUTE |= USART_ROUTE_CLKPEN | USART_ROUTE_RXPEN
+	USART2->ROUTE |= USART_ROUTE_CLKPEN | USART_ROUTE_CSPEN | USART_ROUTE_RXPEN
 			| USART_ROUTE_TXPEN;
 	// [Route Configuration]$
 
