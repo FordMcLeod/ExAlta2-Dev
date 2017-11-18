@@ -136,7 +136,7 @@ int TPS2483_RegisterGet(I2C_TypeDef *i2c,
   /* Do a polled transfer */
   I2C_Status = I2C_TransferInit(i2c, &seq);
   uint16_t timeout = 0;
-  while (I2C_Status == i2cTransferInProgress && timeout++ < 10000)
+  while (I2C_Status == i2cTransferInProgress && timeout++ < 500)
   {
     /* Enter EM1 while waiting for I2C interrupt */
     //EMU_EnterEM1();

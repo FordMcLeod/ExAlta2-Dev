@@ -42,6 +42,7 @@ void DUTS_initIRQs_USART(USART_TypeDef* usart, IRQn_Type rxIRQn);
 void DUTS_initIRQs_LEUART(LEUART_TypeDef* leuart, IRQn_Type rxIRQn);
 uint8_t DUTS_getChar(DUTNUM_TypeDef dutNum);
 void DUTS_PutChar(uint8_t, DUTNUM_TypeDef dutNum);
+void DUTS_init(void);
 
 
 #endif /* DUTS_H_ */

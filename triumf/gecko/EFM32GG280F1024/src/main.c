@@ -62,12 +62,12 @@
 #include "duts.h"
 #include "TPS2483.h"
 
-#define STACK_SIZE_FOR_TASK    (configMINIMAL_STACK_SIZE + 100)
+#define STACK_SIZE_FOR_TASK    (configMINIMAL_STACK_SIZE + 200)
 #define TASK_PRIORITY          (tskIDLE_PRIORITY + 1)
-#define MUTEX_TIMEOUT          (pdMS_TO_TICKS(100))
+#define MUTEX_TIMEOUT          (pdMS_TO_TICKS(10))
 #define LED_PERIOD			   (pdMS_TO_TICKS(1000))
-#define CURR_PERIOD			   (pdMS_TO_TICKS(100))
-#define MAX_DUT_LINE_LENGTH    (20)
+#define CURR_PERIOD			   (pdMS_TO_TICKS(200))
+#define MAX_DUT_LINE_LENGTH    (40)
 #define DUT_MAX_RETRIES        (1)
 
 
@@ -119,15 +119,17 @@ static void TASK_getCurr(void *pParameters)
   {
 
 	vTaskDelayUntil( &xLastWakeTime, xFrequency );
+
+	TPS2483_ReadShuntVoltage(I2C0,TPS2483_ADDR0,&curr0);
+	TPS2483_ReadShuntVoltage(I2C0,TPS2483_ADDR1,&curr1);
+	TPS2483_ReadShuntVoltage(I2C0,TPS2483_ADDR2,&curr2);
+	TPS2483_ReadShuntVoltage(I2C0,TPS2483_ADDR3,&curr3);
+
+	time_t timeStamp = time( NULL );
+
 	if(xSemaphoreTake(gatekeeper, MUTEX_TIMEOUT))
 	{
-	  PRINT_Time(USART1,time( NULL ));
-
-	  TPS2483_ReadShuntVoltage(I2C0,TPS2483_ADDR0,&curr0);
-	  TPS2483_ReadShuntVoltage(I2C0,TPS2483_ADDR1,&curr1);
-	  TPS2483_ReadShuntVoltage(I2C0,TPS2483_ADDR2,&curr2);
-	  TPS2483_ReadShuntVoltage(I2C0,TPS2483_ADDR3,&curr3);
-
+	  PRINT_Time(USART1,timeStamp);
 	  PRINT_Current(USART1,curr0);
 	  PRINT_Current(USART1,curr1);
 	  PRINT_Current(USART1,curr2);
@@ -158,7 +160,7 @@ static void TASK_DutRx(void *pParameters)
 
   for (;;)
   {
-  	data = DUTS_getChar(pData->uart);
+  	data = USART_Rx(UART0);
 
     if (data == '\r') {
       if(xSemaphoreTake(gatekeeper, MUTEX_TIMEOUT))
@@ -170,7 +172,7 @@ static void TASK_DutRx(void *pParameters)
 		noCharCount = 0;
 		while(charCount < MAX_DUT_LINE_LENGTH)
 		{
-		  data = DUTS_getChar(pData->uart);
+		  data = USART_Rx(UART0);
 		  if(!data)
 		  {
 			  noCharCount++;
@@ -276,7 +278,7 @@ int main(void)
   USART_BaudrateSyncSet(MICROSD_USART, 0, 16000000);
 
   /* Prepare UART Rx and Tx interrupts */
-  DUTS_initIRQs(UART0,UART0_RX_IRQn);
+  //DUTS_initIRQs(UART0,UART0_RX_IRQn);
   DUTS_initIRQs(USART0,USART0_RX_IRQn);
   DUTS_initIRQs(UART1,UART1_RX_IRQn);
   DUTS_initIRQs(LEUART1,LEUART1_IRQn);
@@ -286,8 +288,10 @@ int main(void)
 
   GPIO_PinOutSet(DUT0_EN_PORT,DUT0_EN_PIN);
   GPIO_PinOutSet(DUT1_EN_PORT,DUT1_EN_PIN);
-  GPIO_PinOutSet(DUT2_EN_PORT,DUT2_EN_PIN);
-  GPIO_PinOutSet(DUT3_EN_PORT,DUT3_EN_PIN);
+  //GPIO_PinOutSet(DUT2_EN_PORT,DUT2_EN_PIN);
+  //GPIO_PinOutSet(DUT3_EN_PORT,DUT3_EN_PIN);
+
+  DUTS_init();
 
   
   static RxTaskParams_t parametersToArx = { 'A', DUT_A };
@@ -296,13 +300,13 @@ int main(void)
   static RxTaskParams_t parametersToDrx = { 'D', DUT_D };
   
   xTaskCreate( TASK_DutRx, (const char *) "Arx", STACK_SIZE_FOR_TASK, &parametersToArx, TASK_PRIORITY+1, NULL);
-  xTaskCreate( TASK_DutRx, (const char *) "Brx", STACK_SIZE_FOR_TASK, &parametersToBrx, TASK_PRIORITY+1, NULL);
-  xTaskCreate( TASK_DutRx, (const char *) "Crx", STACK_SIZE_FOR_TASK, &parametersToCrx, TASK_PRIORITY+1, NULL);
-  xTaskCreate( TASK_DutRx, (const char *) "Drx", STACK_SIZE_FOR_TASK, &parametersToDrx, TASK_PRIORITY+1, NULL);
+  //xTaskCreate( TASK_DutRx, (const char *) "Brx", STACK_SIZE_FOR_TASK, &parametersToBrx, TASK_PRIORITY+1, NULL);
+  //xTaskCreate( TASK_DutRx, (const char *) "Crx", STACK_SIZE_FOR_TASK, &parametersToCrx, TASK_PRIORITY+1, NULL);
+ // xTaskCreate( TASK_DutRx, (const char *) "Drx", STACK_SIZE_FOR_TASK, &parametersToDrx, TASK_PRIORITY+1, NULL);
 
-  xTaskCreate( TASK_LedBlink, (const char *) "LedBlink1", STACK_SIZE_FOR_TASK, NULL, TASK_PRIORITY, NULL);
+  //xTaskCreate( TASK_LedBlink, (const char *) "LedBlink1", STACK_SIZE_FOR_TASK, NULL, TASK_PRIORITY, NULL);
 
-  xTaskCreate( TASK_getCurr, (const char *) "curr", STACK_SIZE_FOR_TASK, NULL, TASK_PRIORITY+1, NULL);
+  //xTaskCreate( TASK_getCurr, (const char *) "curr", STACK_SIZE_FOR_TASK, NULL, TASK_PRIORITY+1, NULL);
 
   /*Start FreeRTOS Scheduler*/
   vTaskStartScheduler();

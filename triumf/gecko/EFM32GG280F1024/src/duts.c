@@ -6,13 +6,14 @@
  ******************************************************************************/
 
 #define BUF_DEFAULT {{0},0,0,0,0}
-#define BUFFERSIZE 2048
+#define BUFFERSIZE 1024
 
 #include "em_usart.h"
 #include "em_leuart.h"
 #include "FreeRTOS.h"
 #include "task.h"
 #include "duts.h"
+#include "queue.h"
 
 typedef struct {
 	char data[BUFFERSIZE];
@@ -21,6 +22,9 @@ typedef struct {
 	uint16_t pendingBytes;
 	uint8_t  overflow;
 } data_buffer;
+
+xQueueHandle queue = 0;
+xQueueHandle queue1 = 0;
 
 data_buffer rxBuf_UART0  = BUF_DEFAULT;
 data_buffer txBuf_UART0  = BUF_DEFAULT;
@@ -37,6 +41,12 @@ data_buffer rxBuf_LEUART0= BUF_DEFAULT;
 data_buffer txBuf_LEUART1= BUF_DEFAULT;
 data_buffer rxBuf_LEUART1= BUF_DEFAULT;
 
+void DUTS_init(void)
+{
+	queue = xQueueCreate(BUFFERSIZE, sizeof(char));
+	queue1 = xQueueCreate(BUFFERSIZE, sizeof(char));
+}
+
 
 /**************************************************************************//**
  * @brief UART0 RX IRQ Handler
@@ -48,18 +58,20 @@ void UART0_RX_IRQHandler(void)
   {
     /* Copy data into RX Buffer */
     uint8_t rxData = USART_Rx(UART0);
-    if(!rxBuf_UART0.overflow)
-	{
-	  rxBuf_UART0.data[rxBuf_UART0.wrI] = rxData;
-	  rxBuf_UART0.wrI = (rxBuf_UART0.wrI + 1) % BUFFERSIZE;
-	  rxBuf_UART0.pendingBytes++;
-	}
+
+    xQueueSendFromISR(queue, &rxData, pdMS_TO_TICKS(100));
+//  if(!rxBuf_UART0.overflow)
+//	{
+//	  rxBuf_UART0.data[rxBuf_UART0.wrI] = rxData;
+//	  rxBuf_UART0.wrI = (rxBuf_UART0.wrI + 1) % BUFFERSIZE;
+//	  rxBuf_UART0.pendingBytes++;
+//	}
 
     /* Flag Rx overflow */
-    if (rxBuf_UART0.pendingBytes > BUFFERSIZE)
-    {
-    	rxBuf_UART0.overflow = true;
-    }
+//    if (rxBuf_UART0.pendingBytes > BUFFERSIZE)
+//    {
+//    	rxBuf_UART0.overflow = true;
+//    }
 
     /* Clear RXDATAV interrupt */
     USART_IntClear(UART0, UART_IF_RXDATAV);
@@ -104,18 +116,20 @@ void USART0_RX_IRQHandler(void)
   {
     /* Copy data into RX Buffer */
     uint8_t rxData = USART_Rx(USART0);
-    if(!rxBuf_USART0.overflow)
-	{
-	  rxBuf_USART0.data[rxBuf_USART0.wrI] = rxData;
-	  rxBuf_USART0.wrI = (rxBuf_USART0.wrI + 1) % BUFFERSIZE;
-	  rxBuf_USART0.pendingBytes++;
-	}
 
-    /* Flag Rx overflow */
-    if (rxBuf_USART0.pendingBytes > BUFFERSIZE)
-    {
-    	rxBuf_USART0.overflow = true;
-    }
+    xQueueSendFromISR(queue1, &rxData, pdMS_TO_TICKS(100));
+//    if(!rxBuf_USART0.overflow)
+//	{
+//	  rxBuf_USART0.data[rxBuf_USART0.wrI] = rxData;
+//	  rxBuf_USART0.wrI = (rxBuf_USART0.wrI + 1) % BUFFERSIZE;
+//	  rxBuf_USART0.pendingBytes++;
+//	}
+//
+//    /* Flag Rx overflow */
+//    if (rxBuf_USART0.pendingBytes > BUFFERSIZE)
+//    {
+//    	rxBuf_USART0.overflow = true;
+//    }
 
     /* Clear RXDATAV interrupt */
     USART_IntClear(USART0, USART_IF_RXDATAV);
@@ -232,10 +246,18 @@ uint8_t DUTS_getChar(DUTNUM_TypeDef dutNum)
 
   data_buffer *rxBuf = 0;
 
-  if (dutNum == DUT_A)
-      rxBuf = &rxBuf_UART0;
-  else if (dutNum == DUT_B)
-      rxBuf = &rxBuf_USART0;
+  if (dutNum == DUT_A){
+      //rxBuf = &rxBuf_UART0;
+
+	  xQueueReceive(queue, &ch, pdMS_TO_TICKS(100));
+	  return ch;
+  }
+  else if (dutNum == DUT_B){
+	  //rxBuf = &rxBuf_USART0;
+
+	  xQueueReceive(queue1, &ch, pdMS_TO_TICKS(100));
+	  return ch;
+  }
   else if (dutNum == DUT_C)
       rxBuf = &rxBuf_UART1;
   else if (dutNum == DUT_D)
