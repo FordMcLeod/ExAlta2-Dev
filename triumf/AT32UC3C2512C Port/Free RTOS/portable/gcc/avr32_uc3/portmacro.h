@@ -91,6 +91,10 @@ extern "C" {
 #define portSTACK_TYPE  unsigned portLONG
 #define portBASE_TYPE   portLONG
 
+typedef portSTACK_TYPE StackType_t;
+typedef long BaseType_t;
+typedef unsigned long UBaseType_t;
+
 #define TASK_DELAY_MS(x)   ( (x)        /portTICK_RATE_MS )
 #define TASK_DELAY_S(x)    ( (x)*1000   /portTICK_RATE_MS )
 #define TASK_DELAY_MIN(x)  ( (x)*60*1000/portTICK_RATE_MS )
@@ -98,11 +102,11 @@ extern "C" {
 #define configTICK_TC_IRQ             ATPASTE2(AVR32_TC_IRQ, configTICK_TC_CHANNEL)
 
 #if( configUSE_16_BIT_TICKS == 1 )
-    typedef unsigned portSHORT portTickType;
-    #define portMAX_DELAY ( portTickType ) 0xffff
+    typedef unsigned portSHORT TickType_t;
+    #define portMAX_DELAY ( TickType_t ) 0xffff
 #else
-    typedef unsigned portLONG portTickType;
-    #define portMAX_DELAY ( portTickType ) 0xffffffff
+    typedef unsigned portLONG TickType_t;
+    #define portMAX_DELAY ( TickType_t ) 0xffffffff
 #endif
 /*-----------------------------------------------------------*/
 
